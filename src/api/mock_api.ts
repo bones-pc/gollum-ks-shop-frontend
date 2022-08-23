@@ -9,6 +9,7 @@ import type {
   Order,
   OrderUpdate,
   User,
+  UserProfile
 } from "./Api";
 import { campaigns, candidates, orders } from "./mock_data";
 import { users } from "./mock_data/users";
@@ -46,6 +47,16 @@ export class MockApi implements Api {
       return { ...user };
     })();
   }
+
+  updateUserProfile(
+    user: UserProfile
+  ): Promise<UserProfile> {
+    return (async () => {
+      const user = users.find((u => u.uuid == user.uuid))
+      return { ...user }
+    })();
+  }
+
 
   deactivateUser(user_uuid: string): Promise<User> {
     return (async () => {
@@ -85,6 +96,12 @@ export class MockApi implements Api {
     return (async () => {
       return orders["test-user"] ?? [];
     })();
+  }
+
+  fetchUserProfile(): Promise<UserProfile> {
+    return (async () => {
+      return users["test-user"] ?? [];
+    })()
   }
 
   fetchCampaignCandidates(titleLike: string): Promise<CampaignCandidate[]> {

@@ -48,23 +48,27 @@ function backend_user_to_frontend_user(user: any): User {
     uuid: user.uuid,
     activated: user.active,
     username: user.username,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    inpost: user.inpost,
+    zip: user.zip,
   };
 }
 
-function backend_user_profile_to_frontend_user_profile(user: any): UserProfile {
-  return {
-    uuid: user.uuid,
-    activated: user.active,
-    username: user.username,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    phone: user.phone,
-    zip: user.zip,
-    city: user.city,
-    street: user.street,
-    inpost_code: user.inpost_code,
-  };
-}
+// function backend_user_profile_to_frontend_user_profile(user: any): UserProfile {
+//   return {
+//     uuid: user.uuid,
+//     activated: user.active,
+//     username: user.username,
+//     firstname: user.firstname,
+//     lastname: user.lastname,
+//     phone: user.phone,
+//     zip: user.zip,
+//     city: user.city,
+//     street: user.street,
+//     inpost: user.inpost,
+//   };
+// }
 
 function backend_order_to_frontend_order(order: any): Order {
   return {
@@ -185,13 +189,13 @@ export class RestApi implements Api {
       };
       const response = update.is_new
         ? await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("POST", payload)
-          )
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("POST", payload)
+        )
         : await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("PATCH", payload)
-          );
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("PATCH", payload)
+        );
       if (response.ok) {
         const response_json = await response.json();
         return backend_order_to_frontend_order(response_json.result[0]);
@@ -333,38 +337,30 @@ export class RestApi implements Api {
         const response_json = await response.json();
         console.log(response_json);
         return response_json;
-        // return response_json.map(backend_user_profile_to_frontend_user_profile);
       }
     })();
   }
 
   updateUserProfile(
-    username: string,
-    firstname: string,
-    lastname: string,
-    email: string,
-    phone: string,
-    street: string,
-    zip: string,
-    city: string,
-    inpost: string
-  ): Promise<boolean> {
+    user: UserProfile
+  ): Promise<UserProfile> {
     return (async () => {
+      console.log(user)
       const response = await fetch(
         api_url + "users/profile",
         options("PATCH", {
-          username: username,
-          firstname: firstname,
-          lastname: lastname,
-          email: email,
-          phone: phone,
-          street: street,
-          zip: zip,
-          city: city,
-          inpost: inpost,
+          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          phone: user.phone,
+          street: user.street,
+          zip: user.zip,
+          city: user.city,
+          inpost: user.inpost,
         })
-      );
-      return true;
+      )
+      return response.json()
     })();
   }
 

@@ -25,6 +25,7 @@ export const orders: { [key: string]: Order[] } = {
     },
     {
       campaign_uuid: "a170039a-9917-4168-aee1-aedb77afe34e",
+      order_uuid: "90354820v905v3-2346236-26272",
       paid_amount: 221,
       items: [{ amount: 1, item_uuid: "9ed31265-54cb-4e6d-af3d-ca8ba8942b37" }],
     },

@@ -74,6 +74,10 @@ export interface User {
   uuid: string;
   username: string;
   activated: boolean;
+  firstname: string;
+  lastname: string;
+  inpost: string;
+  zip: string;
 }
 
 export interface UserProfile {
@@ -83,10 +87,11 @@ export interface UserProfile {
   firstname: string;
   lastname: string;
   phone: string;
+  email: string;
   street: string;
   city: string;
   zip: string;
-  inpost_code: string;
+  inpost: string;
 }
 
 export interface Api {
@@ -112,6 +117,7 @@ export interface Api {
   fetchUserProfile(): Promise<UserProfile>;
   activateUser(user_uuid: string): Promise<User>;
   deactivateUser(user_uuid: string): Promise<User>;
+  updateUserProfile(user: UserProfile): Promise<UserProfile>;
 }
 
 export const api: Api = new RestApi();
