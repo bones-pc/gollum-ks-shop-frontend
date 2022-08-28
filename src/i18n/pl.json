@@ -95,6 +95,7 @@
   "manage_users.activate": "Odblokuj",
   "manage_users.deactivate": "Zablokuj",
   "manage_users.verified": "Zweryfikowany",
+  "manage_users.name":"Nazwisko i imię",
   "currency.pln": "zł",
   "anonymous.info": "Administrator nie nadał Ci jeszcze żadnej roli",
   "add_draft.title_add": "Dodaj propozycję kampanii",

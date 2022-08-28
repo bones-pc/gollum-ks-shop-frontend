@@ -96,6 +96,7 @@
   "manage_users.activate": "Unblock",
   "manage_users.deactivate": "Block",
   "manage_users.verified": "Verified",
+  "manage_users.name":"Name",
   "currency.pln": "PLN",
   "anonymous.info": "You dont have any role assigned yet",
   "add_draft.title_add": "Add campaign candidate",
