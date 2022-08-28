@@ -27,6 +27,7 @@ export interface Campaign {
   url: string;
   items: CampaignItem[];
   status: CampaignStatus;
+  description: string;
 }
 
 export interface OrderedItem {
@@ -56,6 +57,7 @@ export interface CampaignCandidate {
   url: string;
   img_url: string;
   liking_users: string[];
+  description;
 }
 
 export interface CampaignsSearchParams {

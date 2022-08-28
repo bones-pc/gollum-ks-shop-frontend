@@ -1,3 +1,4 @@
+import { stringify } from "query-string";
 import { get } from "svelte/store";
 import { access_token, api_url as url, user_uuid } from "../stores";
 import {
@@ -29,6 +30,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
     })),
     url: campaign.url,
     status: campaign.status as CampaignStatus,
+    description: campaign.description,
   };
 }
 
@@ -40,6 +42,7 @@ function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
     url: draft.url,
     // todo - Piotr should fix it soon
     liking_users: draft?.liking_users?.filter((it) => it != null),
+    description: draft.description
   };
 }
 
