@@ -35,30 +35,23 @@
 <AccordionList items_provider={fetch} items={inactive_campaigns}>
 	<div slot="item-actions" let:item>
 		{#if $role.is_admin()}
-			<table>
-				<tr>
-					<td>
-						<ul>
-							<li>
-								<Link to="/campaigns/edit/{item.id}">
-									{$_("archived_campaigns.edit_campaign")}
-								</Link>
-							</li>
-							<li>
-								<Link to="/orders/{item.id}">
-									{$_("archived_campaigns.manage_orders")}
-								</Link>
-							</li>
-							<li>
-								<span class="fake-link" on:click={() => unlock(item.id)}>
-									{$_("archived_campaigns.convert_to_active")}
-								</span>
-							</li>
-						</ul>
-					</td>
-					<td>{item.description}</td>
-				</tr>
-			</table>
+			<ul>
+				<li>
+					<Link to="/campaigns/edit/{item.id}">
+						{$_("archived_campaigns.edit_campaign")}
+					</Link>
+				</li>
+				<li>
+					<Link to="/orders/{item.id}">
+						{$_("archived_campaigns.manage_orders")}
+					</Link>
+				</li>
+				<li>
+					<span class="fake-link" on:click={() => unlock(item.id)}>
+						{$_("archived_campaigns.convert_to_active")}
+					</span>
+				</li>
+			</ul>
 		{:else}
 			{$_("archived_campaigns.no_actions")}
 		{/if}

@@ -46,34 +46,30 @@
 		{/if}
 	</svelte:fragment>
 	<svelte:fragment slot="item-actions" let:item>
-		<table>
-			<tr>
-				<td>
-					<ul>
-						<li>
-							<Link to="/order/{item.id}">{$_("active_campaigns.order")}</Link>
-						</li>
-						{#if $role.is_admin()}
-							<li>
-								<Link to="/campaigns/edit/{item.id}">
-									{$_("active_campaigns.edit")}
-								</Link>
-							</li>
-							<li>
-								<Link to="/orders/{item.id}">
-									{$_("active_campaigns.manage_orders")}
-								</Link>
-							</li>
-							<li>
-								<span class="fake-link" on:click={() => lock(item.id)}>
-									{$_("active_campaigns.lock")}
-								</span>
-							</li>
-						{/if}
-					</ul>
-				</td>
-				<td> {item.description} </td>
-			</tr>
-		</table>
+		<ul>
+			<li>
+				<Link to="/order/{item.id}">{$_("active_campaigns.order")}</Link>
+			</li>
+			{#if $role.is_admin()}
+				<li>
+					<Link to="/campaigns/edit/{item.id}">
+						{$_("active_campaigns.edit")}
+					</Link>
+				</li>
+				<li>
+					<Link to="/orders/{item.id}">
+						{$_("active_campaigns.manage_orders")}
+					</Link>
+				</li>
+				<li>
+					<span class="fake-link" on:click={() => lock(item.id)}>
+						{$_("active_campaigns.lock")}
+					</span>
+				</li>
+			{/if}
+		</ul>
+		<ul>
+			{item.description}
+		</ul>
 	</svelte:fragment>
 </AccordionList>
