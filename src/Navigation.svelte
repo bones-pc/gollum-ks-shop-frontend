@@ -81,6 +81,11 @@
 										<Link to="/users">{$_("nav.manage_users")}</Link>
 									</span>
 								</li>
+								<li class="nav-item">
+									<span class="nav-link">
+										<Link to="/user-detail">WIP User Detail</Link>
+									</span>
+								</li>
 							{/if}
 						{/if}
 					{/if}
