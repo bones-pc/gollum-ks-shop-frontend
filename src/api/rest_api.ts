@@ -29,6 +29,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
       price: i.price,
     })),
     url: campaign.url,
+    paid_amount: campaign.paid_amount,
     status: campaign.status as CampaignStatus,
     description: campaign.description,
   };
