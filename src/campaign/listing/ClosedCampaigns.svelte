@@ -40,42 +40,36 @@
 
 <AccordionList items_provider={fetch} items={closed_campaigns}>
 	<svelte:fragment slot="item-actions" let:item>
-		<table>
-			<tr
-				><td>
-					<ul>
-						{#if $role.is_admin()}
-							<ul>
-								<li>
-									<Link to="/campaigns/edit/{item.id}">
-										{$_("closed_campaigns.edit_campaign")}
-									</Link>
-								</li>
-								<li>
-									<Link to="/orders/{item.id}">
-										{$_("closed_campaigns.manage_orders")}
-									</Link>
-								</li>
-								<li>
-									<span class="fake-link" on:click={() => unlock(item.id)}>
-										{$_("closed_campaigns.convert_to_active")}
-									</span>
-								</li>
-								<li>
-									<span class="fake-link" on:click={() => lock(item.id)}>
-										{$_("closed_campaigns.convert_to_archived")}
-									</span>
-								</li>
-							</ul>
-						{:else}
-							{$_("closed_campaigns.no_actions")}
-						{/if}
-					</ul>
-				</td>
-				<td>
-					{item.description}
-				</td></tr
-			>
-		</table>
+		<ul>
+			{item.description}
+		</ul>
+		<ul>
+			{#if $role.is_admin()}
+				<ul>
+					<li>
+						<Link to="/campaigns/edit/{item.id}">
+							{$_("closed_campaigns.edit_campaign")}
+						</Link>
+					</li>
+					<li>
+						<Link to="/orders/{item.id}">
+							{$_("closed_campaigns.manage_orders")}
+						</Link>
+					</li>
+					<li>
+						<span class="fake-link" on:click={() => unlock(item.id)}>
+							{$_("closed_campaigns.convert_to_active")}
+						</span>
+					</li>
+					<li>
+						<span class="fake-link" on:click={() => lock(item.id)}>
+							{$_("closed_campaigns.convert_to_archived")}
+						</span>
+					</li>
+				</ul>
+			{:else}
+				{$_("closed_campaigns.no_actions")}
+			{/if}
+		</ul>
 	</svelte:fragment>
 </AccordionList>

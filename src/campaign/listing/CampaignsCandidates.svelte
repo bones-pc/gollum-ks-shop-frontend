@@ -111,24 +111,18 @@
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
-		<table>
-			<tr
-				><td>
-					<ul>
-						{#if $role.is_admin()}
-							<li>
-								<Link to="/campaigns/add/{item.id}">
-									{$_("proposed_campaigns.convert_to_active")}
-								</Link>
-							</li>
-						{:else}
-							{$_("proposed_campaigns.no_actions")}
-						{/if}
-					</ul>
-				</td>
-				<td>{item.description}</td></tr
-			>
-		</table>
+		<ul>{item.description}</ul>
+		<ul>
+			{#if $role.is_admin()}
+				<li>
+					<Link to="/campaigns/add/{item.id}">
+						{$_("proposed_campaigns.convert_to_active")}
+					</Link>
+				</li>
+			{:else}
+				{$_("proposed_campaigns.no_actions")}
+			{/if}
+		</ul>
 	</div>
 </AccordionList>
 
