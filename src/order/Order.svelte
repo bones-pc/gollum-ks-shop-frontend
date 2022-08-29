@@ -112,37 +112,7 @@
 		</div>
 	{/each}
 
-	<table>
-		<thead>
-			<th>nazwa</th>
-			<th>liczba</th>
-			<th> cena</th>
-			<th>wartość</th>
-		</thead>
-		<tbody>
-			{#each items as { amount, item }}
-				<tr>
-					<td>{item.name}</td><td>{amount}</td><td>{item.price}</td><td
-						>{item.price * amount}</td
-					>
-				</tr>
-			{/each}
-			<tr>
-				<td>Łącznie</td>
-				<td />
-				<td />
-				<td>{totalPrice}</td>
-			</tr>
-			<tr>
-				<td>Wpłacono</td>
-				<td />
-				<td />
-				<td>{paid_amount}</td>
-			</tr>
-		</tbody>
-	</table>
-
-	<!-- 
+	{@const to_pay = totalPrice - paid_amount}
 	<table class="table">
 		<thead>
 			<tr>
@@ -153,23 +123,25 @@
 			</tr>
 		</thead>
 		<tbody>
-      <tr>
-					<th scope="row">{i.name}</th>
-					<td>{i.amount}</td>
-					<td>{i.price} {$_("currency.pln")}</td>
-					<td>{i.amount * i.price} {$_("currency.pln")}</td>
+			{#each items as { amount, item }}
+				<tr>
+					<th scope="row">{item.name}</th>
+					<td>{amount}</td>
+					<td>{item.price}</td>
+					<td>{item.price * amount}</td>
 				</tr>
+			{/each}
 			<tr>
 				<th scope="row">{$_("orders_history.total")}</th>
 				<td />
 				<td />
-				<td>{total} {$_("currency.pln")}</td>
+				<td>{totalPrice} {$_("currency.pln")}</td>
 			</tr>
 			<tr>
 				<th scope="row">{$_("orders_history.paid_confirmed")}</th>
 				<td />
 				<td />
-				<td>{item.paid_value} {$_("currency.pln")}</td>
+				<td>{paid_amount}</td>
 			</tr>
 			{#if to_pay > 0}
 				<tr>
@@ -181,9 +153,9 @@
 						{$_("currency.pln")}
 					</td>
 				</tr>
+			{/if}
 		</tbody>
 	</table>
- -->
 {/if}
 
 <style>
