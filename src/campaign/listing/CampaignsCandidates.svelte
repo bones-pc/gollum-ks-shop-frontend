@@ -111,7 +111,6 @@
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
-		<ul>{item.description}</ul>
 		<ul>
 			{#if $role.is_admin()}
 				<li>
