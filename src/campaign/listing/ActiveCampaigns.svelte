@@ -68,8 +68,5 @@
 				</li>
 			{/if}
 		</ul>
-		<ul>
-			{item.description}
-		</ul>
 	</svelte:fragment>
 </AccordionList>

@@ -41,9 +41,6 @@
 <AccordionList items_provider={fetch} items={closed_campaigns}>
 	<svelte:fragment slot="item-actions" let:item>
 		<ul>
-			{item.description}
-		</ul>
-		<ul>
 			{#if $role.is_admin()}
 				<ul>
 					<li>

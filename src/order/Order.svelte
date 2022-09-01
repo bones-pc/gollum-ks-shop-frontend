@@ -29,9 +29,12 @@
 
 	onMount(async () => {
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		const fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
-		paid_amount = fetchedOrder.paid_amount;
+		console.log(fetchedOrder);
 
+		const fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
+		console.log(fetchedCampaign);
+
+		if (fetchedOrder) paid_amount = fetchedOrder.paid_amount;
 		new_order = fetchedOrder == null;
 		if (fetchedCampaign == null) {
 			items = [];

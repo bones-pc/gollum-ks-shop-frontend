@@ -28,7 +28,6 @@ export interface Campaign {
   items: CampaignItem[];
   status: CampaignStatus;
   description: string;
-  paid_amount: string;
 }
 
 export interface OrderedItem {
