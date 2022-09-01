@@ -63,6 +63,25 @@
 {:else}
 	<h1>{$_("order.title", { values: { campaign_title: campaign.title } })}</h1>
 
+	<div class="d-none d-md-inline">
+		{#if campaign.url == null}
+			<img
+				class="accordion-list-item"
+				src={campaign.img_url}
+				alt="item miniature"
+			/>
+		{:else}
+			<a href={campaign.url} target="_blank">
+				<img
+					class="accordion-list-item"
+					src={campaign.img_url}
+					alt="item miniature"
+				/>
+			</a>
+		{/if}
+	</div>
+	<div class="mb-2">{campaign.description}</div>
+
 	<div class="mb-2">
 		<InProgressButton
 			on_click_function={async () => order()}
