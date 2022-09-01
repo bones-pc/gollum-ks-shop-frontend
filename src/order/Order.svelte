@@ -63,25 +63,16 @@
 {:else}
 	<h1>{$_("order.title", { values: { campaign_title: campaign.title } })}</h1>
 
-	<div class="d-none d-md-inline">
+	<div class="mb-2 img-responsive">
 		{#if campaign.url == null}
-			<img
-				class="accordion-list-item"
-				src={campaign.img_url}
-				alt="item miniature"
-			/>
+			<img src={campaign.img_url} alt="item miniature" />
 		{:else}
 			<a href={campaign.url} target="_blank">
-				<img
-					class="accordion-list-item"
-					src={campaign.img_url}
-					alt="item miniature"
-				/>
+				<img src={campaign.img_url} alt="item miniature" />
 			</a>
 		{/if}
 	</div>
 	<div class="mb-2">{campaign.description}</div>
-
 	<div class="mb-2">
 		<InProgressButton
 			on_click_function={async () => order()}
@@ -195,5 +186,16 @@
 
 	.change-amount {
 		min-width: 40px;
+	}
+
+	img {
+		width: 400px;
+		/* height: 159px; */
+		object-fit: cover;
+		overflow: hidden;
+		float: left;
+		font-size: 1rem;
+		line-height: 26px;
+		text-align: center;
 	}
 </style>
