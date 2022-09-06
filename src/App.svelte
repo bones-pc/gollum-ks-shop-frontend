@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
-	import { Route, Router } from "svelte-navigator";
+	import { Route, Router, useParams } from "svelte-navigator";
 	import Anonymous from "./Anonymous.svelte";
 	import { authentication_manager } from "./authentication/authentication_manager";
 	import Login from "./authentication/Login.svelte";
@@ -87,8 +87,8 @@
 				<Route path="/users">
 					<ManageUsers />
 				</Route>
-				<Route path="/user-detail">
-					<UserDetail />
+				<Route path="/user-detail/:uuid" let:params>
+					<UserDetail uuid={params.uuid} />
 				</Route>
 			{/if}
 		{/if}

@@ -38,6 +38,7 @@ export interface OrderedItem {
 export interface Order {
   campaign_uuid: string;
   order_uuid: string;
+  ouuid: string;
   items: OrderedItem[];
   paid_amount: number;
 }
@@ -101,6 +102,7 @@ export interface Api {
     campaign_uuid: string
   ): Promise<(Order & AssignedToUser)[]>;
   fetchUserOrders(): Promise<Order[]>;
+  fetchUserOrdersAdmin(ouuid: string): Promise<Order[]>;
   fetchOrder(order_uuid: string): Promise<Order>;
   updatePaidAmount(order: Order & AssignedToUser): Promise<Order>;
   fetchCampaign(uuid: string): Promise<Campaign>;
@@ -117,6 +119,7 @@ export interface Api {
   unlikeCandidate(uuid: string): Promise<CampaignCandidate>;
   fetchUsers(): Promise<User[]>;
   fetchUserProfile(): Promise<UserProfile>;
+  fetchUserProfileAdmin(uuid: string): Promise<UserProfile>;
   activateUser(user_uuid: string): Promise<User>;
   deactivateUser(user_uuid: string): Promise<User>;
   updateUserProfile(user: UserProfile): Promise<UserProfile>;
