@@ -1,30 +1,15 @@
 <script lang="ts">
-	import { authentication_manager } from "./authentication_manager";
+	import { authentication_manager } from "../authentication/authentication_manager";
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 	import { get } from "svelte/store";
-	import { api, UserProfile } from "../api/Api";
+	import { api } from "../api/Api";
+	import type { UserProfile } from "../api/Api";
+	import type { User } from "../api/Api";
+	export let user: UserProfile;
 
-	let user: UserProfile = {
-		uuid: "",
-		username: "",
-		activated: false,
-		firstname: "",
-		lastname: "",
-		email: "",
-		phone: "",
-		street: "",
-		city: "",
-		zip: "",
-		inpost: "",
-	};
 	let warning = null;
 	let update_ok = false;
-
-	onMount(async () => {
-		user = await api.fetchUserProfile();
-		console.log("fetch user profile ", user);
-	});
 
 	async function updateUserProfile() {
 		warning = null;

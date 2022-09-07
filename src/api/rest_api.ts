@@ -77,6 +77,7 @@ function backend_order_to_frontend_order(order: any): Order {
   return {
     campaign_uuid: order.uuid,
     order_uuid: order.order_uuid,
+    ouuid: order.ouuid,
     paid_amount: Number.parseInt(order.paid_amount),
     items: order.items?.map((i) => ({
       item_uuid: i.uuid,
@@ -119,6 +120,17 @@ export class RestApi implements Api {
           });
         }
         return results;
+      }
+    })();
+  }
+
+  fetchUserOrdersAdmin(user_uuid: string): Promise<Order[]> {
+    return (async () => {
+      const response = await fetch(api_url + "users/" + user_uuid + "/orders", options("GET"));
+      if (response.ok) {
+        const response_json = await response.json();
+        console.log(response_json)
+        return response_json.map(backend_order_to_frontend_order);
       }
     })();
   }
@@ -343,6 +355,17 @@ export class RestApi implements Api {
       }
     })();
   }
+
+  fetchUserProfileAdmin(uuid: string): Promise<UserProfile> {
+    return (async () => {
+      const response = await fetch(api_url + "users/" + uuid, options("GET"));
+      if (response.ok) {
+        const response_json = await response.json();
+        return response_json;
+      }
+    })();
+  }
+
 
   updateUserProfile(
     user: UserProfile
