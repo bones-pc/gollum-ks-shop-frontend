@@ -83,7 +83,9 @@
 
 	<h2>{$_("manage_orders.per_user_summary")}</h2>
 	{#each orders as order}
-		<Link to="/user-detail/{order.ouuid}">{order.username}</Link>
+		{order.firstname}
+		{order.lastname}
+		(<Link to="/user-detail/{order.ouuid}">{order.username}</Link>)
 		<div>
 			<span>{$_("manage_orders.per_user_summary.paid")}</span>
 			<input type="number" bind:value={order.paid_amount} class="money" />

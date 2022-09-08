@@ -25,6 +25,7 @@ export interface Campaign {
   title: string;
   img_url: string;
   url: string;
+  payment_details: string;
   items: CampaignItem[];
   status: CampaignStatus;
   description: string;
@@ -51,6 +52,8 @@ export interface OrderUpdate {
 
 export interface AssignedToUser {
   username: string;
+  firstname: string;
+  lastname: string;
 }
 
 export interface CampaignCandidate {

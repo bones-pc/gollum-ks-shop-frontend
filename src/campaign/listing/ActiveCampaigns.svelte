@@ -25,13 +25,16 @@
 			titleLike: search,
 			...fetch_filter,
 		});
-		return campaigns.map(({ uuid, title, url, img_url, description }) => ({
-			id: uuid,
-			title,
-			url,
-			img_url,
-			description,
-		}));
+		return campaigns.map(
+			({ uuid, title, url, img_url, description, payment_details }) => ({
+				id: uuid,
+				title,
+				url,
+				img_url,
+				description,
+				payment_details,
+			})
+		);
 	}
 </script>
 

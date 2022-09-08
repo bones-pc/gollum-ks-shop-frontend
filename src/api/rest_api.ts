@@ -22,6 +22,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
     uuid: campaign.uuid,
     title: campaign.name,
     img_url: campaign.img_url,
+    payment_details: campaign.payment_details,
     items: campaign.items?.map((i, index) => ({
       uuid: i.uuid,
       ordinal: i.ordinal,
@@ -114,8 +115,10 @@ export class RestApi implements Api {
         const response_json = await response.json();
         const results = [];
         for (let username in response_json) {
+          let lastname = response_json[username].lastname
+          let firstname = response_json[username].firstname
           results.push({
-            username,
+            username, firstname, lastname,
             ...backend_order_to_frontend_order(response_json[username]),
           });
         }

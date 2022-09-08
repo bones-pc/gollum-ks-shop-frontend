@@ -29,11 +29,7 @@
 
 	onMount(async () => {
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		console.log(fetchedOrder);
-
 		const fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
-		console.log(fetchedCampaign);
-
 		if (fetchedOrder) paid_amount = fetchedOrder.paid_amount;
 		new_order = fetchedOrder == null;
 		if (fetchedCampaign == null) {
@@ -89,6 +85,8 @@
 			disabled_predicate={() => totalPrice <= 0 && new_order}
 		/>
 	</div>
+	<div class="mb-2">Tyluł przelewu: {campaign.payment_details}</div>
+
 	{#if items.length === 0}
 		<div>
 			<span>{$_("order.no_items")}</span>
