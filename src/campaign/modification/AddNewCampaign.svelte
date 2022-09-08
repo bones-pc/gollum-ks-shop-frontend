@@ -17,6 +17,7 @@
 		url: "",
 		status: CampaignStatus.ACTIVE,
 		description: "",
+		payment_details: "",
 	});
 
 	let campaign: Campaign;

@@ -31,6 +31,7 @@
   "edit_campaign.campaign_title": "Nazwa kampanii",
   "edit_campaign.campaign_url": "Url kampanii",
   "edit_campaign.image_url": "Url obrazka",
+  "edit_campaign.payment_details":"Tytuł przelewu",
   "edit_campaign.description":"Opis",
   "edit_campaign.item_name": "Nazwa",
   "edit_campaign.item_price": "Cena",

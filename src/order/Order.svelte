@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { faSortAmountAsc } from "@fortawesome/free-solid-svg-icons";
+	import { faCopy } from "@fortawesome/free-regular-svg-icons";
+	import Fa from "svelte-fa";
+
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 
@@ -52,6 +54,13 @@
 		new_order = false;
 		fill_form(campaign, savedOrder);
 	}
+
+	function copyText() {
+		let copyText = document.getElementById("payment_detail");
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); // For mobile devices
+		navigator.clipboard.writeText(copyText.value);
+	}
 </script>
 
 {#if campaign == null}
@@ -85,7 +94,22 @@
 			disabled_predicate={() => totalPrice <= 0 && new_order}
 		/>
 	</div>
-	<div class="mb-2">Tyluł przelewu: {campaign.payment_details}</div>
+	<div class="mb-2">
+		Tyluł przelewu: <input
+			class="input_copy"
+			id="payment_detail"
+			readonly="readonly"
+			value={campaign.payment_details}
+		/>
+		<button
+			class="btn btn-light non-collapsing"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target
+			on:click={() => copyText()}
+			><Fa icon={faCopy} primaryColor="blue" /></button
+		>
+	</div>
 
 	{#if items.length === 0}
 		<div>
@@ -190,7 +214,11 @@
 	.badge {
 		vertical-align: top;
 	}
-
+	.input_copy {
+		border: none;
+		background: transparent;
+		outline: none;
+	}
 	.change-amount {
 		min-width: 40px;
 	}

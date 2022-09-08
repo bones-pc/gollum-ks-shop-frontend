@@ -86,6 +86,20 @@
 		disabled={save_in_progress}
 	/>
 </div>
+
+<div class="mb-3">
+	<label class="form-label" for="campaign_payment">
+		{$_("edit_campaign.payment_details")}
+	</label>
+	<input
+		class="form-control"
+		type="text"
+		id="campaign_payment"
+		bind:value={campaign.payment_details}
+		disabled={save_in_progress}
+	/>
+</div>
+
 {#each [...items] as item, index}
 	<div class="card mb-2" style="width: 100%;">
 		<div class="card-body">
