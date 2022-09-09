@@ -13,7 +13,7 @@ export interface AuthenticationManager {
   test_credentials(token: string): Promise<boolean>;
   logout(): Promise<void>;
   store_credentials_if_authenticated(): Promise<void>;
-  signup(username: string, password: string, email: string): Promise<boolean>;
+  signup(username: string, firstname: string, lastname: string, password: string, email: string): Promise<boolean>;
 }
 
 class LocalDevManager implements AuthenticationManager {
@@ -113,7 +113,7 @@ class CustomEndpointManager implements AuthenticationManager {
     })();
   }
 
-  signup(username: string, password: string, email: string): Promise<boolean> {
+  signup(username: string, firstname: string, lastname: string, password: string, email: string): Promise<boolean> {
     return (async () => {
       const response = await fetch(this.api_url + "users", {
         method: "POST",
@@ -121,7 +121,7 @@ class CustomEndpointManager implements AuthenticationManager {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ email, password, username }),
+        body: JSON.stringify({ email, password, username, firstname, lastname }),
       });
       if (response.ok) {
         const { message } = await response.json();
