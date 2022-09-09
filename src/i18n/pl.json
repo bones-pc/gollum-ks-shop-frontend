@@ -48,6 +48,7 @@
   "manage_orders.per_user_summary": "Podsumowanie per użytkownik",
   "manage_orders.per_user_summary.paid": "Zapłacono",
   "manage_orders.per_user_summary.out_of": "z",
+  "manage_orders.tracking": "Numer przesyłki",
   "order.loading": "Trwa ładowanie",
   "order.title": "Zamów {campaign_title}",
   "order.confirm": "Złóż zamówienie",
