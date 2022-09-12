@@ -74,14 +74,14 @@
 	<div class="d-none d-md-inline">
 		{#if campaign.url == null}
 			<img
-				class="accordion-list-item"
+				class="accordion-list-item img-fluid"
 				src={campaign.img_url}
 				alt="item miniature"
 			/>
 		{:else}
 			<a href={campaign.url} target="_blank">
 				<img
-					class="accordion-list-item"
+					class="accordion-list-item img-fluid"
 					src={campaign.img_url}
 					alt="item miniature"
 				/>

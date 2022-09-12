@@ -17,6 +17,7 @@
   "active_campaigns.edit": "Edytuj kampanię",
   "active_campaigns.manage_orders": "Zarządzaj zamówieniami",
   "active_campaigns.lock": "Przenieś do zamkniętych",
+  "active_campaigns.delete": "Usuń",
   "proposed_campaigns.title": "Propozycje kampanii",
   "proposed_campaigns.single_like": "Polubiono 1 raz",
   "proposed_campaigns.likes": "Polubiono {count} razy",

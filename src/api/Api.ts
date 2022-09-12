@@ -18,6 +18,8 @@ export enum CampaignStatus {
   DRAFT,
   // delivered
   ARCHIVED,
+  // to be trashed - check if not mistake ;)
+  DELETED
 }
 
 export interface Campaign {
