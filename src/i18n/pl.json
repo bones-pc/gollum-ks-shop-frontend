@@ -81,7 +81,7 @@
   "login.warn.password_must_not_be_empty": "Hasło nie może być puste",
   "login.warn.firstname_must_not_be_empty": "Imię nie może być puste",
   "login.warn.lastname_must_not_be_empty": "Nazwisko nie może być puste",
-  "login.error": "Błędny login lub hasło",
+  "login.error": "Błędny login lub hasło / Użytkownik jeszcze nie zaakceptowany.",
   "user_profile.adress": "Adres",
   "user_profile.username": "Nazwa użytkownika",
   "user_profile.firstname": "Imię",
