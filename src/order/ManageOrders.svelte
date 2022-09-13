@@ -59,6 +59,10 @@
 	async function confirm(order: Order & AssignedToUser) {
 		await api.updatePaidAmount(order);
 	}
+
+	async function mark_as_sent(order: Order) {
+		await api.updateOrderTracking(order);
+	}
 </script>
 
 {#if orders === null}
@@ -103,7 +107,7 @@
 				label="Confirm"
 			/>
 			{$_("manage_orders.tracking")}
-			<input id="tracking" bind:value={order.tracking} />
+			<input id="tracking" bind:value={order.tracking_no} />
 			<InProgressButton
 				on_click_function={async () => mark_as_sent(order)}
 				label="Nie wysłane"
