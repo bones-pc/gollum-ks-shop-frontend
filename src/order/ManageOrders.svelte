@@ -53,10 +53,15 @@
 		]);
 		orders = o;
 		campaign = c;
+		console.log(o);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
 		await api.updatePaidAmount(order);
+	}
+
+	async function mark_as_sent(order: Order) {
+		await api.updateOrderTracking(order);
 	}
 </script>
 
@@ -81,7 +86,7 @@
 		{/each}
 	</ul>
 
-	<h2>{$_("manage_orders.per_user_summary")}</h2>
+	<h3>{$_("manage_orders.per_user_summary")}</h3>
 	{#each orders as order}
 		{order.firstname}
 		{order.lastname}
@@ -100,6 +105,12 @@
 			<InProgressButton
 				on_click_function={async () => confirm(order)}
 				label="Confirm"
+			/>
+			{$_("manage_orders.tracking")}
+			<input id="tracking" bind:value={order.tracking_no} />
+			<InProgressButton
+				on_click_function={async () => mark_as_sent(order)}
+				label="Nie wysłane"
 			/>
 		</div>
 		<ul>

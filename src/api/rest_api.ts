@@ -1,4 +1,3 @@
-import { stringify } from "query-string";
 import { get } from "svelte/store";
 import { access_token, api_url as url, user_uuid } from "../stores";
 import {
@@ -79,6 +78,7 @@ function backend_order_to_frontend_order(order: any): Order {
     campaign_uuid: order.uuid,
     order_uuid: order.order_uuid,
     ouuid: order.ouuid,
+    tracking_no: order.tracking_no,
     paid_amount: Number.parseInt(order.paid_amount),
     items: order.items?.map((i) => ({
       item_uuid: i.uuid,
@@ -132,7 +132,7 @@ export class RestApi implements Api {
       const response = await fetch(api_url + "users/" + user_uuid + "/orders", options("GET"));
       if (response.ok) {
         const response_json = await response.json();
-        console.log(response_json)
+        // console.log(response_json)
         return response_json.map(backend_order_to_frontend_order);
       }
     })();
@@ -177,6 +177,25 @@ export class RestApi implements Api {
       );
       if (response.ok) {
         const response_json = await response.json();
+        return backend_order_to_frontend_order(response_json.result[0]);
+      }
+    })();
+  }
+
+  updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
+    return (async () => {
+      const payload = {
+        tracking_no: order.tracking_no,
+        campaign_uuid: order.campaign_uuid,
+        order_uuid: order.order_uuid,
+      };
+      const response = await fetch(
+        api_url + "campaigns/" + order.campaign_uuid + "/order",
+        options("PATCH", payload)
+      );
+      if (response.ok) {
+        const response_json = await response.json();
+        console.log('tracking ', response_json)
         return backend_order_to_frontend_order(response_json.result[0]);
       }
     })();

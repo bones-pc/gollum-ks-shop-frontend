@@ -49,6 +49,7 @@
   "manage_orders.per_user_summary": "Orders summary per user",
   "manage_orders.per_user_summary.paid": "Paid",
   "manage_orders.per_user_summary.out_of": "out of",
+  "manage_orders.tracking": "Tracking number",
   "order.loading": "Loading data",
   "order.title": "Order {campaign_title}",
   "order.confirm": "Order",
