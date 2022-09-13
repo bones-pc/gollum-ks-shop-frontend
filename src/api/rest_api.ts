@@ -195,8 +195,7 @@ export class RestApi implements Api {
       );
       if (response.ok) {
         const response_json = await response.json();
-        console.log('tracking ', response_json)
-        return backend_order_to_frontend_order(response_json.result[0]);
+        return response_json.result;
       }
     })();
   }

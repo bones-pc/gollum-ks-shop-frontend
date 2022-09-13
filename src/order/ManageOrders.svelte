@@ -19,6 +19,8 @@
 	let totalItems = [];
 	let totalGathered = 0;
 	let totalPrice = 0;
+	let tracking_no = "";
+
 	$: itemByUuid = new Map<string, CampaignItem>(
 		campaign?.items?.map((item) => [item.uuid, item]) ?? []
 	);
@@ -53,7 +55,6 @@
 		]);
 		orders = o;
 		campaign = c;
-		console.log(o);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -61,7 +62,9 @@
 	}
 
 	async function mark_as_sent(order: Order) {
-		await api.updateOrderTracking(order);
+		let order_return = await api.updateOrderTracking(order);
+		console.log("mark ", order_return);
+		tracking_no = order_return.tracking_no;
 	}
 </script>
 
@@ -106,12 +109,22 @@
 				on_click_function={async () => confirm(order)}
 				label="Confirm"
 			/>
+
 			{$_("manage_orders.tracking")}
 			<input id="tracking" bind:value={order.tracking_no} />
-			<InProgressButton
-				on_click_function={async () => mark_as_sent(order)}
-				label="Nie wysłane"
-			/>
+			{#if !order.tracking_no}
+				<InProgressButton
+					btn_class={"btn-danger"}
+					on_click_function={async () => mark_as_sent(order)}
+					label="Nie wysłane"
+				/>
+			{:else}
+				<InProgressButton
+					btn_class={"btn-success"}
+					on_click_function={async () => mark_as_sent(order)}
+					label="Wysłane"
+				/>
+			{/if}
 		</div>
 		<ul>
 			{#each order.items as item}

@@ -71,7 +71,7 @@
 {:else}
 	<h1>{$_("order.title", { values: { campaign_title: campaign.title } })}</h1>
 
-	<div class="mb-2 img-responsive">
+	<div class="mb-2 img-responsive row  offset-md-2">
 		{#if campaign.url == null}
 			<img
 				class="accordion-list-item img-fluid"
@@ -88,29 +88,34 @@
 			</a>
 		{/if}
 	</div>
-	<div class="mb-2">{campaign.description}</div>
+
+	<div class="mb-2 row offset-md-2">{campaign.description}</div>
+	<div class="mb-2 row offset-md-2">
+		<div>
+			Tyluł przelewu:
+			<input
+				class="input_copy"
+				id="payment_detail"
+				readonly="readonly"
+				value={campaign.payment_details}
+			/>
+			<button
+				class="btn btn-light non-collapsing"
+				type="button"
+				data-bs-toggle="collapse"
+				data-bs-target
+				on:click={() => copyText()}
+				><Fa icon={faCopy} primaryColor="blue" /></button
+			>
+		</div>
+	</div>
+
 	<div class="mb-2">
 		<InProgressButton
 			on_click_function={async () => order()}
 			label={$_("order.confirm")}
 			disabled_predicate={() => totalPrice <= 0 && new_order}
 		/>
-	</div>
-	<div class="mb-2">
-		Tyluł przelewu: <input
-			class="input_copy"
-			id="payment_detail"
-			readonly="readonly"
-			value={campaign.payment_details}
-		/>
-		<button
-			class="btn btn-light non-collapsing"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target
-			on:click={() => copyText()}
-			><Fa icon={faCopy} primaryColor="blue" /></button
-		>
 	</div>
 
 	{#if items.length === 0}
@@ -218,6 +223,7 @@
 	}
 	.input_copy {
 		border: none;
+		font-weight: bold;
 		background: transparent;
 		outline: none;
 	}

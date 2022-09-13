@@ -43,12 +43,11 @@
 </script>
 
 <!-- <h1>profil użytkownika {$_("nav.manage_users")}</h1> -->
-<h1>Zamówienia użytkownika</h1>
+<h1>{$_("nav.user_orders")}: {user.username}</h1>
 
 <table class="table">
 	<thead>
 		<tr>
-			<th scope="col">#</th>
 			<th scope="col">{$_("manage_users.name")}</th>
 			<th scope="col">{$_("manage_users.username")}</th>
 			<th scope="col">{$_("manage_users.actions")}</th>
@@ -57,7 +56,6 @@
 	</thead>
 	<tbody>
 		<tr>
-			<th scope="row"> {index + 1} </th>
 			<td>
 				{user.lastname == null ? "" : user.lastname}
 				{user.firstname == null ? "" : user.firstname}
@@ -94,14 +92,14 @@
 					aria-expanded="true"
 					aria-controls={"collapse" + index + "a"}
 				>
-					Profil</button
+					{$_("manage_orders.profile")}</button
 				>
 				<div id={"collapse" + index + "a"} class="accordion-collapse collapse">
 					<UserProfileComponent {user} />
 				</div>
 				<div>
 					<button class="accordion-button collapsed" type="button">
-						Zamówienia</button
+						{$_("manage_orders.orders")}</button
 					>
 					<div id={"collapse" + index + "b"}>
 						<OrderHistoryAdmin {uuid} />

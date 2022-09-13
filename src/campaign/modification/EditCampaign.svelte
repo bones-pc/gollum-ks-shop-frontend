@@ -2,6 +2,9 @@
 	import { _ } from "svelte-i18n";
 	import type { Campaign, CampaignItem } from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
+	import Modal from "../../utils/Modal.svelte";
+	import { api, CampaignStatus } from "../../api/Api";
+	import { onMount } from "svelte";
 
 	export let title: string;
 	export let add_item: () => void;
@@ -11,13 +14,55 @@
 	export let campaign: Campaign;
 
 	let save_in_progress: boolean = false;
+	let delete_in_progress: boolean = false;
 
 	async function save_with_progress() {
 		save_in_progress = true;
 		await save();
 		save_in_progress = false;
 	}
+
+	let campaign_status = campaign.status;
+
+	let showPopup = false;
+	let delete_uuid = "";
+
+	const confirmDelete = () => {
+		delete_uuid = campaign.uuid;
+		showPopup = true;
+	};
+	const onClick = () => {
+		showPopup = true;
+		delete_campaign(delete_uuid);
+	};
+
+	const onPopupClose = () => {
+		showPopup = false;
+	};
+
+	async function delete_campaign(uuid: string) {
+		let campaign_result = await api.changeStatus(uuid, CampaignStatus.DELETED);
+		campaign_status = campaign_result.status;
+	}
+	async function ressurect_campaign() {
+		let uuid = campaign.uuid;
+		let campaign_result = await api.changeStatus(uuid, CampaignStatus.ACTIVE);
+		campaign_status = campaign_result.status;
+	}
+
+	console.log(campaign);
 </script>
+
+<Modal
+	title={"Skasować?"}
+	close={"Nie, no..."}
+	action={"Serio!"}
+	open={showPopup}
+	onClick={() => onClick()}
+	onClosed={() => onPopupClose()}
+>
+	Serio? Skasować <b>CAŁĄ</b> kampanię {campaign.title}?
+</Modal>
 
 <h1>
 	{title}
@@ -37,6 +82,21 @@
 		label={$_("edit_campaign.save")}
 		bind:in_progress={save_in_progress}
 	/>
+	{#if campaign_status == CampaignStatus.DELETED}
+		<button
+			type="button"
+			class="btn btn-warning"
+			on:click={ressurect_campaign}
+			label={$_("edit_campaign.save")}>Odzyskaj kampanię</button
+		>
+	{:else}
+		<button
+			type="button"
+			class="btn btn-warning"
+			on:click={confirmDelete}
+			label={$_("edit_campaign.save")}>Kasuj kampanię</button
+		>
+	{/if}
 </div>
 <div class="mb-3">
 	<label for="title" class="form-label">
