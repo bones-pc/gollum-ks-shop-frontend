@@ -54,6 +54,7 @@
   "manage_orders.tracking": "Numer przesyłki",
   "manage_orders.profile": "Profil",
   "manage_orders.orders": "Zamówienia",
+  "manage_orders.delete_user_order": "Kasuj",
   "order.loading": "Trwa ładowanie",
   "order.title": "{campaign_title}",
   "order.confirm": "Złóż zamówienie",

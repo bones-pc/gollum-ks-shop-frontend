@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
-
-	import { api, Campaign, CampaignItem } from "../api/Api";
+	import { api, Campaign, CampaignItem, OrderStatus } from "../api/Api";
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
 
@@ -17,17 +16,19 @@
 		campaign_title: string;
 		paid_value: number;
 		order_value: number;
+		order_uuid: string;
 		items: PastItem[];
 	}
 
 	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
 		const fetched_orders = await api.fetchUserOrdersAdmin(uuid);
-		console.log(fetched_orders);
-
 		const fetched_campaigns = await api.fetchCampaigns({
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
+		console.log(fetched_orders);
+		console.log(fetched_campaigns);
+
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
 		);
@@ -48,14 +49,34 @@
 			new_orders.push({
 				campaign_title: c.title,
 				paid_value: o.paid_amount,
+				status: c.status,
 				order_value,
 				items,
 				title: c.title,
 				id: c.uuid,
 				img_url: c.img_url,
+				order_uuid: o.order_uuid,
 			});
 		}
+		console.log(new_orders);
 		return new_orders;
+	}
+	let temp_delete = new Set();
+
+	async function delete_user_order(
+		user_uuid: string,
+		campaiagn_uuid: string,
+		order_uuid: string
+	) {
+		let result = await api.changeUserOrderStatus(
+			user_uuid,
+			campaiagn_uuid,
+			order_uuid,
+			OrderStatus.DELETED
+		);
+		console.log("order history admin", result);
+		temp_delete.add(order_uuid);
+		return result.status;
 	}
 </script>
 
@@ -78,7 +99,23 @@
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
-		<button>Kasuj</button>
+		{#if item.status == 3}
+			del
+		{/if}
+		<button
+			id={item.id}
+			type="button"
+			class="btn btn-success"
+			on:click={(e) => {
+				item.status = delete_user_order(uuid, item.id, item.order_uuid);
+				const node = e.currentTarget;
+				node.disabled = true;
+				node.innerText = "Skasowane";
+			}}
+		>
+			{$_("manage_orders.delete_user_order")}
+		</button>
+
 		{@const total = item.items.reduce(
 			(acc, it) => acc + it.amount * it.price,
 			0

@@ -22,7 +22,7 @@
 		// name: "",
 		// price: 0,
 		// uuid: v4(),
-		// type: OrderedItemType.PLEDGE,
+		// type: OrderedItemType.SHIPPING,
 	};
 
 	$: items = [...(campaign == null ? [] : campaign.items), ...removable_items];

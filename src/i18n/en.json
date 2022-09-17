@@ -54,6 +54,7 @@
   "manage_orders.tracking": "Tracking number",
   "manage_orders.profile": "Profile",
   "manage_orders.orders": "Orders",
+  "manage_orders.delete_user_order": "Delete",
   "order.loading": "Loading data",
   "order.title": "{campaign_title}",
   "order.confirm": "Order",

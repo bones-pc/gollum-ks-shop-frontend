@@ -25,11 +25,13 @@ export enum CampaignStatus {
 
 export enum OrderStatus {
   // open for new orders
-  PENDING,
+  ACTIVE,
   // closed for order waiting for production
   CLOSED,
   // sent to backers
-  SENT
+  SENT,
+  // order deleted
+  DELETED,
 }
 
 
@@ -61,6 +63,7 @@ export interface Order {
   campaign_uuid: string;
   order_uuid: string;
   tracking_no: string;
+  status: OrderStatus;
   ouuid: string;
   items: OrderedItem[];
   paid_amount: number;
@@ -131,6 +134,8 @@ export interface Api {
   fetchOrder(order_uuid: string): Promise<Order>;
   updatePaidAmount(order: Order & AssignedToUser): Promise<Order>;
   updateOrderTracking(order: Order): Promise<Order>;
+  changeUserOrderStatus(user_uuid: string, campain_uuid: string, order_uuid: string, status: OrderStatus);
+
   fetchCampaign(uuid: string): Promise<Campaign>;
   orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
   updateCampaign(update: CampaignUpdate): Promise<Campaign>;

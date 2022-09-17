@@ -189,12 +189,14 @@
 		</thead>
 		<tbody>
 			{#each items as { amount, item }}
-				<tr>
-					<th scope="row">{item.name}</th>
-					<td>{amount}</td>
-					<td>{item.price}</td>
-					<td>{item.price * amount}</td>
-				</tr>
+				{#if amount != 0}
+					<tr>
+						<th scope="row">{item.name}</th>
+						<td>{amount}</td>
+						<td>{item.price}</td>
+						<td>{item.price * amount}</td>
+					</tr>
+				{/if}
 			{/each}
 			<tr>
 				<th scope="row">{$_("orders_history.total")}</th>

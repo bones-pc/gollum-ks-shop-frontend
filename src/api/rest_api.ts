@@ -9,6 +9,7 @@ import {
   CampaignStatus,
   CampaignUpdate,
   Order,
+  OrderStatus,
   OrderUpdate,
   User,
   UserProfile,
@@ -79,6 +80,7 @@ function backend_order_to_frontend_order(order: any): Order {
     campaign_uuid: order.uuid,
     order_uuid: order.order_uuid,
     ouuid: order.ouuid,
+    status: order.status,
     tracking_no: order.tracking_no,
     paid_amount: Number.parseInt(order.paid_amount),
     items: order.items?.map((i) => ({
@@ -296,6 +298,24 @@ export class RestApi implements Api {
       }
     })();
   }
+
+  changeUserOrderStatus(user_uuid: string, campain_uuid: string, order_uuid: string, status: OrderStatus) {
+    return (async () => {
+      const response = await fetch(
+        api_url + "campaigns/" + campain_uuid + "/order",
+        options("PATCH", { order_uuid, status: status })
+      )
+      if (response.ok) {
+        const response_json = await response.json();
+        console.log("restapi", response_json)
+        if (response_json.result.length > 0) {
+          return backend_campaign_to_frontend_campaign(response_json.result[0]);
+        }
+      }
+    }
+    )();
+  }
+
 
   fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate> {
     return (async () => {
