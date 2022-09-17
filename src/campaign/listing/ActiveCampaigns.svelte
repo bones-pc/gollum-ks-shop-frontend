@@ -21,31 +21,12 @@
 		active_campaigns = await fetch(null);
 	}
 
-	async function delete_campaign(uuid: string) {
-		await api.changeStatus(uuid, CampaignStatus.DELETED);
-		active_campaigns = await fetch(null);
-	}
-
-	let showPopup = false;
-	let delete_uuid = "";
-	const confirmDelete = (uuid: string) => {
-		delete_uuid = uuid;
-		showPopup = true;
-	};
-	const onClick = () => {
-		showPopup = true;
-		delete_campaign(delete_uuid);
-	};
-
-	const onPopupClose = () => {
-		showPopup = false;
-	};
-
 	async function fetch(search: string): Promise<AccordionItem[]> {
 		const campaigns: Campaign[] = await api.fetchCampaigns({
 			titleLike: search,
 			...fetch_filter,
 		});
+		console.log("active", campaigns);
 		return campaigns.map(
 			({ uuid, title, url, img_url, description, payment_details }) => ({
 				id: uuid,
@@ -90,23 +71,7 @@
 						{$_("active_campaigns.lock")}
 					</span>
 				</li>
-				<li>
-					<span class="fake-link" on:click={() => confirmDelete(item.id)}>
-						{$_("active_campaigns.delete")}
-					</span>
-				</li>
 			{/if}
 		</ul>
 	</svelte:fragment>
 </AccordionList>
-
-<Modal
-	title={"Skasować?"}
-	close={"Nie, no..."}
-	action={"Serio!"}
-	open={showPopup}
-	onClick={() => onClick()}
-	onClosed={() => onPopupClose()}
->
-	Serio? Skasować <b>CAŁĄ</b> kampanię?
-</Modal>

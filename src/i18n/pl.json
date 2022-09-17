@@ -29,6 +29,7 @@
   "edit_campaign.title_edit": "Edytuj kampanię {title}",
   "edit_campaign.title_add": "Dodaj kampanie {title}",
   "edit_campaign.add_item": "Dodaj pozycję",
+  "edit_campaign.add_shipping":"Dodaj przesyłkę",
   "edit_campaign.save": "Zapisz kampanię",
   "edit_campaign.campaign_title": "Nazwa kampanii",
   "edit_campaign.campaign_url": "Url kampanii",
@@ -61,6 +62,7 @@
   "orders_history.title": "Historia zamówień",
   "orders_history.unpaid": "Nieopłacone",
   "orders_history.paid": "Opłacone",
+  "orders_history.partially_paid": "Częściowo opłacone",
   "orders_history.order_paid": "Zamówienie jest opłacone",
   "orders_history.name": "Nazwa",
   "orders_history.quantity": "Ilość sztuk",
@@ -112,7 +114,6 @@
   "add_draft.campaign_url": "Url kampanii",
   "add_draft.image_url": "Url obrazka",
   "add_draft.description":"Opis",
-  
   "closed_campaigns.title": "Zamknięte kampanie",
   "closed_campaigns.edit_campaign": "Edytuj kampanię",
   "closed_campaigns.manage_orders": "Zarządzaj zamówieniami",

@@ -3,19 +3,18 @@
 	import type { Campaign, CampaignItem } from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import Modal from "../../utils/Modal.svelte";
-	import { api, CampaignStatus } from "../../api/Api";
+	import { api, CampaignStatus, OrderedItemType } from "../../api/Api";
 	import { onMount } from "svelte";
 
 	export let title: string;
 	export let add_item: () => void;
+	export let add_shipping: () => void;
 	export let delete_item: (item_uuid: string) => void;
 	export let save: () => Promise<void>;
 	export let items: CampaignItem[];
 	export let campaign: Campaign;
 
 	let save_in_progress: boolean = false;
-	let delete_in_progress: boolean = false;
-
 	async function save_with_progress() {
 		save_in_progress = true;
 		await save();
@@ -49,8 +48,6 @@
 		let campaign_result = await api.changeStatus(uuid, CampaignStatus.ACTIVE);
 		campaign_status = campaign_result.status;
 	}
-
-	console.log(campaign);
 </script>
 
 <Modal
@@ -77,6 +74,16 @@
 	>
 		+ {$_("edit_campaign.add_item")}
 	</button>
+
+	<button
+		type="button"
+		class="btn btn-primary"
+		on:click={add_shipping}
+		disabled={save_in_progress}
+	>
+		+ {$_("edit_campaign.add_shipping")}
+	</button>
+
 	<InProgressButton
 		on_click_function={save_with_progress}
 		label={$_("edit_campaign.save")}
@@ -164,7 +171,11 @@
 	<div class="card mb-2" style="width: 100%;">
 		<div class="card-body">
 			<div class="input-group">
-				<span class="input-group-text">{item.ordinal}.</span>
+				{#if item.type == OrderedItemType.SHIPPING}
+					<span class="input-group-text">&nbsp;&nbsp;</span>
+				{:else}
+					<span class="input-group-text">{item.ordinal}.</span>
+				{/if}
 				<span class="input-group-text" for="item_name_{item.uuid}">
 					{$_("edit_campaign.item_name")}
 				</span>
@@ -181,6 +192,18 @@
 					{$_("edit_campaign.item_price")}
 				</span>
 				<input
+					on:focus={() => {
+						if (item.price == 0) {
+							// UGLY - Przemek's weird requirements ;)
+							item.price = "";
+						}
+					}}
+					on:focusout={() => {
+						if (!item.price) {
+							// UGLY - Przemek's weird requirements ;)
+							item.price = 0;
+						}
+					}}
 					class="form-control"
 					type="number"
 					min="0"
@@ -189,14 +212,25 @@
 					disabled={save_in_progress}
 				/>
 			</div>
-			<button
-				type="button"
-				class="btn btn-danger"
-				on:click={() => delete_item(item.uuid)}
-				disabled={index < campaign.items.length}
-			>
-				{$_("edit_campaign.delete_item")}
-			</button>
+			{#if index < campaign.items.length}
+				<button
+					type="button"
+					class="btn btn-danger"
+					on:click={() => delete_item(item.uuid)}
+					disabled={true}
+				>
+					{$_("edit_campaign.delete_item")}
+				</button>
+			{:else}
+				<button
+					type="button"
+					class="btn btn-danger"
+					on:click={() => delete_item(item.uuid)}
+					disabled={false}
+				>
+					{$_("edit_campaign.delete_item")}
+				</button>
+			{/if}
 		</div>
 	</div>
 {/each}

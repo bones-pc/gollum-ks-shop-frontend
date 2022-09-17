@@ -27,6 +27,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
       ordinal: i.ordinal,
       name: i.name,
       price: i.price,
+      type: i.type,
     })),
     url: campaign.url,
     status: campaign.status as CampaignStatus,
@@ -132,7 +133,6 @@ export class RestApi implements Api {
       const response = await fetch(api_url + "users/" + user_uuid + "/orders", options("GET"));
       if (response.ok) {
         const response_json = await response.json();
-        // console.log(response_json)
         return response_json.map(backend_order_to_frontend_order);
       }
     })();
@@ -371,7 +371,6 @@ export class RestApi implements Api {
       const response = await fetch(api_url + "users/profile", options("GET"));
       if (response.ok) {
         const response_json = await response.json();
-        console.log(response_json);
         return response_json;
       }
     })();
@@ -392,7 +391,6 @@ export class RestApi implements Api {
     user: UserProfile
   ): Promise<UserProfile> {
     return (async () => {
-      console.log(user)
       const response = await fetch(
         api_url + "users/profile",
         options("PATCH", {

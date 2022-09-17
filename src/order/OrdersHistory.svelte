@@ -59,8 +59,11 @@
 
 <AccordionList items_provider={fetch}>
 	<svelte:fragment slot="title" let:item>
-		{#if item.paid_value < item.order_value}
+		{#if item.paid_value == 0}
 			<span class="badge bg-danger">{$_("orders_history.unpaid")}</span>
+		{:else if item.paid_value < item.order_value}
+			<span class="badge bg-warning">{$_("orders_history.partially_paid")}</span
+			>
 		{:else}
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}

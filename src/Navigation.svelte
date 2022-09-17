@@ -21,7 +21,9 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
-		<span class="navbar-brand">{$_("nav.title")}</span>
+		<span class="navbar-brand nav-link">
+			<Link to="/">{$_("nav.title")}</Link>
+		</span>
 		<button
 			class="navbar-toggler"
 			type="button"

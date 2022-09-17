@@ -7,6 +7,7 @@ export interface CampaignItem {
   price: number;
   // null for new items. Server should always send not null value.
   uuid?: string;
+  type: OrderedItemType;
 }
 
 export enum CampaignStatus {
@@ -27,7 +28,7 @@ export enum OrderStatus {
   PENDING,
   // closed for order waiting for production
   CLOSED,
-  // sent to backed 
+  // sent to backers
   SENT
 }
 
@@ -48,6 +49,12 @@ export interface OrderedItem {
   item_uuid: string;
   amount: number;
   ouuid: string;
+  item_type: OrderedItemType;
+}
+
+export enum OrderedItemType {
+  PLEDGE,
+  SHIPPING,
 }
 
 export interface Order {

@@ -7,6 +7,8 @@
 
 	import { api, Order, Campaign, OrderedItem } from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
+	import ManageOrders from "./ManageOrders.svelte";
+	import { faMaximize } from "@fortawesome/free-solid-svg-icons";
 
 	export let uuid: string;
 
@@ -32,7 +34,6 @@
 	onMount(async () => {
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
 		const fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
-		console.log(fetchedOrder);
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
 		}
@@ -58,6 +59,7 @@
 		fill_form(campaign, savedOrder);
 	}
 
+	// maybe change needed to more Svelte way ?
 	function copyText() {
 		let copyText = document.getElementById("payment_detail");
 		copyText.select();
@@ -128,11 +130,19 @@
 			<div class="card-body">
 				<div class="card-title">
 					<h5 class:fade-text={amount == null || amount === 0}>
-						{item.ordinal}. {item.name}
-						<span class="ms-2 badge bg-secondary">
-							{item.price}
-							{$_("currency.pln")}
-						</span>
+						{#if item.ordinal > 0}
+							{item.ordinal}. {item.name}
+							<span class="ms-2 badge bg-secondary">
+								{item.price}
+								{$_("currency.pln")}
+							</span>
+						{:else}
+							&nbsp;&nbsp;&nbsp;&nbsp;{item.name}
+							<span class="ms-2 badge bg-secondary">
+								{item.price}
+								{$_("currency.pln")}
+							</span>
+						{/if}
 					</h5>
 				</div>
 				<div class="input-group card-text">
@@ -140,7 +150,11 @@
 					<button
 						type="button"
 						class="btn btn-outline-secondary change-amount"
-						on:click={() => amount++}
+						on:click={() => {
+							if (!item.ordinal) {
+								amount == 0 ? amount++ : amount;
+							} else amount++;
+						}}
 					>
 						+
 					</button>
