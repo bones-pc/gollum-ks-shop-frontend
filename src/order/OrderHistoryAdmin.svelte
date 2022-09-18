@@ -58,7 +58,6 @@
 				order_uuid: o.order_uuid,
 			});
 		}
-		console.log(new_orders);
 		return new_orders;
 	}
 	let temp_delete = new Set();
@@ -100,7 +99,7 @@
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
 		{#if item.status == 3}
-			del
+			deleted?
 		{/if}
 		<button
 			id={item.id}
