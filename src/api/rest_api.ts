@@ -185,6 +185,7 @@ export class RestApi implements Api {
   }
 
   updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
+    console.log(order)
     return (async () => {
       const payload = {
         tracking_no: order.tracking_no,

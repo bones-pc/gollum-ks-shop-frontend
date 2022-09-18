@@ -89,6 +89,7 @@
   "login.warn.firstname_must_not_be_empty": "Imię nie może być puste",
   "login.warn.lastname_must_not_be_empty": "Nazwisko nie może być puste",
   "login.error": "Błędny login lub hasło / Użytkownik jeszcze nie zaakceptowany.",
+  "login.password_reset":"Reset hasła.",
   "user_profile.adress": "Adres",
   "user_profile.username": "Nazwa użytkownika",
   "user_profile.firstname": "Imię",

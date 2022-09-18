@@ -89,6 +89,7 @@
   "login.warn.firstname_must_not_be_empty": "Firstname must not be empty",
   "login.warn.lastname_must_not_be_empty": "Lastname must not be empty",
   "login.error": "Bad login or password. User not accepted yet.",
+  "login.password_reset":"Password reset.",
   "user_profile.adress": "Address",
   "user_profile.username": "Username",
   "user_profile.firstname": "Firstname",
