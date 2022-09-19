@@ -22,6 +22,8 @@
 	import OrdersHistory from "./order/OrdersHistory.svelte";
 	import { role } from "./stores";
 	import ClosedCampaigns from "./campaign/listing/ClosedCampaigns.svelte";
+	import UserPasswordReset from "./authentication/UserPasswordReset.svelte";
+	import UserPasswordResetInit from "./authentication/UserPasswordResetInit.svelte";
 
 	onMount(async () => {
 		await authentication_manager.store_credentials_if_authenticated();
@@ -38,6 +40,14 @@
 			<Route path="/signup">
 				<SignUp />
 			</Route>
+			<Route path="/forgot/:a/:b/:c" let:params>
+				<UserPasswordReset a={params.a} b={params.b} c={params.c} />
+			</Route>
+
+			<Route path="/password-reset">
+				<UserPasswordResetInit />
+			</Route>
+
 			<Route path="/*">
 				<Login />
 			</Route>
