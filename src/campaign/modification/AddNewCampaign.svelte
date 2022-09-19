@@ -5,10 +5,13 @@
 	import { v4 } from "uuid";
 	import { api, Campaign, CampaignItem, CampaignStatus } from "../../api/Api";
 	import EditCampaign from "./EditCampaign.svelte";
+	import { get } from "svelte/store";
 
 	import { OrderedItemType } from "../../api/Api";
 	import OrdersHistory from "../../order/OrdersHistory.svelte";
 
+	const whitespaces = /^\s*$/;
+	let warning = null;
 	const navigate = useNavigate();
 
 	const newCampaign: () => Campaign = () => ({
@@ -54,7 +57,6 @@
 	}
 
 	function add_shipping() {
-		console.log(shipping);
 		if (Object.keys(shipping).length === 0) {
 			shipping.name = "InPost";
 			shipping.price = 0;
@@ -81,7 +83,36 @@
 		console.log(items);
 	}
 
+	function validate_form() {
+		if (whitespaces.test(campaign.title)) {
+			warning = get(_)("edit_campaign.title_must_not_be_empty");
+			return false;
+		}
+		if (whitespaces.test(campaign.url)) {
+			warning = get(_)("edit_campaign.url_must_not_be_empty");
+			return false;
+		}
+		if (whitespaces.test(campaign.img_url)) {
+			warning = get(_)("edit_campaign.image_must_not_be_empty");
+			return false;
+		}
+		if (whitespaces.test(campaign.description)) {
+			warning = get(_)("edit_campaign.description_must_not_be_empty");
+			return false;
+		}
+		if (whitespaces.test(campaign.payment_details)) {
+			warning = get(_)("edit_campaign.transfer_must_not_be_empty");
+			return false;
+		}
+		return true;
+	}
+
 	async function save() {
+		warning = null;
+		if (!validate_form()) {
+			return;
+		}
+
 		items.forEach((it) => (it.uuid = null));
 		const campaign_with_extra_items: Campaign = {
 			...campaign,
@@ -110,4 +141,9 @@
 			values: { title: campaign.title },
 		})}
 	/>
+	{#if warning != null}
+		<div class="alert alert-warning mt-4" role="alert">
+			{warning}
+		</div>
+	{/if}
 {/if}
