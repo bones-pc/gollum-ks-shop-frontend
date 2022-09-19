@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { faCopy } from "@fortawesome/free-regular-svg-icons";
 	import Fa from "svelte-fa";
+	import { marked } from "marked";
 
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
@@ -90,8 +91,8 @@
 			</a>
 		{/if}
 	</div>
-
-	<div class="mb-2 row offset-md-2">{campaign.description}</div>
+	<div class="mb-2 row offset-md-2">{@html marked(campaign.description)}</div>
+	<!-- <div class="mb-2 row offset-md-2">{campaign.description}</div> -->
 	<div class="mb-2 row offset-md-2">
 		<div>
 			Tyluł przelewu:

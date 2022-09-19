@@ -96,6 +96,7 @@
 			warning = get(_)("edit_campaign.image_must_not_be_empty");
 			return false;
 		}
+		console.log(campaign.description);
 		if (whitespaces.test(campaign.description)) {
 			warning = get(_)("edit_campaign.description_must_not_be_empty");
 			return false;

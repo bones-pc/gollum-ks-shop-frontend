@@ -142,16 +142,23 @@
 	/>
 </div>
 <div class="mb-3">
-	<label class="form-label" for="campaign_url">
+	<label class="form-label" for="campaign_desc">
 		{$_("edit_campaign.description")}
 	</label>
-	<input
+	<textarea
+		id="campaign_desc"
+		class="form-control"
+		bind:value={campaign.description}
+		disabled={save_in_progress}
+	/>
+
+	<!-- <input
 		class="form-control"
 		type="text"
 		id="campaign_img_url"
 		bind:value={campaign.description}
 		disabled={save_in_progress}
-	/>
+	/> -->
 </div>
 
 <div class="mb-3">
