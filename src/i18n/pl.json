@@ -73,6 +73,7 @@
   "orders_history.paid_confirmed": "Wpłacono",
   "orders_history.left": "Pozostało do zapłaty",
   "login.login": "Zaloguj",
+  "login.reset": "Resetuj",
   "login.loading_client": "Weryfikacja trwa",
   "login.email": "Adres email",
   "login.password": "Hasło",

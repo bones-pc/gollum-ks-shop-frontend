@@ -461,6 +461,30 @@ export class RestApi implements Api {
       }
     })();
   }
+
+  resetPassword(password: string, token: string): Promise<Boolean> {
+    console.log('reset pass')
+    return (async () => {
+      let payload = { password, token }
+      console.log(payload)
+      let url = api_url + "auth/password-reset/"
+      console.log(url)
+      const response = await fetch(url, options("PATCH", payload));
+      console.log(response)
+      return true
+    }
+    )();
+  }
+
+  initPasswordReset(email: string): Promise<Boolean> {
+    return (async () => {
+      let payload = { email }
+      let url = api_url + "auth/password-reset/"
+      const response = await fetch(url, options("POST", payload));
+      return true
+    }
+    )();
+  }
 }
 
 function options(method, body = null): RequestInit {

@@ -154,6 +154,8 @@ export interface Api {
   activateUser(user_uuid: string): Promise<User>;
   deactivateUser(user_uuid: string): Promise<User>;
   updateUserProfile(user: UserProfile): Promise<UserProfile>;
+  resetPassword(password: string, token: string): Promise<Boolean>;
+  initPasswordReset(email: string): Promise<Boolean>;
 }
 
 export const api: Api = new RestApi();

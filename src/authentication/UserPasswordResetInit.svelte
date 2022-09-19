@@ -4,39 +4,27 @@
 	import { useNavigate } from "svelte-navigator";
 	import { api } from "../api/Api";
 
-	let password: string = "";
-	let repeated_password: string = "";
+	let email: string = "";
 	let warning = null;
-
 	const navigate = useNavigate();
-
-	export let a: string;
-	export let b: string;
-	export let c: string;
 	const whitespaces = /^\s*$/;
 
-	async function reset_pass() {
+	async function init_reset_pass() {
 		warning = null;
 		if (!validate_form()) {
 			return;
 		}
-		let token = [a, b, c].join(".");
-		let success = api.resetPassword(password, token);
-		console.log(success);
+		let success = api.initPasswordReset(email);
 		if (success) {
-			navigate("/");
+			let successful_signup = true;
 		} else {
 			warning = get(_)("login.signup_error");
 		}
 	}
 
 	function validate_form() {
-		if (whitespaces.test(password)) {
-			warning = get(_)("login.warn.password_must_not_be_empty");
-			return false;
-		}
-		if (password !== repeated_password) {
-			warning = get(_)("login.different_password");
+		if (whitespaces.test(email)) {
+			warning = get(_)("login.warn.email_must_not_be_empty");
 			return false;
 		}
 		return true;
@@ -48,28 +36,15 @@
 	<div class="stacked">
 		<form>
 			<div class="mb-3">
-				<label for="password1" class="form-label">
-					{$_("login.password")}
-				</label>
+				<label for="email" class="form-label">{$_("login.email")}</label>
 				<input
-					bind:value={password}
-					type="password"
+					bind:value={email}
+					type="email"
 					class="form-control"
-					id="password1"
+					id="email"
 				/>
 			</div>
-			<div class="mb-3">
-				<label for="password2" class="form-label">
-					{$_("login.repeat_password")}
-				</label>
-				<input
-					bind:value={repeated_password}
-					type="password"
-					class="form-control"
-					id="password2"
-				/>
-			</div>
-			<button type="button" on:click={reset_pass} class="btn btn-primary">
+			<button type="button" on:click={init_reset_pass} class="btn btn-primary">
 				{$_("login.reset")}
 			</button>
 			{#if warning != null}

@@ -64,7 +64,7 @@
 			<div class="mb-3">
 				<button
 					type="button"
-					on:click={() => navigate("/signup")}
+					on:click={() => navigate("/password-reset")}
 					class="btn btn-link"
 				>
 					{$_("login.password_reset")}
