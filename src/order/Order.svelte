@@ -74,42 +74,44 @@
 {:else}
 	<h1>{$_("order.title", { values: { campaign_title: campaign.title } })}</h1>
 
-	<div class="mb-2 img-responsive row  offset-md-2">
-		{#if campaign.url == null}
-			<img
-				class="accordion-list-item img-fluid"
-				src={campaign.img_url}
-				alt="item miniature"
-			/>
-		{:else}
-			<a href={campaign.url} target="_blank">
+	<div class="img-responsive row mb-2">
+		<div class="col-12 col-md-4">
+			{#if campaign.url == null}
 				<img
 					class="accordion-list-item img-fluid"
 					src={campaign.img_url}
 					alt="item miniature"
 				/>
-			</a>
-		{/if}
-	</div>
-	<div class="mb-2 row offset-md-2">{@html marked(campaign.description)}</div>
-	<!-- <div class="mb-2 row offset-md-2">{campaign.description}</div> -->
-	<div class="mb-2 row offset-md-2">
-		<div>
-			Tyluł przelewu:
-			<input
-				class="input_copy"
-				id="payment_detail"
-				readonly="readonly"
-				value={campaign.payment_details}
-			/>
-			<button
-				class="btn btn-light non-collapsing"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target
-				on:click={() => copyText()}
-				><Fa icon={faCopy} primaryColor="blue" /></button
-			>
+			{:else}
+				<a href={campaign.url} target="_blank">
+					<img
+						class="accordion-list-item img-fluid"
+						src={campaign.img_url}
+						alt="item miniature"
+					/>
+				</a>
+			{/if}
+		</div>
+		<div class="col py-3 py-md-0">
+			{@html marked(campaign.description)}
+
+			<div>
+				Tytuł przelewu:
+				<input
+					class="input_copy"
+					id="payment_detail"
+					readonly="readonly"
+					value={campaign.payment_details}
+				/>
+				<button
+					class="btn btn-light non-collapsing"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target
+					on:click={() => copyText()}
+					><Fa icon={faCopy} primaryColor="blue" /></button
+				>
+			</div>
 		</div>
 	</div>
 
@@ -249,13 +251,6 @@
 	}
 
 	img {
-		width: 400px;
-		/* height: 159px; */
-		object-fit: cover;
-		overflow: hidden;
-		float: left;
-		font-size: 1rem;
-		line-height: 26px;
-		text-align: center;
+		width: 100%;
 	}
 </style>
