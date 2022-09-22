@@ -4,6 +4,9 @@
 	import { api, Campaign, CampaignItem } from "../api/Api";
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
+	import { useNavigate } from "svelte-navigator";
+
+	const navigate = useNavigate();
 
 	interface PastItem {
 		name: string;
@@ -16,6 +19,7 @@
 		paid_value: number;
 		order_value: number;
 		items: PastItem[];
+		campaign_uuid: string;
 	}
 
 	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
@@ -24,8 +28,6 @@
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
-		console.log(fetched_orders);
-		console.log(fetched_campaigns);
 
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
@@ -52,6 +54,7 @@
 				title: c.title,
 				id: c.uuid,
 				img_url: c.img_url,
+				campaign_uuid: c.uuid
 			});
 		}
 		return new_orders;
@@ -71,11 +74,7 @@
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
 		<div class="ms-3">
-			{#if item.url == null}
-				{item.title}
-			{:else}
-				<a href={item.url} target="_blank">{item.title}</a>
-			{/if}
+			<a href="#" on:click={() => navigate(`/order/${item.campaign_uuid}`)}>{item.title}</a>
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
