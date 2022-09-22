@@ -130,8 +130,8 @@
 	{/if}
 	{#each items as { amount, item }}
 		<div class="card mb-2" style="width: 100%;">
-			<div class="card-body">
-				<div class="card-title">
+			<div class="card-body row">
+				<div class="col-12 col-lg">
 					<h5 class:fade-text={amount == null || amount === 0}>
 						{#if item.ordinal > 0}
 							{item.ordinal}. {item.name}
@@ -140,7 +140,7 @@
 								{$_("currency.pln")}
 							</span>
 						{:else}
-							&nbsp;&nbsp;&nbsp;&nbsp;{item.name}
+							{item.name}
 							<span class="ms-2 badge bg-secondary">
 								{item.price}
 								{$_("currency.pln")}
@@ -148,33 +148,35 @@
 						{/if}
 					</h5>
 				</div>
-				<div class="input-group card-text">
-					<span class="input-group-text">{$_("order.quantity")}</span>
-					<button
-						type="button"
-						class="btn btn-outline-secondary change-amount"
-						on:click={() => {
-							if (!item.ordinal) {
-								amount == 0 ? amount++ : amount;
-							} else amount++;
-						}}
-					>
-						+
-					</button>
-					<button
-						type="button"
-						class="btn btn-outline-secondary change-amount"
-						on:click={() => (amount = Math.max(0, amount - 1))}
-					>
-						-
-					</button>
-					<input
-						type="number"
-						id="amount"
-						class="form-control"
-						bind:value={amount}
-						min="0"
-					/>
+				<div class="col-12 col-lg-3">
+					<div class="input-group justify-content-lg-end">
+						<span class="input-group-text">{$_("order.quantity")}</span>
+						<button
+							type="button"
+							class="btn btn-outline-secondary change-amount d-lg-none"
+							on:click={() => {
+								if (!item.ordinal) {
+									amount == 0 ? amount++ : amount;
+								} else amount++;
+							}}
+						>
+							+
+						</button>
+						<button
+							type="button"
+							class="btn btn-outline-secondary change-amount d-lg-none"
+							on:click={() => (amount = Math.max(0, amount - 1))}
+						>
+							-
+						</button>
+						<input
+							type="number"
+							id="amount"
+							class="form-control"
+							bind:value={amount}
+							min="0"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
