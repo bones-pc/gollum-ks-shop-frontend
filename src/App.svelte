@@ -24,6 +24,7 @@
 	import ClosedCampaigns from "./campaign/listing/ClosedCampaigns.svelte";
 	import UserPasswordReset from "./authentication/UserPasswordReset.svelte";
 	import UserPasswordResetInit from "./authentication/UserPasswordResetInit.svelte";
+    import Footer from "./Footer.svelte";
 
 	onMount(async () => {
 		await authentication_manager.store_credentials_if_authenticated();
@@ -102,6 +103,7 @@
 				</Route>
 			{/if}
 		{/if}
+		<Footer></Footer>
 	</div>
 </Router>
 
