@@ -158,18 +158,13 @@
               }}>
               +
             </button>
+            <span class="input-group-text amount">{amount}</span>
             <button
               type="button"
               class="btn btn-outline-secondary change-amount"
               on:click={() => (amount = Math.max(0, amount - 1))}>
               -
             </button>
-            <input
-              type="number"
-              id="amount"
-              class="form-control"
-              bind:value={amount}
-              min="0" />
           </div>
         </div>
       </div>
@@ -229,8 +224,9 @@
     color: grey;
   }
 
-  #amount {
-    text-align: left;
+  .amount {
+    border: 1px solid #ced4da;
+    background-color: white;
   }
 
   .badge {
@@ -245,6 +241,7 @@
   .change-amount {
     min-width: 40px;
     background-color: white;
+    border: 1px solid #ced4da;
   }
 
   img {
