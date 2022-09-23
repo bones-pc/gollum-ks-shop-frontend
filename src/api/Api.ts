@@ -20,7 +20,7 @@ export enum CampaignStatus {
   // delivered
   ARCHIVED,
   // to be trashed - check if not mistake ;)
-  DELETED
+  DELETED,
 }
 
 export enum OrderStatus {
@@ -33,8 +33,6 @@ export enum OrderStatus {
   // order deleted
   DELETED,
 }
-
-
 
 export interface Campaign {
   uuid: string;
@@ -134,7 +132,12 @@ export interface Api {
   fetchOrder(order_uuid: string): Promise<Order>;
   updatePaidAmount(order: Order & AssignedToUser): Promise<Order>;
   updateOrderTracking(order: Order): Promise<Order>;
-  changeUserOrderStatus(user_uuid: string, campain_uuid: string, order_uuid: string, status: OrderStatus);
+  changeUserOrderStatus(
+    user_uuid: string,
+    campain_uuid: string,
+    order_uuid: string,
+    status: OrderStatus
+  );
 
   fetchCampaign(uuid: string): Promise<Campaign>;
   orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;

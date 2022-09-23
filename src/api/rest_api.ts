@@ -44,7 +44,7 @@ function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
     url: draft.url,
     // todo - Piotr should fix it soon
     liking_users: draft?.liking_users?.filter((it) => it != null),
-    description: draft.description
+    description: draft.description,
   };
 }
 
@@ -118,10 +118,12 @@ export class RestApi implements Api {
         const response_json = await response.json();
         const results = [];
         for (let username in response_json) {
-          let lastname = response_json[username].lastname
-          let firstname = response_json[username].firstname
+          let lastname = response_json[username].lastname;
+          let firstname = response_json[username].firstname;
           results.push({
-            username, firstname, lastname,
+            username,
+            firstname,
+            lastname,
             ...backend_order_to_frontend_order(response_json[username]),
           });
         }
@@ -132,7 +134,10 @@ export class RestApi implements Api {
 
   fetchUserOrdersAdmin(user_uuid: string): Promise<Order[]> {
     return (async () => {
-      const response = await fetch(api_url + "users/" + user_uuid + "/orders", options("GET"));
+      const response = await fetch(
+        api_url + "users/" + user_uuid + "/orders",
+        options("GET")
+      );
       if (response.ok) {
         const response_json = await response.json();
         return response_json.map(backend_order_to_frontend_order);
@@ -185,7 +190,7 @@ export class RestApi implements Api {
   }
 
   updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
-    console.log(order)
+    console.log(order);
     return (async () => {
       const payload = {
         tracking_no: order.tracking_no,
@@ -228,13 +233,13 @@ export class RestApi implements Api {
       };
       const response = update.is_new
         ? await fetch(
-          api_url + "campaigns/" + campaign_uuid + "/order",
-          options("POST", payload)
-        )
+            api_url + "campaigns/" + campaign_uuid + "/order",
+            options("POST", payload)
+          )
         : await fetch(
-          api_url + "campaigns/" + campaign_uuid + "/order",
-          options("PATCH", payload)
-        );
+            api_url + "campaigns/" + campaign_uuid + "/order",
+            options("PATCH", payload)
+          );
       if (response.ok) {
         const response_json = await response.json();
         return backend_order_to_frontend_order(response_json.result[0]);
@@ -300,23 +305,26 @@ export class RestApi implements Api {
     })();
   }
 
-  changeUserOrderStatus(user_uuid: string, campain_uuid: string, order_uuid: string, status: OrderStatus) {
+  changeUserOrderStatus(
+    user_uuid: string,
+    campain_uuid: string,
+    order_uuid: string,
+    status: OrderStatus
+  ) {
     return (async () => {
       const response = await fetch(
         api_url + "campaigns/" + campain_uuid + "/order",
         options("PATCH", { order_uuid, status: status })
-      )
+      );
       if (response.ok) {
         const response_json = await response.json();
-        console.log("restapi", response_json)
+        console.log("restapi", response_json);
         if (response_json.result.length > 0) {
           return backend_campaign_to_frontend_campaign(response_json.result[0]);
         }
       }
-    }
-    )();
+    })();
   }
-
 
   fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate> {
     return (async () => {
@@ -407,10 +415,7 @@ export class RestApi implements Api {
     })();
   }
 
-
-  updateUserProfile(
-    user: UserProfile
-  ): Promise<UserProfile> {
+  updateUserProfile(user: UserProfile): Promise<UserProfile> {
     return (async () => {
       const response = await fetch(
         api_url + "users/profile",
@@ -425,8 +430,8 @@ export class RestApi implements Api {
           city: user.city,
           inpost: user.inpost,
         })
-      )
-      return response.json()
+      );
+      return response.json();
     })();
   }
 
@@ -463,27 +468,25 @@ export class RestApi implements Api {
   }
 
   resetPassword(password: string, token: string): Promise<Boolean> {
-    console.log('reset pass')
+    console.log("reset pass");
     return (async () => {
-      let payload = { password, token }
-      console.log(payload)
-      let url = api_url + "auth/password-reset/"
-      console.log(url)
+      let payload = { password, token };
+      console.log(payload);
+      let url = api_url + "auth/password-reset/";
+      console.log(url);
       const response = await fetch(url, options("PATCH", payload));
-      console.log(response)
-      return true
-    }
-    )();
+      console.log(response);
+      return true;
+    })();
   }
 
   initPasswordReset(email: string): Promise<Boolean> {
     return (async () => {
-      let payload = { email }
-      let url = api_url + "auth/password-reset/"
+      let payload = { email };
+      let url = api_url + "auth/password-reset/";
       const response = await fetch(url, options("POST", payload));
-      return true
-    }
-    )();
+      return true;
+    })();
   }
 }
 
