@@ -74,7 +74,7 @@
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
 		<div class="ms-3">
-			<a href="#" on:click={() => navigate(`/order/${item.campaign_uuid}`)}>{item.title}</a>
+			<a href={'#'} on:click={() => navigate(`/order/${item.campaign_uuid}`)}>{item.title}</a>
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
