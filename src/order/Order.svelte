@@ -1,15 +1,13 @@
 <script lang="ts">
   import { faCopy } from "@fortawesome/free-regular-svg-icons";
-  import Fa from "svelte-fa";
   import { marked } from "marked";
+  import Fa from "svelte-fa";
 
   import { onMount } from "svelte";
   import { _ } from "svelte-i18n";
 
-  import { api, Order, Campaign, OrderedItem } from "../api/Api";
+  import { api, Campaign, Order, OrderedItem } from "../api/Api";
   import InProgressButton from "../utils/InProgressButton.svelte";
-  import ManageOrders from "./ManageOrders.svelte";
-  import { faMaximize } from "@fortawesome/free-solid-svg-icons";
 
   export let uuid: string;
 
@@ -125,7 +123,10 @@
     </div>
   {/if}
   {#each items as { amount, item }}
-    <div class="card mb-2" style="width: 100%;">
+    <div
+      class="card mb-2"
+      style="width: 100%;"
+      class:selected_item={amount > 0}>
       <div class="card-body row">
         <div class="col-12 col-lg">
           <h5 class:fade-text={amount == null || amount === 0}>
@@ -144,12 +145,12 @@
             {/if}
           </h5>
         </div>
-        <div class="col-12 col-lg-3">
+        <div class="col-12 col-lg-4">
           <div class="input-group justify-content-lg-end">
             <span class="input-group-text">{$_("order.quantity")}</span>
             <button
               type="button"
-              class="btn btn-outline-secondary change-amount d-lg-none"
+              class="btn btn-outline-secondary change-amount"
               on:click={() => {
                 if (!item.ordinal) {
                   amount == 0 ? amount++ : amount;
@@ -159,7 +160,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-outline-secondary change-amount d-lg-none"
+              class="btn btn-outline-secondary change-amount"
               on:click={() => (amount = Math.max(0, amount - 1))}>
               -
             </button>
@@ -243,9 +244,14 @@
   }
   .change-amount {
     min-width: 40px;
+    background-color: white;
   }
 
   img {
     width: 100%;
+  }
+
+  .selected_item {
+    background-color: rgba(25, 135, 84, 0.1) !important;
   }
 </style>
