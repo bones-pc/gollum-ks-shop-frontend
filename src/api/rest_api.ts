@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { access_token, api_url as url, user_uuid } from "../stores";
-import type {
+import {
   Api,
   AssignedToUser,
   Campaign,
@@ -13,7 +13,7 @@ import type {
   OrderUpdate,
   User,
   UserProfile,
-} from "./Api";
+} from "./Data";
 
 const api_url = get(url);
 
@@ -94,7 +94,7 @@ export class RestApi implements Api {
   addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> {
     return (async () => {
       const payload = { ...draft };
-      payload["status"] = "DRAFT";
+      payload["status"] = CampaignStatus.DRAFT.toString();
       const response = await fetch(
         api_url + "campaigns",
         options("POST", payload)
@@ -343,7 +343,7 @@ export class RestApi implements Api {
 
   fetchCampaignCandidates(titleLike: string): Promise<CampaignCandidate[]> {
     const fetch_params = new URLSearchParams();
-    fetch_params.set("status", "DRAFT");
+    fetch_params.set("status", CampaignStatus.DRAFT.toString());
     if (titleLike) {
       fetch_params.set("name", titleLike);
     }
