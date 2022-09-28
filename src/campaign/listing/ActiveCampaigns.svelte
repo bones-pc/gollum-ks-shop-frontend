@@ -26,8 +26,7 @@
       titleLike: search,
       ...fetch_filter,
     });
-    console.log("active", campaigns);
-    return campaigns.map(
+      return campaigns.map(
       ({ uuid, title, url, img_url, description, payment_details }) => ({
         id: uuid,
         title,

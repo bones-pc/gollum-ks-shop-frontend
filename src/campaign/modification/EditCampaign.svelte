@@ -1,18 +1,24 @@
 <script lang="ts">
   import { _ } from "svelte-i18n";
-  import type { Campaign, CampaignItem } from "../../api/Api";
+  import { v4 } from "uuid";
+  import type { Campaign, CampaignItem, OrderedItem } from "../../api/Api";
   import InProgressButton from "../../utils/InProgressButton.svelte";
   import Modal from "../../utils/Modal.svelte";
   import { api, CampaignStatus, OrderedItemType } from "../../api/Api";
   import { onMount } from "svelte";
+  import CampaignsCandidates from "../listing/CampaignsCandidates.svelte";
+
+  
 
   export let title: string;
   export let add_item: () => void;
   export let add_shipping: () => void;
+  export let add_excel: (excel_helper: string) => void;
   export let delete_item: (item_uuid: string) => void;
   export let save: () => Promise<void>;
   export let items: CampaignItem[];
   export let campaign: Campaign;
+  
 
   let save_in_progress: boolean = false;
   async function save_with_progress() {
@@ -24,20 +30,30 @@
   let campaign_status = campaign.status;
 
   let showPopup = false;
+  let excelHelper = false
   let delete_uuid = "";
+  let excel_helper ='' 
 
   const confirmDelete = () => {
     delete_uuid = campaign.uuid;
     showPopup = true;
   };
-  const onClick = () => {
+  const onClickOK = () => {
     showPopup = true;
     delete_campaign(delete_uuid);
   };
-
   const onPopupClose = () => {
     showPopup = false;
   };
+
+  const onExitExcelHelper = () => {
+    add_excel(excel_helper)
+    excelHelper=false
+  }
+
+  const onToggleExcelHelper = () => {
+    excelHelper = !excelHelper
+  }
 
   async function delete_campaign(uuid: string) {
     let campaign_result = await api.changeStatus(uuid, CampaignStatus.DELETED);
@@ -51,11 +67,31 @@
 </script>
 
 <Modal
+  title={$_("edit_campaign.paste_items")}
+  close={$_("edit_campaign.paste_items_skip")}
+  action={$_("edit_campaign.paste_items_ok")}
+  open={excelHelper}
+  onClick={onExitExcelHelper}
+  onClosed={onToggleExcelHelper}>
+<div class="mb-3">
+  <label class="form-label" for="campaign_desc">
+    {$_("edit_campaign.paste_items_text")}
+  </label>
+  <textarea
+    id="campaign_desc"
+    class="form-control"
+    bind:value={excel_helper}
+     />
+</div>
+</Modal>
+
+
+<Modal
   title={"Skasować?"}
   close={"Nie, no..."}
   action={"Serio!"}
   open={showPopup}
-  onClick={() => onClick()}
+  onClick={() => onClickOK()}
   onClosed={() => onPopupClose()}>
   Serio? Skasować <b>CAŁĄ</b>
   kampanię {campaign.title}?
@@ -73,6 +109,15 @@
     disabled={save_in_progress}>
     + {$_("edit_campaign.add_item")}
   </button>
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    on:click={onToggleExcelHelper}
+    >
+    + {$_("edit_campaign.paste_items_button")}
+  </button>
+
 
   <button
     type="button"
@@ -146,14 +191,6 @@
     class="form-control"
     bind:value={campaign.description}
     disabled={save_in_progress} />
-
-  <!-- <input
-		class="form-control"
-		type="text"
-		id="campaign_img_url"
-		bind:value={campaign.description}
-		disabled={save_in_progress}
-	/> -->
 </div>
 
 <div class="mb-3">

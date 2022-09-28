@@ -41,6 +41,7 @@
   });
 
   function delete_item(item_uuid: string) {
+    console.log(items, item_uuid)
     items = items
       .filter(
         (it) => it.uuid !== item_uuid && it.type !== OrderedItemType.SHIPPING
@@ -80,7 +81,32 @@
       type: OrderedItemType.PLEDGE,
     });
     items = items;
-    console.log(items);
+    console.log(items)
+  }
+
+  const add_excel = (excel_helper: string) => {
+    
+    let item: CampaignItem = {
+	  ordinal: 0,
+	  name: "",
+	  price: 0,
+	  type: OrderedItemType.PLEDGE
+	}
+    items = []
+    let data = excel_helper
+    console.log(data)
+    let rows = data.split("\n");
+    for (let y in rows) {
+      let cells = rows[y].split("\t");
+      items.push({
+        name: cells[0],
+        uuid: v4(),
+        ordinal: parseInt(y),
+        price: parseInt(cells[1]),
+        type: OrderedItemType.PLEDGE
+      }    )
+    }
+    console.log(items)
   }
 
   function validate_form() {
@@ -134,6 +160,7 @@
   <EditCampaign
     {add_item}
     {add_shipping}
+    {add_excel}
     {save}
     {delete_item}
     {campaign}
