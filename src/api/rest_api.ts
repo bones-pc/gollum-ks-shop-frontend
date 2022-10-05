@@ -190,7 +190,7 @@ export class RestApi implements Api {
   }
 
   updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
-    console.log(order);
+
     return (async () => {
       const payload = {
         tracking_no: order.tracking_no,
@@ -233,13 +233,13 @@ export class RestApi implements Api {
       };
       const response = update.is_new
         ? await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("POST", payload)
-          )
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("POST", payload)
+        )
         : await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("PATCH", payload)
-          );
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("PATCH", payload)
+        );
       if (response.ok) {
         const response_json = await response.json();
         return backend_order_to_frontend_order(response_json.result[0]);
@@ -318,7 +318,7 @@ export class RestApi implements Api {
       );
       if (response.ok) {
         const response_json = await response.json();
-        console.log("restapi", response_json);
+
         if (response_json.result.length > 0) {
           return backend_campaign_to_frontend_campaign(response_json.result[0]);
         }
@@ -468,14 +468,14 @@ export class RestApi implements Api {
   }
 
   resetPassword(password: string, token: string): Promise<Boolean> {
-    console.log("reset pass");
+
     return (async () => {
       let payload = { password, token };
-      console.log(payload);
+
       let url = api_url + "auth/password-reset/";
-      console.log(url);
+
       const response = await fetch(url, options("PATCH", payload));
-      console.log(response);
+
       return true;
     })();
   }
