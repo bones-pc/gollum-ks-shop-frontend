@@ -81,7 +81,7 @@ export interface CampaignCandidate {
   url: string;
   img_url: string;
   liking_users: string[];
-  description;
+  description: string;
 }
 
 export interface CampaignsSearchParams {
@@ -135,7 +135,7 @@ export interface Api {
     order_uuid: string,
     status: OrderStatus
   );
-
+  fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
   fetchCampaign(uuid: string): Promise<Campaign>;
   orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
   updateCampaign(update: CampaignUpdate): Promise<Campaign>;

@@ -106,6 +106,22 @@ export class RestApi implements Api {
     })();
   }
 
+  fetchKSCampaigns(name: string): Promise<CampaignCandidate[]> {
+    return (async () => {
+      const payload = {
+        ks_search: name
+      };
+      const response = await fetch(
+        api_url + "kickstarter",
+        options("POST", payload)
+      );
+      if (response.ok) {
+        const response_json = await response.json()
+        return response_json
+      }
+    })();
+  }
+
   fetchCampaignOrders(
     campaign_uuid: string
   ): Promise<(Order & AssignedToUser)[]> {
@@ -233,13 +249,13 @@ export class RestApi implements Api {
       };
       const response = update.is_new
         ? await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("POST", payload)
-          )
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("POST", payload)
+        )
         : await fetch(
-            api_url + "campaigns/" + campaign_uuid + "/order",
-            options("PATCH", payload)
-          );
+          api_url + "campaigns/" + campaign_uuid + "/order",
+          options("PATCH", payload)
+        );
       if (response.ok) {
         const response_json = await response.json();
         return backend_order_to_frontend_order(response_json.result[0]);

@@ -10,6 +10,7 @@ export const access_token: Writable<string> = writable(null);
 export const api_url: Readable<string> = readable(
   "https://www.gollum.pl/api/"
   // "http://localhost:3000/api/"
+  // "https://bones.usermd.net/api/"
 );
 
 export function switchToLoggedUser() {
