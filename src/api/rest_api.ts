@@ -206,7 +206,7 @@ export class RestApi implements Api {
   }
 
   updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
-    console.log(order);
+
     return (async () => {
       const payload = {
         tracking_no: order.tracking_no,
@@ -334,7 +334,7 @@ export class RestApi implements Api {
       );
       if (response.ok) {
         const response_json = await response.json();
-        console.log("restapi", response_json);
+
         if (response_json.result.length > 0) {
           return backend_campaign_to_frontend_campaign(response_json.result[0]);
         }
@@ -484,14 +484,14 @@ export class RestApi implements Api {
   }
 
   resetPassword(password: string, token: string): Promise<Boolean> {
-    console.log("reset pass");
+
     return (async () => {
       let payload = { password, token };
-      console.log(payload);
+
       let url = api_url + "auth/password-reset/";
-      console.log(url);
+
       const response = await fetch(url, options("PATCH", payload));
-      console.log(response);
+
       return true;
     })();
   }
