@@ -2,7 +2,7 @@
 	import { faHeart } from "@fortawesome/free-solid-svg-icons";
 	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Fa from "svelte-fa";
-	import { Link, useNavigate } from "svelte-navigator";
+	import { useNavigate, Link } from "svelte-navigator";
 	import {
 		api,
 		CampaignStatus,
@@ -15,6 +15,8 @@
 	import { _ } from "svelte-i18n";
 
 	let candidates: (CampaignCandidate & AccordionItem)[] = [];
+
+	const navigate = useNavigate();
 
 	const sort_by_likes = (a: CampaignCandidate, b: CampaignCandidate) => {
 		if (a.liking_users.length > b.liking_users.length) {
@@ -53,7 +55,6 @@
 		candidates = await fetch(null);
 	}
 
-	const navigate = useNavigate();
 	function add_draft() {
 		navigate(`/new-draft`);
 	}

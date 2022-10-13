@@ -13,6 +13,7 @@ import {
   OrderUpdate,
   User,
   UserProfile,
+  ErrorResponse
 } from "./Data";
 
 const api_url = get(url);
@@ -95,7 +96,7 @@ export class RestApi implements Api {
   addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> {
     return (async () => {
       const payload = { ...draft };
-      payload["status"] = CampaignStatus.DRAFT.toString();
+      payload.status = CampaignStatus.DRAFT.toString();
       const response = await fetch(
         api_url + "campaigns",
         options("POST", payload)

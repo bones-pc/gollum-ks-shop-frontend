@@ -1,3 +1,8 @@
+export interface ErrorResponse {
+  status: number;
+  message: string;
+}
+
 export interface CampaignItem {
   ordinal: number;
   name: string;

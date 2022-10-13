@@ -2,7 +2,7 @@
 	import { _ } from "svelte-i18n";
 	import { navigate } from "svelte-navigator";
 	import { v4 } from "uuid";
-	import { api, CampaignCandidate } from "../../api/Api";
+	import { api, CampaignCandidate, CampaignStatus } from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
 
@@ -16,6 +16,7 @@
 		url: "",
 		liking_users: [],
 		description: "",
+		status: CampaignStatus.DRAFT,
 	});
 	let ks_name: string;
 	let selected_item = false;
