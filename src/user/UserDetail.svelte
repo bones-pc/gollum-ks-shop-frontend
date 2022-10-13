@@ -4,7 +4,7 @@
 	import { _ } from "svelte-i18n";
 	import { api, Order } from "../api/Api";
 	import type { UserProfile } from "../api/Api";
-	import UserProfileComponent from "./UserProfile.svelte";
+	import UserDataComponent from "./UserData.svelte";
 	import OrderHistoryAdmin from "../order/OrderHistoryAdmin.svelte";
 
 	let user: UserProfile = {
@@ -41,7 +41,6 @@
 	let index = 1;
 </script>
 
-<!-- <h1>profil użytkownika {$_("nav.manage_users")}</h1> -->
 <h1>{$_("nav.user_orders")}: {user.username}</h1>
 
 <table class="table">
@@ -94,7 +93,7 @@
 					{$_("manage_orders.profile")}
 				</button>
 				<div id={"collapse" + index + "a"} class="accordion-collapse collapse">
-					<UserProfileComponent {user} />
+					<UserDataComponent {user} />
 				</div>
 				<div>
 					<button class="accordion-button collapsed" type="button">

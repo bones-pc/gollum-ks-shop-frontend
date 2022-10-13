@@ -16,7 +16,6 @@
 	const onSelect = (item_idx) => {
 		open = false;
 		if (onSelected) {
-			console.log(item_idx);
 			onSelected(item_idx + 1);
 		}
 	};
