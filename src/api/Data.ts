@@ -18,6 +18,8 @@ export enum CampaignStatus {
   ARCHIVED,
   // to be trashed - check if not mistake ;)
   DELETED,
+  // proposal that will be active
+  DRAFT_CONFIRMED,
 }
 
 export enum OrderStatus {
@@ -82,6 +84,7 @@ export interface CampaignCandidate {
   img_url: string;
   liking_users: string[];
   description: string;
+  status: CampaignStatus;
 }
 
 export interface CampaignsSearchParams {

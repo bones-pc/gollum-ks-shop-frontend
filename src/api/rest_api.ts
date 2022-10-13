@@ -45,6 +45,7 @@ function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
     // todo - Piotr should fix it soon
     liking_users: draft?.liking_users?.filter((it) => it != null),
     description: draft.description,
+    status: draft.status
   };
 }
 

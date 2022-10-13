@@ -54,14 +54,20 @@
 	}
 
 	const navigate = useNavigate();
-
 	function add_draft() {
 		navigate(`/new-draft`);
 	}
 
 	async function delete_campaign(uuid: string) {
 		let campaign_result = await api.changeStatus(uuid, CampaignStatus.DELETED);
-		await fetch("");
+		candidates = await fetch(null);
+	}
+	async function toggle_confirm_campaign(item: CampaignCandidate) {
+		let status = CampaignStatus.DRAFT_CONFIRMED;
+		if (item.status == CampaignStatus.DRAFT_CONFIRMED)
+			status = CampaignStatus.DRAFT;
+		let campaign_result = await api.changeStatus(item.uuid, status);
+		candidates = await fetch(null);
 	}
 </script>
 
@@ -72,17 +78,6 @@
 		<button type="button" class="btn btn-primary" on:click={add_draft}>
 			+ {$_("proposed_campaigns.add_draft")}
 		</button>
-		<!-- <input
-			type="text"
-			id="campaign_to_search"
-			bind:value={campaign_name}
-		/><button
-			class="btn btn-primary"
-			type="button"
-			on:click={() => search_ks()}
-		>
-			Szukaj w KS
-		</button> -->
 	</svelte:fragment>
 	<svelte:fragment slot="title" let:item>
 		<div class="row">
@@ -130,6 +125,11 @@
 						)}
 					</button>
 				{/if}
+				{#if item.status == CampaignStatus.DRAFT_CONFIRMED}
+					<span class="badge bg-success"
+						>{$_("proposed_campaigns.confirmed")}</span
+					>
+				{/if}
 			</div>
 		</div>
 	</svelte:fragment>
@@ -139,6 +139,20 @@
 				<li>
 					<Link to="/campaigns/add/{item.id}">
 						{$_("proposed_campaigns.convert_to_active")}
+					</Link>
+				</li>
+				<li>
+					<Link
+						to="/drafts"
+						on:click={() => {
+							toggle_confirm_campaign(item);
+						}}
+					>
+						{#if item.status == CampaignStatus.DRAFT}
+							{$_("proposed_campaigns.confirm")}
+						{:else}
+							{$_("proposed_campaigns.resign")}
+						{/if}
 					</Link>
 				</li>
 				<li>
