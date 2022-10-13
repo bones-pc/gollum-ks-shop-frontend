@@ -21,6 +21,7 @@
 	let ks_name: string;
 	let selected_item = false;
 	let campaign_list_modal_visible = false;
+	let warning = null;
 
 	let draft: CampaignCandidate = newDraft();
 	let campaign_list: CampaignCandidate[];
@@ -28,6 +29,8 @@
 
 	async function save() {
 		draft = await api.addCandidate(draft);
+		if (draft.status == 409) warning = "Kampania już istnieje";
+		else warning = null;
 		navigate("/drafts");
 	}
 	function closeList() {
@@ -37,7 +40,6 @@
 	function selectedItem(item_idx) {
 		selected_item = true;
 		if (item_idx == 0) {
-			console.log("ops");
 			return;
 		}
 		item_idx--;
@@ -50,7 +52,6 @@
 
 	async function search_campaign_in_ks() {
 		campaign_list = await api.fetchKSCampaigns(ks_name);
-		console.log(campaign_list);
 		if (campaign_list.length > 0) {
 			campaign_list_modal_visible = true;
 			campaign_list_modal = campaign_list.map((e, idx) => {
@@ -62,6 +63,12 @@
 		}
 	}
 </script>
+
+{#if warning != null}
+	<div class="alert alert-warning mt-4" role="alert">
+		{warning}
+	</div>
+{/if}
 
 <h1>
 	{$_("add_draft.title_add", { values: { title: draft.title } })}

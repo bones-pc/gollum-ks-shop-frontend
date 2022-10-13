@@ -147,7 +147,7 @@ export interface Api {
   fetchCampaign(uuid: string): Promise<Campaign>;
   orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
   updateCampaign(update: CampaignUpdate): Promise<Campaign>;
-  addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate>;
+  addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> | Promise<ErrorResponse>;
   fetchCampaigns(params: CampaignsSearchParams): Promise<Campaign[]>;
   changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign>;
   fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate>;

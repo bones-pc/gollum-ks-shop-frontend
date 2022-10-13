@@ -93,7 +93,12 @@ function backend_order_to_frontend_order(order: any): Order {
 }
 
 export class RestApi implements Api {
-  addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> {
+  addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> | Promise<ErrorResponse> {
+    let error_response: ErrorResponse = {
+      status: 409,
+      message: "Kampania już istnieje"
+
+    }
     return (async () => {
       const payload = { ...draft };
       payload.status = CampaignStatus.DRAFT.toString();
@@ -105,6 +110,7 @@ export class RestApi implements Api {
         const response_json = await response.json();
         return backend_draft_to_frontend_draft(response_json);
       }
+      return error_response
     })();
   }
 
