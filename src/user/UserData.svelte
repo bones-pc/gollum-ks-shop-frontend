@@ -21,7 +21,7 @@
 		<td>{$_("user_profile.username")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input class="input_copy" id="username" value={user.username} />
+			<input disabled class="input_copy" id="username" value={user.username} />
 		</td>
 	</tr>
 	<tr>
@@ -31,6 +31,7 @@
 			<input
 				class="input_copy"
 				id="full_name"
+				disabled
 				value="{user.firstname} {user.lastname}"
 			/>
 		</td>
@@ -52,7 +53,7 @@
 	<tr>
 		<td>{$_("user_profile.street")}</td>
 		<td>&nbsp;</td><td>
-			<input class="input_copy" id="street" value={user.street} />
+			<input disabled class="input_copy" id="street" value={user.street} />
 		</td>
 		<td>
 			<button
@@ -73,7 +74,12 @@
 		<td>{$_("user_profile.city")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input class="input_copy" id="city" value="{user.zip} {user.city}" />
+			<input
+				disabled
+				class="input_copy"
+				id="city"
+				value="{user.zip} {user.city}"
+			/>
 		</td>
 		<td>
 			<button
@@ -93,7 +99,7 @@
 		<td>{$_("user_profile.inpost")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input class="input_copy" id="inpost" value={user.inpost} />
+			<input disabled class="input_copy" id="inpost" value={user.inpost} />
 		</td>
 		<td>
 			<button
@@ -114,6 +120,7 @@
 <style>
 	.input_copy {
 		border: none;
+		color: black;
 		background: transparent;
 		outline: none;
 	}

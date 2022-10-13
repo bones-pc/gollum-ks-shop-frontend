@@ -3,7 +3,12 @@
 	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Fa from "svelte-fa";
 	import { Link, useNavigate } from "svelte-navigator";
-	import { api, CampaignCandidate, OrderedItemType } from "../../api/Api";
+	import {
+		api,
+		CampaignStatus,
+		CampaignCandidate,
+		OrderedItemType,
+	} from "../../api/Api";
 	import { role, user_uuid } from "../../stores";
 	import AccordionList from "../../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
@@ -53,8 +58,11 @@
 	function add_draft() {
 		navigate(`/new-draft`);
 	}
-	let campaign_name: string = "";
-	function search_ks() {}
+
+	async function delete_campaign(uuid: string) {
+		let campaign_result = await api.changeStatus(uuid, CampaignStatus.DELETED);
+		await fetch("");
+	}
 </script>
 
 <h1>{$_("proposed_campaigns.title")}</h1>
@@ -82,7 +90,9 @@
 				{#if item.url == null}
 					{item.title}
 				{:else}
-					<a href={item.url} target="_blank">{item.title}</a>
+					<a href={item.url} on:click={() => (document.location = item.url)}
+						>{item.title}</a
+					>
 				{/if}
 			</div>
 			<div class="col-12 col-md">
@@ -131,8 +141,16 @@
 						{$_("proposed_campaigns.convert_to_active")}
 					</Link>
 				</li>
+				<li>
+					<Link
+						to="/drafts"
+						on:click={() => {
+							delete_campaign(item.id);
+						}}>{$_("proposed_campaigns.delete")}</Link
+					>
+				</li>
 			{:else}
-				{$_("proposed_campaigns.no_actions")}
+				<!-- {$_("proposed_campaigns.no_actions")} -->
 			{/if}
 		</ul>
 	</div>

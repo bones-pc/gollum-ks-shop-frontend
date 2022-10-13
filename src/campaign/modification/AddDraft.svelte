@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
+	import { navigate } from "svelte-navigator";
 	import { v4 } from "uuid";
 	import { api, CampaignCandidate } from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
@@ -23,9 +24,10 @@
 	let draft: CampaignCandidate = newDraft();
 	let campaign_list: CampaignCandidate[];
 	let campaign_list_modal = [];
+
 	async function save() {
-		console.log(draft);
 		draft = await api.addCandidate(draft);
+		navigate("/drafts");
 	}
 	function closeList() {
 		campaign_list_modal_visible = false;
