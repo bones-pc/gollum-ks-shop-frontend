@@ -3,6 +3,9 @@
 	import { Link } from "svelte-navigator";
 	import { _ } from "svelte-i18n";
 
+	import { faCopy } from "@fortawesome/free-regular-svg-icons";
+	import Fa from "svelte-fa";
+
 	import {
 		AssignedToUser,
 		Campaign,
@@ -65,6 +68,14 @@
 		let order_return = await api.updateOrderTracking(order);
 		tracking_no = order_return.tracking_no;
 	}
+
+	// maybe change needed to more Svelte way ?
+	function copyText(attr_id) {
+		let copyText = document.getElementById(attr_id);
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); // For mobile devices
+		navigator.clipboard.writeText(copyText.value);
+	}
 </script>
 
 {#if orders === null}
@@ -77,18 +88,40 @@
 	</h1>
 
 	<h2>{$_("manage_orders.orders_summary")}</h2>
-	<p>
+	<div>
 		{$_("manage_orders.orders_summary.paid", {
 			values: { totalGathered, totalPrice },
 		})}
-	</p>
-	<ul>
-		{#each totalItems as totalItem}
-			<li>{totalItem.ordinal}. {totalItem.name}: {totalItem.total_amount}</li>
-		{/each}
-	</ul>
+		<ul>
+			{#each totalItems as totalItem}
+				<li>
+					{totalItem.ordinal}. {totalItem.name}: {totalItem.total_amount}
+				</li>
+			{/each}
+		</ul>
+	</div>
 
-	<h3>{$_("manage_orders.per_user_summary")}</h3>
+	<div>
+		Tytuł przelewu: <input
+			disabled
+			class="input_copy"
+			id="wiretransfer"
+			value={campaign.payment_details}
+		/>
+		<button
+			class="btn btn-light non-collapsing"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target
+			on:click={() => {
+				copyText("wiretransfer");
+			}}
+		>
+			<Fa icon={faCopy} primaryColor="blue" />
+		</button>
+	</div>
+
+	<h4>{$_("manage_orders.per_user_summary")}</h4>
 	{#each orders as order}
 		{order.firstname}
 		{order.lastname}
@@ -136,5 +169,11 @@
 <style>
 	.money {
 		max-width: 120px;
+	}
+	.input_copy {
+		border: none;
+		color: black;
+		background: transparent;
+		outline: none;
 	}
 </style>
