@@ -77,6 +77,7 @@
   "orders_history.title": "Historia zamówień",
   "orders_history.unpaid": "Nieopłacone",
   "orders_history.paid": "Opłacone",
+  "orders_history.overpaid":"Nadpłata",
   "orders_history.partially_paid": "Częściowo opłacone",
   "orders_history.order_paid": "Zamówienie jest opłacone",
   "orders_history.name": "Nazwa",

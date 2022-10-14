@@ -84,6 +84,10 @@
 			<span class="badge bg-warning">
 				{$_("orders_history.partially_paid")}
 			</span>
+		{:else if item.paid_value > item.order_value}
+			<span class="badge bg-info">
+				{$_("orders_history.overpaid")}
+			</span>
 		{:else}
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
@@ -156,6 +160,18 @@
 						<td class:text-danger={to_pay > 0}>
 							{to_pay}
 							{$_("currency.pln")}
+						</td>
+					</tr>
+				{:else if to_pay < 0}
+					<tr>
+						<th scope="row">{$_("orders_history.overpaid")}</th>
+						<td />
+						<td />
+						<td class:text-danger={to_pay > 0}>
+							<b>
+								{to_pay}
+								{$_("currency.pln")}
+							</b>
 						</td>
 					</tr>
 				{/if}
