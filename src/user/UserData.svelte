@@ -3,6 +3,7 @@
 	import Fa from "svelte-fa";
 	import { _ } from "svelte-i18n";
 	import type { UserProfile } from "../api/Api";
+	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
 	export let user: UserProfile;
 
 	// maybe change needed to more Svelte way ?
@@ -28,91 +29,36 @@
 		<td>{$_("user_profile.firstname")} {$_("user_profile.lastname")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input
-				class="input_copy"
-				id="full_name"
-				disabled
-				value="{user.firstname} {user.lastname}"
-			/>
-		</td>
-		<td>
-			<button
-				class="btn btn-light non-collapsing"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target
-				on:click={() => {
-					copyText("full_name");
-				}}
-			>
-				<Fa icon={faCopy} primaryColor="blue" />
-			</button>
+			<CopyToClipboardField copy_value={user.firstname + " " + user.lastname} />
 		</td>
 	</tr>
 
 	<tr>
 		<td>{$_("user_profile.street")}</td>
-		<td>&nbsp;</td><td>
-			<input disabled class="input_copy" id="street" value={user.street} />
-		</td>
+		<td>&nbsp;</td>
 		<td>
-			<button
-				class="btn btn-light non-collapsing"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target
-				on:click={() => {
-					copyText("street");
-				}}
-			>
-				<Fa icon={faCopy} primaryColor="blue" />
-			</button>
+			<CopyToClipboardField copy_value={user.street} />
 		</td>
 	</tr>
-
+	<tr>
+		<td>{$_("user_profile.zip")}</td>
+		<td>&nbsp;</td>
+		<td>
+			<CopyToClipboardField copy_value={user.zip} />
+		</td>
+	</tr>
 	<tr>
 		<td>{$_("user_profile.city")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input
-				disabled
-				class="input_copy"
-				id="city"
-				value="{user.zip} {user.city}"
-			/>
-		</td>
-		<td>
-			<button
-				class="btn btn-light non-collapsing"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target
-				on:click={() => {
-					copyText("city");
-				}}
-			>
-				<Fa icon={faCopy} primaryColor="blue" />
-			</button>
+			<CopyToClipboardField copy_value={user.city} />
 		</td>
 	</tr>
 	<tr>
 		<td>{$_("user_profile.inpost")}</td>
 		<td>&nbsp;</td>
 		<td>
-			<input disabled class="input_copy" id="inpost" value={user.inpost} />
-		</td>
-		<td>
-			<button
-				class="btn btn-light non-collapsing"
-				type="button"
-				data-bs-toggle="collapse"
-				data-bs-target
-				on:click={() => {
-					copyText("inpost");
-				}}
-			>
-				<Fa icon={faCopy} primaryColor="blue" />
-			</button>
+			<CopyToClipboardField copy_value={user.inpost} />
 		</td>
 	</tr>
 </table>
