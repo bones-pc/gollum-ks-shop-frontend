@@ -29,6 +29,7 @@
   "proposed_campaigns.resign":"Resign",
   "proposed_campaigns.confirmed":"Confirmed",
   "proposed_campaigns.add_draft": "Add draft",
+  "proposed_campaigns.denied":"Not happening",
   "edit_campaign.loading": "Loading campaign",
   "edit_campaign.title_must_not_be_empty": "Title must not be empty",
   "edit_campaign.url_must_not_be_empty": "URL must not be empty",

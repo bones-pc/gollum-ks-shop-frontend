@@ -25,6 +25,10 @@ export enum CampaignStatus {
   DELETED,
   // proposal that will be active
   DRAFT_CONFIRMED,
+  // proposal that will not be active
+  DRAFT_DENIED,
+  // conditions negotiated
+  DRAFT_NEGOTIATED,
 }
 
 export enum OrderStatus {

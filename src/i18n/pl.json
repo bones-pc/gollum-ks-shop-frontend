@@ -29,6 +29,8 @@
   "proposed_campaigns.confirm":"Potwierdź zbiórkę",
   "proposed_campaigns.resign":"Usuń zbiórkę",
   "proposed_campaigns.add_draft": "Dodaj propozycję kampanii",
+  "proposed_campaigns.denied":"Zbiórka odpada",
+  "proposed_campaigns.negotiations":"W toku",
   "edit_campaign.loading": "Ładowanie kampanii",
   "edit_campaign.title_must_not_be_empty": "Nazwa kamanii nie może być pusta",
   "edit_campaign.url_must_not_be_empty": "Adres URL kampanii nie może być pusty",

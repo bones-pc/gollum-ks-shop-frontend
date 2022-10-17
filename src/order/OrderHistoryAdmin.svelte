@@ -100,9 +100,6 @@
 		</div>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
-		{#if item.status == 3}
-			deleted?
-		{/if}
 		<button
 			id={item.id}
 			type="button"
@@ -115,6 +112,10 @@
 			}}
 		>
 			{$_("manage_orders.delete_user_order")}
+			{#if item.status == 3}
+				deleted???
+			{/if}
+			{console.log(item.status)}
 		</button>
 
 		{@const total = item.items.reduce(

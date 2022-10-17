@@ -39,10 +39,48 @@
 	): Promise<(CampaignCandidate & AccordionItem)[]> {
 		const fetched_candidates: CampaignCandidate[] =
 			await api.fetchCampaignCandidates(search);
-		return fetched_candidates.sort(sort_by_likes).map((c) => ({
-			...c,
-			id: c.uuid,
-		}));
+		let confirmed_drafts = fetched_candidates
+			.filter((c) => c.status === CampaignStatus.DRAFT_CONFIRMED)
+			.sort(sort_by_likes)
+			.map((c) => ({
+				...c,
+				id: c.uuid,
+			}));
+
+		let negotiated_drafts = fetched_candidates
+			.filter((c) => c.status === CampaignStatus.DRAFT_NEGOTIATED)
+			.sort(sort_by_likes)
+			.map((c) => ({
+				...c,
+				id: c.uuid,
+			}));
+		let regular_drafts = fetched_candidates
+			.filter((c) => c.status === CampaignStatus.DRAFT)
+			.sort(sort_by_likes)
+			.map((c) => ({
+				...c,
+				id: c.uuid,
+			}));
+		let denied_drafts = fetched_candidates
+			.filter((c) => c.status === CampaignStatus.DRAFT_DENIED)
+			.sort(sort_by_likes)
+			.map((c) => ({
+				...c,
+				id: c.uuid,
+			}));
+
+		console.log([
+			...confirmed_drafts,
+			...negotiated_drafts,
+			...regular_drafts,
+			...denied_drafts,
+		]);
+		return [
+			...confirmed_drafts,
+			...negotiated_drafts,
+			...regular_drafts,
+			...denied_drafts,
+		];
 	}
 
 	async function like(candidate_uuid: string) {
@@ -64,9 +102,22 @@
 		candidates = await fetch(null);
 	}
 	async function toggle_confirm_campaign(item: CampaignCandidate) {
-		let status = CampaignStatus.DRAFT_CONFIRMED;
-		if (item.status == CampaignStatus.DRAFT_CONFIRMED)
+		let status = CampaignStatus.DRAFT_NEGOTIATED;
+
+		if (item.status == CampaignStatus.DRAFT_CONFIRMED) {
 			status = CampaignStatus.DRAFT;
+		} else if (item.status == CampaignStatus.DRAFT) {
+			status = CampaignStatus.DRAFT_NEGOTIATED;
+		} else {
+			status = CampaignStatus.DRAFT_CONFIRMED;
+		}
+
+		console.log(status);
+		let campaign_result = await api.changeStatus(item.uuid, status);
+		candidates = await fetch(null);
+	}
+	async function set_campaign_draft_not_happening(item: CampaignCandidate) {
+		let status = CampaignStatus.DRAFT_DENIED;
 		let campaign_result = await api.changeStatus(item.uuid, status);
 		candidates = await fetch(null);
 	}
@@ -130,6 +181,12 @@
 					<span class="badge bg-success"
 						>{$_("proposed_campaigns.confirmed")}</span
 					>
+				{:else if item.status == CampaignStatus.DRAFT_DENIED}
+					<span class="badge bg-danger">{$_("proposed_campaigns.denied")}</span>
+				{:else if item.status == CampaignStatus.DRAFT_NEGOTIATED}
+					<span class="badge bg-warning"
+						>{$_("proposed_campaigns.negotiations")}</span
+					>
 				{/if}
 			</div>
 		</div>
@@ -150,12 +207,30 @@
 						}}
 					>
 						{#if item.status == CampaignStatus.DRAFT}
+							ustaw w toku
 							{$_("proposed_campaigns.confirm")}
-						{:else}
+						{:else if item.status == CampaignStatus.DRAFT_NEGOTIATED}
+							potwierdz
+							{$_("proposed_campaigns.resign")}
+						{:else if item.status == CampaignStatus.DRAFT_CONFIRMED}
+							ustaw jako zwykła
 							{$_("proposed_campaigns.resign")}
 						{/if}
 					</Link>
 				</li>
+				<li>
+					<Link
+						to="/drafts"
+						on:click={() => {
+							set_campaign_draft_not_happening(item);
+						}}
+					>
+						{#if item.status !== CampaignStatus.DRAFT_DENIED}
+							{$_("proposed_campaigns.denied")}
+						{/if}
+					</Link>
+				</li>
+
 				<li>
 					<Link
 						to="/drafts"

@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { Link } from "svelte-navigator";
 	import { _ } from "svelte-i18n";
-
+	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
 	import { faCopy } from "@fortawesome/free-regular-svg-icons";
 	import Fa from "svelte-fa";
 
@@ -14,6 +14,7 @@
 		api,
 	} from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
+	import { LoggedUser } from "../authentication/roles";
 
 	export let uuid: string;
 
@@ -68,14 +69,6 @@
 		let order_return = await api.updateOrderTracking(order);
 		tracking_no = order_return.tracking_no;
 	}
-
-	// maybe change needed to more Svelte way ?
-	function copyText(attr_id) {
-		let copyText = document.getElementById(attr_id);
-		copyText.select();
-		copyText.setSelectionRange(0, 99999); // For mobile devices
-		navigator.clipboard.writeText(copyText.value);
-	}
 </script>
 
 {#if orders === null}
@@ -102,23 +95,8 @@
 	</div>
 
 	<div>
-		Tytuł przelewu: <input
-			disabled
-			class="input_copy"
-			id="wiretransfer"
-			value={campaign.payment_details}
-		/>
-		<button
-			class="btn btn-light non-collapsing"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target
-			on:click={() => {
-				copyText("wiretransfer");
-			}}
-		>
-			<Fa icon={faCopy} primaryColor="blue" />
-		</button>
+		Tytuł przelewu:
+		<CopyToClipboardField copy_value={campaign.payment_details} />
 	</div>
 
 	<h4>{$_("manage_orders.per_user_summary")}</h4>
@@ -160,7 +138,11 @@
 		</div>
 		<ul>
 			{#each order.items as item}
-				<li>{itemByUuid.get(item.item_uuid).name}: {item.amount}</li>
+				<li>
+					{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
+						item.item_uuid
+					).name}: {item.amount}
+				</li>
 			{/each}
 		</ul>
 	{/each}
@@ -170,10 +152,7 @@
 	.money {
 		max-width: 120px;
 	}
-	.input_copy {
-		border: none;
-		color: black;
-		background: transparent;
-		outline: none;
+	ul {
+		list-style-type: none;
 	}
 </style>
