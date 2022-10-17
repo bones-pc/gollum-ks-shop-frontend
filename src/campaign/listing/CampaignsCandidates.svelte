@@ -68,13 +68,6 @@
 				...c,
 				id: c.uuid,
 			}));
-
-		console.log([
-			...confirmed_drafts,
-			...negotiated_drafts,
-			...regular_drafts,
-			...denied_drafts,
-		]);
 		return [
 			...confirmed_drafts,
 			...negotiated_drafts,
@@ -111,7 +104,6 @@
 		} else {
 			status = CampaignStatus.DRAFT_CONFIRMED;
 		}
-
 		console.log(status);
 		let campaign_result = await api.changeStatus(item.uuid, status);
 		candidates = await fetch(null);
@@ -207,14 +199,14 @@
 						}}
 					>
 						{#if item.status == CampaignStatus.DRAFT}
-							ustaw w toku
-							{$_("proposed_campaigns.confirm")}
+							Ustaw w toku
+							<!-- {$_("proposed_campaigns.confirm")} -->
 						{:else if item.status == CampaignStatus.DRAFT_NEGOTIATED}
-							potwierdz
-							{$_("proposed_campaigns.resign")}
+							Potwierdz
+							<!-- {$_("proposed_campaigns.resign")} -->
 						{:else if item.status == CampaignStatus.DRAFT_CONFIRMED}
-							ustaw jako zwykła
-							{$_("proposed_campaigns.resign")}
+							Ustaw jako zwykła
+							<!-- {$_("proposed_campaigns.resign")} -->
 						{/if}
 					</Link>
 				</li>

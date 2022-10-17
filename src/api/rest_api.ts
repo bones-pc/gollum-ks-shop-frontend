@@ -81,6 +81,7 @@ function backend_order_to_frontend_order(order: any): Order {
   return {
     campaign_uuid: order.uuid,
     order_uuid: order.order_uuid,
+    order_date: order.order_date,
     ouuid: order.ouuid,
     status: order.status,
     tracking_no: order.tracking_no,
@@ -97,7 +98,6 @@ export class RestApi implements Api {
     let error_response: ErrorResponse = {
       status: 409,
       message: "Kampania już istnieje"
-
     }
     return (async () => {
       const payload = { ...draft };

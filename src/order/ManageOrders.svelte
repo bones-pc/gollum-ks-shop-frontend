@@ -52,12 +52,22 @@
 		}
 	}
 
+	const sort_by_order_date = (a: Order, b: Order) => {
+		if (a.order_date < b.order_date) {
+			return -1;
+		}
+		if (a.order_date > b.order_date) {
+			return 1;
+		}
+		return 0;
+	};
+
 	onMount(async () => {
 		const [o, c] = await Promise.all([
 			api.fetchCampaignOrders(uuid),
 			api.fetchCampaign(uuid),
 		]);
-		orders = o;
+		orders = o.sort(sort_by_order_date);
 		campaign = c;
 	});
 

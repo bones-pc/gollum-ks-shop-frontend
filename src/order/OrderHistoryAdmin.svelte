@@ -112,10 +112,6 @@
 			}}
 		>
 			{$_("manage_orders.delete_user_order")}
-			{#if item.status == 3}
-				deleted???
-			{/if}
-			{console.log(item.status)}
 		</button>
 
 		{@const total = item.items.reduce(

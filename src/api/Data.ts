@@ -68,6 +68,7 @@ export enum OrderedItemType {
 export interface Order {
   campaign_uuid: string;
   order_uuid: string;
+  order_date: Date;
   tracking_no: string;
   status: OrderStatus;
   ouuid: string;
