@@ -56,6 +56,7 @@ export interface Campaign {
 export interface OrderedItem {
   item_uuid: string;
   amount: number;
+  ordinal: number;
   ouuid: string;
   item_type: OrderedItemType;
 }
