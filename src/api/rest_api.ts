@@ -34,6 +34,8 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
     url: campaign.url,
     status: campaign.status as CampaignStatus,
     description: campaign.description,
+    added_date: campaign.added_date,
+    due_date: campaign.due_date,
   };
 }
 

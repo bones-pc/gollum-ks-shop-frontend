@@ -24,6 +24,8 @@
 		status: CampaignStatus.ACTIVE,
 		description: "",
 		payment_details: "",
+		added_date: new Date(),
+		due_date: new Date(),
 	});
 
 	let campaign: Campaign;

@@ -51,6 +51,8 @@ export interface Campaign {
   items: CampaignItem[];
   status: CampaignStatus;
   description: string;
+  added_date: Date;
+  due_date: Date;
 }
 
 export interface OrderedItem {
