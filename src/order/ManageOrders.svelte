@@ -152,6 +152,19 @@
 					{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
 						item.item_uuid
 					).name}: {item.amount}
+					<button
+						type="button"
+						class="btn btn-outline-secondary change-amount"
+						on:click={() => {
+							item.amount++;
+						}}>+</button
+					>
+					<button
+						type="button"
+						class="btn btn-outline-secondary change-amount"
+						on:click={() => (item.amount = Math.max(0, item.amount - 1))}
+						>-</button
+					>
 				</li>
 			{/each}
 		</ul>
