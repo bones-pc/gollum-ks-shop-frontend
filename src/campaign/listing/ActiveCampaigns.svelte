@@ -35,6 +35,7 @@
 				description,
 				payment_details,
 				due_date,
+				added_date,
 			}) => ({
 				id: uuid,
 				title,
@@ -43,10 +44,11 @@
 				description,
 				payment_details,
 				due_date,
+				added_date,
 			})
 		);
 	}
-	let sort_by_list = ["Nazwie", "Dacie zakończenia"];
+	let sort_by_list = ["Nazwie", "Dacie zakończenia", "Dacie dodania"];
 	let sort_headline = "Sortuj po: ";
 	let sort_option = 0;
 	function sort_by_name(a: AccordionItem, b: AccordionItem) {
@@ -67,10 +69,23 @@
 		}
 		return 0;
 	}
+	function sort_by_added_date(a, b) {
+		if (a.added_date > b.added_date) {
+			return 1;
+		}
+		if (a.added_date < b.added_date) {
+			return -1;
+		}
+		return 0;
+	}
+
 	async function sort() {
 		active_campaigns = await fetch(null);
-		if (sort_option) {
+		if (sort_option == 1) {
 			active_campaigns.sort(sort_by_date);
+			return;
+		} else if (sort_option == 2) {
+			active_campaigns.sort(sort_by_added_date);
 			return;
 		}
 		active_campaigns.sort(sort_by_name);

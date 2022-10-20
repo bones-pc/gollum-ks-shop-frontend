@@ -22,6 +22,11 @@
 </AccordionListNav>
 
 <div class="row campaigns-row">
+	<div class="row">
+		<div class="col-sm-6" />
+		<div class="col-sm-3">Data zakończenia</div>
+		<div class="col-sm-3">Data dodania</div>
+	</div>
 	<div class="mb-2 mt-2">
 		<div class="accordion" id="accordionExample">
 			{#each items as item (item.id)}
@@ -32,13 +37,18 @@
 					<AccordionListItem {item}>
 						<slot name="item-actions" slot="actions" {item} />
 						<slot name="title" slot="title" {item}>
-							{#if item.url == null}
-								{item.title}
-							{:else}
-								<a href={item.url} target="_blank">{item.title}</a>
-							{/if}
-							<div class="to-right">
+							<div class="col-sm-6">
+								{#if item.url == null}
+									{item.title}
+								{:else}
+									<a href={item.url} target="_blank">{item.title}</a>
+								{/if}
+							</div>
+							<div class="col-sm-3">
 								{item.due_date}
+							</div>
+							<div class="col-sm-3">
+								{item.added_date}
 							</div>
 						</slot>
 					</AccordionListItem>
