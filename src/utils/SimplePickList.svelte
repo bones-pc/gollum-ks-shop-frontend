@@ -7,6 +7,7 @@
 	export let selected_item = 0;
 	export let list = [];
 
+	const picklist_header = "Wybierz Kampanię";
 	const listClose = () => {
 		open = false;
 		if (onClose) {
@@ -33,7 +34,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5>Wybierz Kampanię</h5>
+					<h5>{picklist_header}</h5>
 				</div>
 				<div class="modal-body">
 					<ul>

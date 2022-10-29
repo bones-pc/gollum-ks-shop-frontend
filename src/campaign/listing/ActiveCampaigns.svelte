@@ -6,6 +6,7 @@
 	import SortPicker from "../../utils/SortPicker.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
+	import Legend from "../../utils/Legend.svelte";
 
 	const navigate = useNavigate();
 	const fetch_filter = { status: CampaignStatus.ACTIVE };
@@ -48,8 +49,8 @@
 			})
 		);
 	}
-	let sort_by_list = ["Nazwie", "Dacie zakończenia", "Dacie dodania"];
-	let sort_headline = "Sortuj po: ";
+	let sort_by_list = ["nazwie", "dacie zakończenia", "dacie dodania"];
+	let sort_headline = "Sortuj po ";
 	let sort_option = 0;
 	function sort_by_name(a: AccordionItem, b: AccordionItem) {
 		if (a.title > b.title) {
@@ -78,7 +79,6 @@
 		}
 		return 0;
 	}
-
 	async function sort() {
 		active_campaigns = await fetch(null);
 		if (sort_option == 1) {
@@ -89,6 +89,9 @@
 			return;
 		}
 		active_campaigns.sort(sort_by_name);
+	}
+	function show_legend() {
+		return true;
 	}
 </script>
 
@@ -107,6 +110,8 @@
 			{sort_by_list}
 			bind:selected={sort_option}
 		/>
+		<button on:click={() => {}}>tes</button>
+		<Legend toast_shown={true} />
 	</svelte:fragment>
 	<svelte:fragment slot="item-actions" let:item>
 		<ul>

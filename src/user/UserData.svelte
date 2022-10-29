@@ -17,51 +17,72 @@
 
 <h1>{$_("nav.userprofile")} {user.username}</h1>
 
-<table>
-	<tr>
-		<td>{$_("user_profile.username")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<input disabled class="input_copy" id="username" value={user.username} />
-		</td>
-	</tr>
-	<tr>
-		<td>{$_("user_profile.firstname")} {$_("user_profile.lastname")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<CopyToClipboardField copy_value={user.firstname + " " + user.lastname} />
-		</td>
-	</tr>
+<div class="containers">
+	<table>
+		<tr>
+			<td>{$_("user_profile.username")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<input
+					disabled
+					class="input_copy"
+					id="username"
+					value={user.username}
+				/>
+			</td>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.firstname")} {$_("user_profile.lastname")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField
+					copy_value={user.firstname + " " + user.lastname}
+				/>
+			</td>
+		</tr>
 
-	<tr>
-		<td>{$_("user_profile.street")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<CopyToClipboardField copy_value={user.street} />
-		</td>
-	</tr>
-	<tr>
-		<td>{$_("user_profile.zip")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<CopyToClipboardField copy_value={user.zip} />
-		</td>
-	</tr>
-	<tr>
-		<td>{$_("user_profile.city")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<CopyToClipboardField copy_value={user.city} />
-		</td>
-	</tr>
-	<tr>
-		<td>{$_("user_profile.inpost")}</td>
-		<td>&nbsp;</td>
-		<td>
-			<CopyToClipboardField copy_value={user.inpost} />
-		</td>
-	</tr>
-</table>
+		<tr>
+			<td>{$_("user_profile.street")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField copy_value={user.street} />
+			</td>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.zip")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField copy_value={user.zip} />
+			</td>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.city")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField copy_value={user.city} />
+			</td>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.inpost")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField copy_value={user.inpost} />
+			</td>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td>{$_("user_profile.email")}</td><td
+				><CopyToClipboardField copy_value={user.email} /></td
+			>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.phone")}</td><td
+				><CopyToClipboardField copy_value={user.phone} /></td
+			>
+		</tr>
+	</table>
+</div>
 
 <style>
 	.input_copy {
