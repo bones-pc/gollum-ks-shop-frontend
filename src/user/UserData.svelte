@@ -69,15 +69,17 @@
 				<CopyToClipboardField copy_value={user.inpost} />
 			</td>
 		</tr>
-	</table>
-	<table>
 		<tr>
-			<td>{$_("user_profile.email")}</td><td
+			<td>{$_("user_profile.email")}</td>
+					<td>&nbsp;</td>
+			<td
 				><CopyToClipboardField copy_value={user.email} /></td
 			>
 		</tr>
 		<tr>
-			<td>{$_("user_profile.phone")}</td><td
+			<td>{$_("user_profile.phone")}</td>
+					<td>&nbsp;</td>
+			<td
 				><CopyToClipboardField copy_value={user.phone} /></td
 			>
 		</tr>
