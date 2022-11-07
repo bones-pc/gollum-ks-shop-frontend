@@ -20,7 +20,7 @@
 	let save_in_progress: boolean = false;
 	async function save_with_progress() {
 		save_in_progress = true;
-		campaign.status = 0;
+		campaign.status = CampaignStatus.ACTIVE;
 		await save();
 		save_in_progress = false;
 	}
@@ -222,7 +222,7 @@
 		/>
 	</div>
 </div>
-{console.log(campaign)}
+
 {#each [...items] as item, index}
 	<div class="card mb-2" style="width: 100%;">
 		<div class="card-body">
