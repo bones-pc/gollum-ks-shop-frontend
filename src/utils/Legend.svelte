@@ -1,39 +1,41 @@
 <script lang="ts">
 	import { faCopy } from "@fortawesome/free-regular-svg-icons";
+	import SimpleToast from "./SimpleToast.svelte";
 	import Fa from "svelte-fa";
 	import { _ } from "svelte-i18n";
 
-	export let legend_list = [];
-	export let headline = "";
-	export let toast_shown = false;
-
-	export let onShow = () => {
-		let toast = document.querySelector("#test");
-		toast.show();
-	};
+	export let legend_body = "test";
+	export let legend_id = "simple_legend";
 </script>
 
-{console.log(toast_shown)}
-{#if toast_shown == true}
-	{onShow()}
-	<div
-		class="toast"
-		id="test"
-		role="alert"
-		aria-live="assertive"
-		aria-atomic="true"
-	>
-		<div class="toast-header">
-			<img src="..." class="rounded me-2" alt="..." />
-			<strong class="me-auto">Bootstrap</strong>
-			<small>11 mins ago</small>
-			<button
-				type="button"
-				class="btn-close"
-				data-bs-dismiss="toast"
-				aria-label="Close"
-			/>
+<SimpleToast toast_id={legend_id}>
+	<div slot="toast-body" class="">
+		<div class="row">
+			<div>
+				<span class="badge bg-success">
+					{$_("proposed_campaigns.confirmed")}</span
+				>
+				<div class="small">Będzie... mam warunki</div>
+			</div>
+			<div class="row">
+				<div>
+					<span class="badge bg-warning"
+						>{$_("proposed_campaigns.negotiations")}</span
+					>.<br />
+
+					<div class="small">Negocjacje z wydawcą</div>
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					<span class="badge bg-success">
+						{$_("proposed_campaigns.denied")}></span
+					>
+					<div class="small">
+						Nie dogadałem się. Taniej kupisz w polskim skliepie
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="toast-body">Hello, world! This is a toast message.</div>
-	</div>
-{/if}
+	</div></SimpleToast
+>

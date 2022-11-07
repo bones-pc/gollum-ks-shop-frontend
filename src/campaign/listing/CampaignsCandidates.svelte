@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Toast } from "bootstrap";
 	import { faHeart } from "@fortawesome/free-solid-svg-icons";
 	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Fa from "svelte-fa";
@@ -11,6 +12,7 @@
 	} from "../../api/Api";
 	import { role, user_uuid } from "../../stores";
 	import AccordionList from "../../utils/AccordionList.svelte";
+	import Legend from "../../utils/Legend.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
 
@@ -94,6 +96,7 @@
 		let campaign_result = await api.changeStatus(uuid, CampaignStatus.DELETED);
 		candidates = await fetch(null);
 	}
+
 	async function toggle_confirm_campaign(item: CampaignCandidate) {
 		let status = CampaignStatus.DRAFT_NEGOTIATED;
 
@@ -108,10 +111,18 @@
 		let campaign_result = await api.changeStatus(item.uuid, status);
 		candidates = await fetch(null);
 	}
+
 	async function set_campaign_draft_not_happening(item: CampaignCandidate) {
 		let status = CampaignStatus.DRAFT_DENIED;
 		let campaign_result = await api.changeStatus(item.uuid, status);
 		candidates = await fetch(null);
+	}
+
+	let legend_id = "campaign_legend";
+	function showLegend() {
+		let my_legend_el = document.getElementById(legend_id);
+		let legend = new Toast(my_legend_el);
+		legend.show();
 	}
 </script>
 
@@ -122,6 +133,9 @@
 		<button type="button" class="btn btn-primary" on:click={add_draft}>
 			+ {$_("proposed_campaigns.add_draft")}
 		</button>
+		<button type="button" class="btn btn-primary" on:click={showLegend}
+			>?</button
+		>
 	</svelte:fragment>
 	<svelte:fragment slot="title" let:item>
 		<div class="row">
@@ -237,6 +251,8 @@
 		</ul>
 	</div>
 </AccordionList>
+
+<Legend {legend_id} />
 
 <style>
 	.row {
