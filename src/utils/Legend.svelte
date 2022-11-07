@@ -21,15 +21,14 @@
 				<div>
 					<span class="badge bg-warning"
 						>{$_("proposed_campaigns.negotiations")}</span
-					>.<br />
-
+					>
 					<div class="small">Negocjacje z wydawcą</div>
 				</div>
 			</div>
 			<div class="row">
 				<div>
 					<span class="badge bg-success">
-						{$_("proposed_campaigns.denied")}></span
+						{$_("proposed_campaigns.denied")}</span
 					>
 					<div class="small">
 						Nie dogadałem się. Taniej kupisz w polskim skliepie
