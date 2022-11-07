@@ -20,6 +20,7 @@
 	let save_in_progress: boolean = false;
 	async function save_with_progress() {
 		save_in_progress = true;
+		campaign.status = 0;
 		await save();
 		save_in_progress = false;
 	}
