@@ -110,8 +110,6 @@
 			{sort_by_list}
 			bind:selected={sort_option}
 		/>
-		<!-- <button on:click={() => {}}>tes</button> -->
-		<!-- <Legend toast_shown={true} /> -->
 	</svelte:fragment>
 	<svelte:fragment slot="item-actions" let:item>
 		<ul>

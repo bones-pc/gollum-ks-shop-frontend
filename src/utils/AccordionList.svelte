@@ -22,11 +22,6 @@
 </AccordionListNav>
 
 <div class="row campaigns-row">
-	<!-- <div class="row">
-		<div class="col-sm-6" />
-		<div class="col-sm-3">Data zakończenia</div>
-		<div class="col-sm-3">Data dodania</div>
-	</div> -->
 	<div class="mb-2 mt-2">
 		<div class="accordion" id="accordionExample">
 			{#each items as item (item.id)}
