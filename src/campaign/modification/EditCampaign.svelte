@@ -6,7 +6,8 @@
 	import Modal from "../../utils/Modal.svelte";
 	import { api, CampaignStatus, OrderedItemType } from "../../api/Api";
 	import { onMount } from "svelte";
-	import CampaignsCandidates from "../listing/CampaignsCandidates.svelte";
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	export let title: string;
 	export let add_item: () => void;
@@ -17,8 +18,26 @@
 	export let items: CampaignItem[];
 	export let campaign: Campaign;
 
+	function validate_fields() {
+		if (campaign.due_date == "") {
+			warning_message = "Brak daty końca";
+			return 1;
+		}
+		if (campaign.title == "") {
+			warning_message = "Brak nazwy kampanii";
+			return 1;
+		}
+		if (campaign.url == "") {
+			warning_message = "Brak linku do kampanii";
+		}
+		warning_message = "";
+	}
 	let save_in_progress: boolean = false;
 	async function save_with_progress() {
+		if (validate_fields()) {
+			showToast();
+			return;
+		}
 		save_in_progress = true;
 		campaign.status = CampaignStatus.ACTIVE;
 		await save();
@@ -31,6 +50,14 @@
 	let excelHelper = false;
 	let delete_uuid = "";
 	let excel_helper = "";
+	let warning_message = "";
+
+	let toast_id = "edit_campaign_toast";
+	function showToast() {
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		toast.show();
+	}
 
 	const confirmDelete = () => {
 		delete_uuid = campaign.uuid;
@@ -99,7 +126,11 @@
 <h1>
 	{title}
 </h1>
-
+{#if warning_message != ""}
+	<div class="alert alert-warning mt-4" role="alert">
+		{warning_message}
+	</div>
+{/if}
 <div class="mb-2">
 	<button
 		type="button"
@@ -290,6 +321,10 @@
 		</div>
 	</div>
 {/each}
+
+<SimpleToast {toast_id}>
+	<div slot="toast-body">{warning_message}</div></SimpleToast
+>
 
 <style>
 	.card-body {
