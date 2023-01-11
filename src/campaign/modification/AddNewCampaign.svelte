@@ -81,7 +81,6 @@
 			type: OrderedItemType.PLEDGE,
 		});
 		items = items;
-		// add_shipping()
 		console.log(items)
 	}
 
@@ -107,7 +106,6 @@
 			});
 		}
 		shipping={}
-		
 	};
 
 	function validate_form() {

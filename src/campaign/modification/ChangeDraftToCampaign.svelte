@@ -64,11 +64,13 @@
   }
 
   function add_item() {
+    let ordinal = campaign.items.length + items.length + 1;
+		if (Object.keys(shipping).length !== 0) ordinal--;
     items.push({
       name: "",
       price: 0,
       uuid: v4(),
-      ordinal: campaign.items.length + items.length + 1,
+      ordinal: ordinal,
       type: OrderedItemType.PLEDGE
     });
     items = items;

@@ -52,29 +52,6 @@
 
 	function delete_item(item_uuid: string) {
 		console.log(`delete ${item_uuid}`)
-		console.log(removable_items)
-		// let shipping_item = items.filter(
-		// 	(it) => it.uuid === item_uuid && it.type === OrderedItemType.SHIPPING
-		// );
-		// if (shipping_item.length) {
-		// 	campaign.items = campaign.items
-		// 		.filter(
-		// 			(it) => it.uuid !== item_uuid && it.type !== OrderedItemType.SHIPPING
-		// 		)
-		// 		.map((it, index) => ({ ...it, ordinal: index + 1 }));
-
-		// 	shipping = {};
-		// 	items = items;
-		// } else {
-		// 	removable_items = removable_items
-		// 		.filter(
-		// 			(it) => it.uuid !== item_uuid && it.type !== OrderedItemType.SHIPPING
-		// 		)
-		// 		.map((it, index) => ({ ...it, ordinal: index + 1 }));
-
-		// 	// if (Object.keys(shipping).length !== 0) campaign.items.unshift(shipping);
-		// }
-
 		let shipping_item = removable_items.find((it) => {
 			it.type === OrderedItemType.SHIPPING;
 		});
