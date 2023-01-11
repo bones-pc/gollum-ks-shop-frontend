@@ -81,6 +81,8 @@
 			type: OrderedItemType.PLEDGE,
 		});
 		items = items;
+		// add_shipping()
+		console.log(items)
 	}
 
 	const add_excel = (excel_helper: string) => {
@@ -99,11 +101,13 @@
 			items.push({
 				name: cells[0],
 				uuid: v4(),
-				ordinal: parseInt(y),
+				ordinal: parseInt(y)+1,
 				price: parseInt(cells[1]),
 				type: OrderedItemType.PLEDGE,
 			});
 		}
+		shipping={}
+		
 	};
 
 	function validate_form() {

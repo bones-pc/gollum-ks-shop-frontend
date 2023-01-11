@@ -36,19 +36,23 @@
 	});
 
 	function add_shipping() {
+		console.log('shipping')
 		if (Object.keys(shipping).length === 0) {
+			console.log('missing')
 			shipping.name = "InPost";
 			shipping.price = 0;
 			shipping.uuid = "";
 			shipping.ordinal = 0;
 			shipping.type = OrderedItemType.SHIPPING;
-			// campaign.items.unshift(shipping);
 			removable_items.unshift(shipping);
 		}
-		campaign.items = campaign.items;
+		// campaign.items = campaign.items;
+		removable_items = removable_items
 	}
 
 	function delete_item(item_uuid: string) {
+		console.log(`delete ${item_uuid}`)
+		console.log(removable_items)
 		// let shipping_item = items.filter(
 		// 	(it) => it.uuid === item_uuid && it.type === OrderedItemType.SHIPPING
 		// );
@@ -74,9 +78,12 @@
 		let shipping_item = removable_items.find((it) => {
 			it.type === OrderedItemType.SHIPPING;
 		});
+		console.log(`shipping item ${shipping_item}`)
 
+		if(shipping_item){
 		if (Object.keys(shipping_item).length) {
 			shipping = {};
+		}
 		}
 		removable_items = removable_items
 			.filter((it) => it.uuid !== item_uuid)
@@ -95,6 +102,30 @@
 		});
 		removable_items = removable_items;
 	}
+
+	const add_excel = (excel_helper: string) => {
+		let item: CampaignItem = {
+			ordinal: 0,
+			name: "",
+			price: 0,
+			type: OrderedItemType.PLEDGE,
+		};
+		removable_items = [];
+		let data = excel_helper;
+
+		let rows = data.split("\n");
+		for (let y in rows) {
+			let cells = rows[y].split("\t");
+			removable_items.push({
+				name: cells[0],
+				uuid: v4(),
+				ordinal: parseInt(y)+1,
+				price: parseInt(cells[1]),
+				type: OrderedItemType.PLEDGE,
+			});
+		}
+		shipping={}
+	};
 
 	async function save() {
 		removable_items.forEach((it) => (it.uuid = null));
@@ -117,6 +148,7 @@
 	<EditCampaign
 		{add_item}
 		{add_shipping}
+		{add_excel}
 		{save}
 		{delete_item}
 		{campaign}
