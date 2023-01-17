@@ -2,7 +2,14 @@
 	import { _ } from "svelte-i18n";
 	import { navigate } from "svelte-navigator";
 	import { v4 } from "uuid";
-	import { api, CampaignCandidate, CampaignStatus } from "../../api/Api";
+	import { onMount } from "svelte";
+
+	import {
+		api,
+		CampaignCandidate,
+		CampaignStatus,
+		ErrorResponse,
+	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
 
@@ -18,6 +25,7 @@
 		description: "",
 		status: CampaignStatus.DRAFT,
 	});
+
 	let ks_name: string;
 	let selected_item = false;
 	let campaign_list_modal_visible = false;
@@ -27,12 +35,21 @@
 	let campaign_list: CampaignCandidate[];
 	let campaign_list_modal = [];
 
+	export let candidate_uuid: string;
+	console.log(candidate_uuid);
+
+	onMount(async () => {
+		draft = await api.fetchCampaignCandidate(candidate_uuid);
+		ks_name = draft.title;
+		console.log(draft);
+	});
+
 	async function save() {
-		draft = await api.addCandidate(draft);
-		if (draft.status_code == 409) warning = "Kampania już istnieje";
-		else warning = null;
+		let draft_reponse: CampaignCandidate & ErrorResponse;
+		draft_reponse = await api.patchCandidate(draft);
 		navigate("/drafts");
 	}
+
 	function closeList() {
 		campaign_list_modal_visible = false;
 	}

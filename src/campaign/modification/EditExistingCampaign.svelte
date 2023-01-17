@@ -36,9 +36,9 @@
 	});
 
 	function add_shipping() {
-		console.log('shipping')
+		console.log("shipping");
 		if (Object.keys(shipping).length === 0) {
-			console.log('missing')
+			console.log("missing");
 			shipping.name = "InPost";
 			shipping.price = 0;
 			shipping.uuid = "";
@@ -47,20 +47,20 @@
 			removable_items.unshift(shipping);
 		}
 		// campaign.items = campaign.items;
-		removable_items = removable_items
+		removable_items = removable_items;
 	}
 
 	function delete_item(item_uuid: string) {
-		console.log(`delete ${item_uuid}`)
+		console.log(`delete ${item_uuid}`);
 		let shipping_item = removable_items.find((it) => {
 			it.type === OrderedItemType.SHIPPING;
 		});
-		console.log(`shipping item ${shipping_item}`)
+		console.log(`shipping item ${shipping_item}`);
 
-		if(shipping_item){
-		if (Object.keys(shipping_item).length) {
-			shipping = {};
-		}
+		if (shipping_item) {
+			if (Object.keys(shipping_item).length) {
+				shipping = {};
+			}
 		}
 		removable_items = removable_items
 			.filter((it) => it.uuid !== item_uuid)
@@ -96,12 +96,12 @@
 			removable_items.push({
 				name: cells[0],
 				uuid: v4(),
-				ordinal: parseInt(y)+1,
+				ordinal: parseInt(y) + 1,
 				price: parseInt(cells[1]),
 				type: OrderedItemType.PLEDGE,
 			});
 		}
-		shipping={}
+		shipping = {};
 	};
 
 	async function save() {

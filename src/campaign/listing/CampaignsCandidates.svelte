@@ -206,6 +206,12 @@
 					</Link>
 				</li>
 				<li>
+					<Link to="/campaigns/candidate/edit/{item.id}">
+						{$_("active_campaigns.edit")}
+					</Link>
+				</li>
+
+				<li>
 					<Link
 						to="/drafts"
 						on:click={() => {

@@ -1,67 +1,67 @@
 import { get } from "svelte/store";
 import { access_token, api_url as url, user_uuid } from "../stores";
 import {
-  Api,
-  AssignedToUser,
-  Campaign,
-  CampaignCandidate,
-  CampaignsSearchParams,
-  CampaignStatus,
-  CampaignUpdate,
-  Order,
-  OrderStatus,
-  OrderUpdate,
-  User,
-  UserProfile,
-  ErrorResponse
+	Api,
+	AssignedToUser,
+	Campaign,
+	CampaignCandidate,
+	CampaignsSearchParams,
+	CampaignStatus,
+	CampaignUpdate,
+	Order,
+	OrderStatus,
+	OrderUpdate,
+	User,
+	UserProfile,
+	ErrorResponse,
 } from "./Data";
 
 const api_url = get(url);
 
 function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
-  return {
-    uuid: campaign.uuid,
-    title: campaign.name,
-    img_url: campaign.img_url,
-    payment_details: campaign.payment_details,
-    items: campaign.items?.map((i, index) => ({
-      uuid: i.uuid,
-      ordinal: i.ordinal,
-      name: i.name,
-      price: i.price,
-      type: i.type,
-    })),
-    url: campaign.url,
-    status: campaign.status as CampaignStatus,
-    description: campaign.description,
-    added_date: campaign.added_date,
-    due_date: campaign.due_date,
-  };
+	return {
+		uuid: campaign.uuid,
+		title: campaign.name,
+		img_url: campaign.img_url,
+		payment_details: campaign.payment_details,
+		items: campaign.items?.map((i, index) => ({
+			uuid: i.uuid,
+			ordinal: i.ordinal,
+			name: i.name,
+			price: i.price,
+			type: i.type,
+		})),
+		url: campaign.url,
+		status: campaign.status as CampaignStatus,
+		description: campaign.description,
+		added_date: campaign.added_date,
+		due_date: campaign.due_date,
+	};
 }
 
 function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
-  return {
-    uuid: draft.uuid,
-    title: draft.name || draft.campaign_name,
-    img_url: draft.img_url,
-    url: draft.url,
-    // todo - Piotr should fix it soon
-    liking_users: draft?.liking_users?.filter((it) => it != null),
-    description: draft.description,
-    status: draft.status
-  };
+	return {
+		uuid: draft.uuid,
+		title: draft.name || draft.campaign_name,
+		img_url: draft.img_url,
+		url: draft.url,
+		// todo - Piotr should fix it soon
+		liking_users: draft?.liking_users?.filter((it) => it != null),
+		description: draft.description,
+		status: draft.status,
+	};
 }
 
 function backend_user_to_frontend_user(user: any): User {
-  return {
-    uuid: user.uuid,
-    activated: user.active,
-    username: user.username,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    inpost: user.inpost,
-    zip: user.zip,
-  };
+	return {
+		uuid: user.uuid,
+		activated: user.active,
+		username: user.username,
+		firstname: user.firstname,
+		lastname: user.lastname,
+		inpost: user.inpost,
+		zip: user.zip,
+	};
 }
 
 // function backend_user_profile_to_frontend_user_profile(user: any): UserProfile {
@@ -80,450 +80,476 @@ function backend_user_to_frontend_user(user: any): User {
 // }
 
 function backend_order_to_frontend_order(order: any): Order {
-  return {
-    campaign_uuid: order.uuid,
-    order_uuid: order.order_uuid,
-    order_date: order.order_date,
-    ouuid: order.ouuid,
-    status: order.status,
-    tracking_no: order.tracking_no,
-    paid_amount: Number.parseInt(order.paid_amount),
-    items: order.items?.map((i) => ({
-      item_uuid: i.uuid,
-      amount: Number.parseInt(i.amount),
-    })),
-  };
+	return {
+		campaign_uuid: order.uuid,
+		order_uuid: order.order_uuid,
+		order_date: order.order_date,
+		ouuid: order.ouuid,
+		status: order.status,
+		tracking_no: order.tracking_no,
+		paid_amount: Number.parseInt(order.paid_amount),
+		items: order.items?.map((i) => ({
+			item_uuid: i.uuid,
+			amount: Number.parseInt(i.amount),
+		})),
+	};
 }
 
 export class RestApi implements Api {
-  addCandidate(draft: CampaignCandidate): Promise<CampaignCandidate> | Promise<ErrorResponse> {
-    let error_response: ErrorResponse = {
-      status: 409,
-      message: "Kampania już istnieje"
-    }
-    return (async () => {
-      const payload = { ...draft };
-      payload.status = CampaignStatus.DRAFT.toString();
-      const response = await fetch(
-        api_url + "campaigns",
-        options("POST", payload)
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return backend_draft_to_frontend_draft(response_json);
-      }
-      return error_response
-    })();
-  }
+	addCandidate(
+		draft: CampaignCandidate
+	): Promise<CampaignCandidate> | Promise<ErrorResponse> {
+		let error_response: ErrorResponse = {
+			status: 409,
+			message: "Kampania już istnieje",
+		};
+		return (async () => {
+			const payload = { ...draft };
+			payload.status = CampaignStatus.DRAFT.toString();
+			const response = await fetch(
+				api_url + "campaigns",
+				options("POST", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return backend_draft_to_frontend_draft(response_json);
+			}
+			return error_response;
+		})();
+	}
 
-  fetchKSCampaigns(name: string): Promise<CampaignCandidate[]> {
-    return (async () => {
-      const payload = {
-        ks_search: name
-      };
-      const response = await fetch(
-        api_url + "kickstarter",
-        options("POST", payload)
-      );
-      if (response.ok) {
-        const response_json = await response.json()
-        return response_json
-      }
-    })();
-  }
+	async patchCandidate(
+		draft: CampaignCandidate
+	): CampaignCandidate & ErrorResponse {
+		let error_response: ErrorResponse = {
+			status_code: 409,
+			message: "Kampania już istnieje",
+		};
+		let candidate: CampaignCandidate;
+		let candidate_response: CampaignCandidate & ErrorResponse;
 
-  fetchCampaignOrders(
-    campaign_uuid: string
-  ): Promise<(Order & AssignedToUser)[]> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + campaign_uuid + "/orders",
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        const results = [];
-        for (let username in response_json) {
-          let lastname = response_json[username].lastname;
-          let firstname = response_json[username].firstname;
-          results.push({
-            username,
-            firstname,
-            lastname,
-            ...backend_order_to_frontend_order(response_json[username]),
-          });
-        }
-        return results;
-      }
-    })();
-  }
+		let payload = { ...draft };
+		payload.status = CampaignStatus.DRAFT;
 
-  fetchUserOrdersAdmin(user_uuid: string): Promise<Order[]> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "users/" + user_uuid + "/orders",
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.map(backend_order_to_frontend_order);
-      }
-    })();
-  }
+		const response = await fetch(
+			api_url + "campaigns",
+			options("PATCH", payload)
+		);
+		if (response.ok) {
+			const response_json = await response.json();
+			candidate = backend_draft_to_frontend_draft(response_json);
+			candidate_response = { ...candidate, ...error_response };
+		}
+		return candidate_response;
+	}
 
-  fetchUserOrders(): Promise<Order[]> {
-    return (async () => {
-      const response = await fetch(api_url + "orders", options("GET"));
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.map(backend_order_to_frontend_order);
-      }
-    })();
-  }
+	fetchKSCampaigns(name: string): Promise<CampaignCandidate[]> {
+		return (async () => {
+			const payload = {
+				ks_search: name,
+			};
+			const response = await fetch(
+				api_url + "kickstarter",
+				options("POST", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
+		})();
+	}
 
-  fetchOrder(campaign_uuid: string): Promise<Order> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + campaign_uuid + "/order",
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        if (response_json.uuid == null) {
-          return null;
-        }
-        return backend_order_to_frontend_order(response_json);
-      }
-    })();
-  }
+	fetchCampaignOrders(
+		campaign_uuid: string
+	): Promise<(Order & AssignedToUser)[]> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + campaign_uuid + "/orders",
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				const results = [];
+				for (let username in response_json) {
+					let lastname = response_json[username].lastname;
+					let firstname = response_json[username].firstname;
+					results.push({
+						username,
+						firstname,
+						lastname,
+						...backend_order_to_frontend_order(response_json[username]),
+					});
+				}
+				return results;
+			}
+		})();
+	}
 
-  updatePaidAmount(order: Order & AssignedToUser): Promise<Order> {
-    return (async () => {
-      const payload = {
-        paid_amount: order.paid_amount,
-        campaign_uuid: order.campaign_uuid,
-        order_uuid: order.order_uuid,
-      };
-      const response = await fetch(
-        api_url + "campaigns/" + order.campaign_uuid + "/order",
-        options("PATCH", payload)
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return backend_order_to_frontend_order(response_json.result[0]);
-      }
-    })();
-  }
+	fetchUserOrdersAdmin(user_uuid: string): Promise<Order[]> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/" + user_uuid + "/orders",
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_order_to_frontend_order);
+			}
+		})();
+	}
 
-  updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
+	fetchUserOrders(): Promise<Order[]> {
+		return (async () => {
+			const response = await fetch(api_url + "orders", options("GET"));
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_order_to_frontend_order);
+			}
+		})();
+	}
 
-    return (async () => {
-      const payload = {
-        tracking_no: order.tracking_no,
-        campaign_uuid: order.campaign_uuid,
-        order_uuid: order.order_uuid,
-      };
-      const response = await fetch(
-        api_url + "campaigns/" + order.campaign_uuid + "/order",
-        options("PATCH", payload)
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.result;
-      }
-    })();
-  }
+	fetchOrder(campaign_uuid: string): Promise<Order> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + campaign_uuid + "/order",
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				if (response_json.uuid == null) {
+					return null;
+				}
+				return backend_order_to_frontend_order(response_json);
+			}
+		})();
+	}
 
-  fetchCampaign(uuid: string): Promise<Campaign> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + uuid,
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        if (response_json.length > 0) {
-          return backend_campaign_to_frontend_campaign(response_json[0]);
-        }
-      }
-    })();
-  }
+	updatePaidAmount(order: Order & AssignedToUser): Promise<Order> {
+		return (async () => {
+			const payload = {
+				paid_amount: order.paid_amount,
+				campaign_uuid: order.campaign_uuid,
+				order_uuid: order.order_uuid,
+			};
+			const response = await fetch(
+				api_url + "campaigns/" + order.campaign_uuid + "/order",
+				options("PATCH", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return backend_order_to_frontend_order(response_json.result[0]);
+			}
+		})();
+	}
 
-  orderCampaign(campaign_uuid: string, update: OrderUpdate): Promise<Order> {
-    return (async () => {
-      const payload = {
-        items: update.items.map((it) => ({
-          pledge_id: it.item_uuid,
-          amount: it.amount,
-        })),
-      };
-      const response = update.is_new
-        ? await fetch(
-          api_url + "campaigns/" + campaign_uuid + "/order",
-          options("POST", payload)
-        )
-        : await fetch(
-          api_url + "campaigns/" + campaign_uuid + "/order",
-          options("PATCH", payload)
-        );
-      if (response.ok) {
-        const response_json = await response.json();
-        return backend_order_to_frontend_order(response_json.result[0]);
-      }
-    })();
-  }
+	updateOrderTracking(order: Order & AssignedToUser): Promise<Order> {
+		return (async () => {
+			const payload = {
+				tracking_no: order.tracking_no,
+				campaign_uuid: order.campaign_uuid,
+				order_uuid: order.order_uuid,
+			};
+			const response = await fetch(
+				api_url + "campaigns/" + order.campaign_uuid + "/order",
+				options("PATCH", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.result;
+			}
+		})();
+	}
 
-  updateCampaign(update: CampaignUpdate): Promise<Campaign> {
-    return (async () => {
-      const payload = { ...update.campaign };
-      if (update.is_new) {
-        payload["uuid"] = update.candidate_uuid ?? null;
-      }
-      const response =
-        update.is_new && update.candidate_uuid == null
-          ? await fetch(api_url + "campaigns", options("POST", payload))
-          : await fetch(api_url + "campaigns", options("PATCH", payload));
-      if (response.ok) {
-        const response_json = await response.json();
-        return backend_campaign_to_frontend_campaign(response_json.result[0]);
-      }
-    })();
-  }
+	fetchCampaign(uuid: string): Promise<Campaign> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + uuid,
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				if (response_json.length > 0) {
+					return backend_campaign_to_frontend_campaign(response_json[0]);
+				}
+			}
+		})();
+	}
 
-  fetchCampaigns(params: CampaignsSearchParams): Promise<Campaign[]> {
-    const fetch_params = new URLSearchParams();
-    if (params.status == null) {
-    } else {
-      fetch_params.set("status", params.status.toString());
-    }
-    if (params.titleLike) {
-      fetch_params.set("name", params.titleLike);
-    }
-    if (params.uuids) {
-      for (let uuid of params.uuids) {
-        fetch_params.append("id", uuid);
-      }
-    }
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns?" + fetch_params.toString(),
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.map(backend_campaign_to_frontend_campaign);
-      }
-    })();
-  }
+	orderCampaign(campaign_uuid: string, update: OrderUpdate): Promise<Order> {
+		return (async () => {
+			const payload = {
+				items: update.items.map((it) => ({
+					pledge_id: it.item_uuid,
+					amount: it.amount,
+				})),
+			};
+			const response = update.is_new
+				? await fetch(
+						api_url + "campaigns/" + campaign_uuid + "/order",
+						options("POST", payload)
+				  )
+				: await fetch(
+						api_url + "campaigns/" + campaign_uuid + "/order",
+						options("PATCH", payload)
+				  );
+			if (response.ok) {
+				const response_json = await response.json();
+				return backend_order_to_frontend_order(response_json.result[0]);
+			}
+		})();
+	}
 
-  changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns",
-        options("PATCH", { status: newStatus, uuid })
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        if (response_json.result.length > 0) {
-          return backend_campaign_to_frontend_campaign(response_json.result[0]);
-        }
-      }
-    })();
-  }
+	updateCampaign(update: CampaignUpdate): Promise<Campaign> {
+		return (async () => {
+			const payload = { ...update.campaign };
+			if (update.is_new) {
+				payload["uuid"] = update.candidate_uuid ?? null;
+			}
+			const response =
+				update.is_new && update.candidate_uuid == null
+					? await fetch(api_url + "campaigns", options("POST", payload))
+					: await fetch(api_url + "campaigns", options("PATCH", payload));
+			if (response.ok) {
+				const response_json = await response.json();
+				return backend_campaign_to_frontend_campaign(response_json.result[0]);
+			}
+		})();
+	}
 
-  changeUserOrderStatus(
-    user_uuid: string,
-    campain_uuid: string,
-    order_uuid: string,
-    status: OrderStatus
-  ) {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + campain_uuid + "/order",
-        options("PATCH", { order_uuid, status: status })
-      );
-      if (response.ok) {
-        const response_json = await response.json();
+	fetchCampaigns(params: CampaignsSearchParams): Promise<Campaign[]> {
+		const fetch_params = new URLSearchParams();
+		if (params.status == null) {
+		} else {
+			fetch_params.set("status", params.status.toString());
+		}
+		if (params.titleLike) {
+			fetch_params.set("name", params.titleLike);
+		}
+		if (params.uuids) {
+			for (let uuid of params.uuids) {
+				fetch_params.append("id", uuid);
+			}
+		}
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns?" + fetch_params.toString(),
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_campaign_to_frontend_campaign);
+			}
+		})();
+	}
 
-        if (response_json.result.length > 0) {
-          return backend_campaign_to_frontend_campaign(response_json.result[0]);
-        }
-      }
-    })();
-  }
+	changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns",
+				options("PATCH", { status: newStatus, uuid })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				if (response_json.result.length > 0) {
+					return backend_campaign_to_frontend_campaign(response_json.result[0]);
+				}
+			}
+		})();
+	}
 
-  fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + uuid,
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        if (response_json.length > 0) {
-          return backend_draft_to_frontend_draft(response_json[0]);
-        }
-      }
-    })();
-  }
+	changeUserOrderStatus(
+		user_uuid: string,
+		campain_uuid: string,
+		order_uuid: string,
+		status: OrderStatus
+	) {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + campain_uuid + "/order",
+				options("PATCH", { order_uuid, status: status })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
 
-  fetchCampaignCandidates(titleLike: string): Promise<CampaignCandidate[]> {
-    const fetch_params = new URLSearchParams();
-    fetch_params.set("status", CampaignStatus.DRAFT.toString());
-    if (titleLike) {
-      fetch_params.set("name", titleLike);
-    }
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns?" + fetch_params.toString(),
-        options("GET")
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.map(backend_draft_to_frontend_draft);
-      }
-    })();
-  }
+				if (response_json.result.length > 0) {
+					return backend_campaign_to_frontend_campaign(response_json.result[0]);
+				}
+			}
+		})();
+	}
 
-  likeCandidate(uuid: string): Promise<CampaignCandidate> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + uuid + "/like",
-        options("PUT")
-      );
-      if (response.ok) {
-        // TODO api does not return candidate but we fetch all drafts anyway
-        return null;
-      }
-    })();
-  }
+	fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + uuid,
+				options("GET")
+			);
+			console.log(response);
+			if (response.ok) {
+				const response_json = await response.json();
+				if (response_json.length > 0) {
+					return backend_draft_to_frontend_draft(response_json[0]);
+				}
+			}
+		})();
+	}
 
-  unlikeCandidate(uuid: string): Promise<CampaignCandidate> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "campaigns/" + uuid + "/like",
-        options("DELETE")
-      );
-      if (response.ok) {
-        // TODO api does not return candidate but we fetch all drafts anyway
-        return null;
-      }
-    })();
-  }
+	fetchCampaignCandidates(titleLike: string): Promise<CampaignCandidate[]> {
+		const fetch_params = new URLSearchParams();
+		fetch_params.set("status", CampaignStatus.DRAFT.toString());
+		if (titleLike) {
+			fetch_params.set("name", titleLike);
+		}
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns?" + fetch_params.toString(),
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_draft_to_frontend_draft);
+			}
+		})();
+	}
 
-  fetchUsers(): Promise<User[]> {
-    return (async () => {
-      const response = await fetch(api_url + "users", options("GET"));
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json.map(backend_user_to_frontend_user);
-      }
-    })();
-  }
+	likeCandidate(uuid: string): Promise<CampaignCandidate> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + uuid + "/like",
+				options("PUT")
+			);
+			if (response.ok) {
+				// TODO api does not return candidate but we fetch all drafts anyway
+				return null;
+			}
+		})();
+	}
 
-  fetchUserProfile(): Promise<UserProfile> {
-    return (async () => {
-      const response = await fetch(api_url + "users/profile", options("GET"));
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json;
-      }
-    })();
-  }
+	unlikeCandidate(uuid: string): Promise<CampaignCandidate> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + uuid + "/like",
+				options("DELETE")
+			);
+			if (response.ok) {
+				// TODO api does not return candidate but we fetch all drafts anyway
+				return null;
+			}
+		})();
+	}
 
-  fetchUserProfileAdmin(uuid: string): Promise<UserProfile> {
-    return (async () => {
-      const response = await fetch(api_url + "users/" + uuid, options("GET"));
-      if (response.ok) {
-        const response_json = await response.json();
-        return response_json;
-      }
-    })();
-  }
+	fetchUsers(): Promise<User[]> {
+		return (async () => {
+			const response = await fetch(api_url + "users", options("GET"));
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_user_to_frontend_user);
+			}
+		})();
+	}
 
-  updateUserProfile(user: UserProfile): Promise<UserProfile> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "users/profile",
-        options("PATCH", {
-          username: user.username,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          email: user.email,
-          phone: user.phone,
-          street: user.street,
-          zip: user.zip,
-          city: user.city,
-          inpost: user.inpost,
-        })
-      );
-      return response.json();
-    })();
-  }
+	fetchUserProfile(): Promise<UserProfile> {
+		return (async () => {
+			const response = await fetch(api_url + "users/profile", options("GET"));
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
+		})();
+	}
 
-  activateUser(user_uuid: string): Promise<User> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "users/" + user_uuid,
-        options("PATCH", { active: true })
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return {
-          ...backend_user_to_frontend_user(response_json),
-          uuid: user_uuid,
-        };
-      }
-    })();
-  }
+	fetchUserProfileAdmin(uuid: string): Promise<UserProfile> {
+		return (async () => {
+			const response = await fetch(api_url + "users/" + uuid, options("GET"));
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
+		})();
+	}
 
-  deactivateUser(user_uuid: string): Promise<User> {
-    return (async () => {
-      const response = await fetch(
-        api_url + "users/" + user_uuid,
-        options("PATCH", { active: false })
-      );
-      if (response.ok) {
-        const response_json = await response.json();
-        return {
-          ...backend_user_to_frontend_user(response_json),
-          uuid: user_uuid,
-        };
-      }
-    })();
-  }
+	updateUserProfile(user: UserProfile): Promise<UserProfile> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/profile",
+				options("PATCH", {
+					username: user.username,
+					firstname: user.firstname,
+					lastname: user.lastname,
+					email: user.email,
+					phone: user.phone,
+					street: user.street,
+					zip: user.zip,
+					city: user.city,
+					inpost: user.inpost,
+				})
+			);
+			return response.json();
+		})();
+	}
 
-  resetPassword(password: string, token: string): Promise<Boolean> {
+	activateUser(user_uuid: string): Promise<User> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/" + user_uuid,
+				options("PATCH", { active: true })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return {
+					...backend_user_to_frontend_user(response_json),
+					uuid: user_uuid,
+				};
+			}
+		})();
+	}
 
-    return (async () => {
-      let payload = { password, token };
+	deactivateUser(user_uuid: string): Promise<User> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/" + user_uuid,
+				options("PATCH", { active: false })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return {
+					...backend_user_to_frontend_user(response_json),
+					uuid: user_uuid,
+				};
+			}
+		})();
+	}
 
-      let url = api_url + "auth/password-reset/";
+	resetPassword(password: string, token: string): Promise<Boolean> {
+		return (async () => {
+			let payload = { password, token };
 
-      const response = await fetch(url, options("PATCH", payload));
+			let url = api_url + "auth/password-reset/";
 
-      return true;
-    })();
-  }
+			const response = await fetch(url, options("PATCH", payload));
 
-  initPasswordReset(email: string): Promise<Boolean> {
-    return (async () => {
-      let payload = { email };
-      let url = api_url + "auth/password-reset/";
-      const response = await fetch(url, options("POST", payload));
-      return true;
-    })();
-  }
+			return true;
+		})();
+	}
+
+	initPasswordReset(email: string): Promise<Boolean> {
+		return (async () => {
+			let payload = { email };
+			let url = api_url + "auth/password-reset/";
+			const response = await fetch(url, options("POST", payload));
+			return true;
+		})();
+	}
 }
 
 function options(method, body = null): RequestInit {
-  return {
-    method,
-    mode: "cors",
-    headers: {
-      "Content-type": "application/json",
-      Authorization: "Bearer " + get(access_token),
-    },
-    body: body == null ? null : JSON.stringify(body),
-  };
+	return {
+		method,
+		mode: "cors",
+		headers: {
+			"Content-type": "application/json",
+			Authorization: "Bearer " + get(access_token),
+		},
+		body: body == null ? null : JSON.stringify(body),
+	};
 }
