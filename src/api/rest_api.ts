@@ -39,7 +39,9 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
 	};
 }
 
-function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
+function backend_draft_to_frontend_draft(
+	draft: any
+): CampaignCandidate & ErrorResponse {
 	return {
 		uuid: draft.uuid,
 		title: draft.name || draft.campaign_name,
@@ -49,6 +51,8 @@ function backend_draft_to_frontend_draft(draft: any): CampaignCandidate {
 		liking_users: draft?.liking_users?.filter((it) => it != null),
 		description: draft.description,
 		status: draft.status,
+		status_code: 200,
+		message: "ok",
 	};
 }
 
@@ -100,16 +104,17 @@ export class RestApi implements Api {
 		draft: CampaignCandidate
 	): Promise<CampaignCandidate> | Promise<ErrorResponse> {
 		let error_response: ErrorResponse = {
-			status: 409,
+			status_code: 409,
 			message: "Kampania już istnieje",
 		};
 		return (async () => {
-			const payload = { ...draft };
-			payload.status = CampaignStatus.DRAFT.toString();
+			const payload: CampaignCandidate = { ...draft };
+			payload.status = CampaignStatus.DRAFT; //.toString();
 			const response = await fetch(
 				api_url + "campaigns",
 				options("POST", payload)
 			);
+			console.log(response);
 			if (response.ok) {
 				const response_json = await response.json();
 				return backend_draft_to_frontend_draft(response_json);
@@ -120,7 +125,7 @@ export class RestApi implements Api {
 
 	async patchCandidate(
 		draft: CampaignCandidate
-	): CampaignCandidate & ErrorResponse {
+	): Promise<CampaignCandidate & ErrorResponse> {
 		let error_response: ErrorResponse = {
 			status_code: 409,
 			message: "Kampania już istnieje",
