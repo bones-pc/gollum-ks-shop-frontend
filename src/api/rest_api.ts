@@ -134,8 +134,7 @@ export class RestApi implements Api {
 		let candidate_response: CampaignCandidate & ErrorResponse;
 
 		let payload = { ...draft };
-		payload.status = CampaignStatus.DRAFT;
-
+		// payload.status = CampaignStatus.DRAFT;
 		const response = await fetch(
 			api_url + "campaigns",
 			options("PATCH", payload)
@@ -143,6 +142,7 @@ export class RestApi implements Api {
 		if (response.ok) {
 			const response_json = await response.json();
 			candidate = backend_draft_to_frontend_draft(response_json);
+			error_response.status_code = 200;
 			candidate_response = { ...candidate, ...error_response };
 		}
 		return candidate_response;

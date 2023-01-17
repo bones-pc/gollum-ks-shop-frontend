@@ -41,12 +41,14 @@
 	onMount(async () => {
 		draft = await api.fetchCampaignCandidate(candidate_uuid);
 		ks_name = draft.title;
-		console.log(draft);
+		console.log(`mount - ${JSON.stringify(draft)}`);
 	});
 
 	async function save() {
 		let draft_reponse: CampaignCandidate & ErrorResponse;
 		draft_reponse = await api.patchCandidate(draft);
+		console.log(`to save - ${JSON.stringify(draft)}`);
+		console.log(`response- ${JSON.stringify(draft_reponse)}`);
 		navigate("/drafts");
 	}
 
