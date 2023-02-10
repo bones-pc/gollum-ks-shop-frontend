@@ -115,7 +115,7 @@ export class RestApi implements Api {
 				api_url + "campaigns",
 				options("POST", payload)
 			);
-			console.log(response);
+			// console.log(response);
 			if (response.ok) {
 				const response_json = await response.json();
 				return backend_draft_to_frontend_draft(response_json);
@@ -300,6 +300,7 @@ export class RestApi implements Api {
 				  );
 			if (response.ok) {
 				const response_json = await response.json();
+				// console.log(response_json);
 				return backend_order_to_frontend_order(response_json.result[0]);
 			}
 		})();
@@ -411,7 +412,7 @@ export class RestApi implements Api {
 				api_url + "campaigns/" + uuid,
 				options("GET")
 			);
-			console.log(response);
+			// console.log(response);
 			if (response.ok) {
 				const response_json = await response.json();
 				if (response_json.length > 0) {

@@ -56,12 +56,27 @@
 
 	let admin_addons: CampaignItem[];
 
+	function addAdminOrder(addon) {
+		console.log(orders);
+		for (let order of orders) {
+			if (order.items.filter((v) => v.item_uuid == addon.uuid).length == 0)
+				order.items = [...order.items, { amount: 1, item_uuid: addon.uuid }];
+		}
+		orders.forEach((order) => {});
+		// change_order(campaign_uuid, )
+		orders = orders;
+		campaign = campaign;
+	}
+
 	async function change_order(
 		campaign_uuid: string,
 		owner_uuid: string,
 		items: OrderedItemAdmin[]
 	) {
 		const savedOrder = await api.patchOrder(campaign_uuid, owner_uuid, items);
+		totalItems = totalItems;
+		orders = orders;
+		campaign = campaign;
 		// showToast();
 	}
 
@@ -74,6 +89,42 @@
 		}
 		return 0;
 	};
+	async function downloadCSV() {
+		let output_csv = "";
+		let row =
+			"Imie, Nazwisko, login, zapłacone, liczba, pledge, cena, data_zamowienia,\r\n";
+		for (let i = 0; i < orders.length; i++) {
+			let ppl = orders[i];
+			let ppl_orders = ppl.items;
+			console.log(ppl);
+			ppl_orders.forEach((item) => {
+				let campaign_pledge = campaign.items.filter(
+					(v) => v.uuid === item.item_uuid
+				);
+				row += `"${ppl.firstname}",`;
+				row += `"${ppl.firstname}",`;
+				row += `"${ppl.lastname}",`;
+				row += `"${ppl.username}",`;
+				row += `"${ppl.paid_amount}",`;
+				row += `"${item.amount}",`;
+				row += `"${campaign_pledge[0].name}",`;
+				row += `"${campaign_pledge[0].price}",`;
+				row += `"${ppl.order_date}",`;
+				row += "\r\n";
+				output_csv += row;
+				row = "";
+			});
+		}
+		console.log(output_csv);
+
+		let download = document.getElementById("download");
+		download.setAttribute(
+			"href",
+			"data:text/csv;charset=utf-8," + encodeURIComponent(output_csv)
+		);
+		download.setAttribute("download", "test.csv");
+		download.click();
+	}
 
 	onMount(async () => {
 		const [o, c] = await Promise.all([
@@ -83,8 +134,6 @@
 		orders = o.sort(sort_by_order_date);
 		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
-		// console.log(o);
-		// console.log(c);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -105,20 +154,25 @@
 	<h1>
 		{$_("manage_orders.title", { values: { campaign_title: campaign.title } })}
 	</h1>
-
 	<h2>{$_("manage_orders.orders_summary")}</h2>
-	<div>
-		{$_("manage_orders.orders_summary.paid", {
-			values: { totalGathered, totalPrice },
-		})}
-		<ul>
-			{#each totalItems as totalItem}
-				<li>
-					{totalItem.ordinal}. {totalItem.name}: {totalItem.total_amount}
-				</li>
-			{/each}
-		</ul>
+	<div class="row">
+		<div class="col-md-3 mid">
+			{$_("manage_orders.orders_summary.paid", {
+				values: { totalGathered, totalPrice },
+			})}
+			<ul>
+				{#each totalItems as totalItem}
+					<li>
+						{totalItem.ordinal}. {totalItem.name}: {totalItem.total_amount}
+					</li>
+				{/each}
+			</ul>
+		</div>
+		<div class="col-md-2 mid">
+			<InProgressButton on_click_function={downloadCSV} label="Ściągnij CSV" />
+		</div>
 	</div>
+	<a id="download" />
 
 	<div>
 		Tytuł przelewu:
@@ -130,13 +184,16 @@
 			{#each admin_addons as addon}
 				<li>
 					{addon.name}: {addon.price}
-					<button class="btn btn-outline-secondary change-amount">+</button>
+					<button
+						class="btn btn-outline-secondary change-amount"
+						on:click={() => addAdminOrder(addon)}>+</button
+					>
 				</li>
 			{/each}
 		</ul>
 	</div>
-
 	<h4>{$_("manage_orders.per_user_summary")}</h4>
+
 	{#each orders as order}
 		{order.firstname}
 		{order.lastname}
