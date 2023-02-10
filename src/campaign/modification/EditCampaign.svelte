@@ -12,6 +12,7 @@
 	export let title: string;
 	export let add_item: () => void;
 	export let add_shipping: () => void;
+	export let add_admin_pledge: () => void;
 	export let add_excel: (excel_helper: string) => void;
 	export let delete_item: (item_uuid: string) => void;
 	export let save: () => Promise<void>;
@@ -154,6 +155,14 @@
 		+ {$_("edit_campaign.add_shipping")}
 	</button>
 
+	<button
+		type="button"
+		class="btn btn-primary"
+		on:click={add_admin_pledge}
+		disabled={save_in_progress}
+		>+ {$_("edit_campaign.add_admin_pledge")}
+	</button>
+
 	<InProgressButton
 		on_click_function={save_with_progress}
 		label={$_("edit_campaign.save")}
@@ -164,19 +173,15 @@
 			type="button"
 			class="btn btn-warning"
 			on:click={ressurect_campaign}
-			label={$_("edit_campaign.save")}
+			label={$_("edit_campaign.save")}>Odzyskaj</button
 		>
-			Odzyskaj kampanię
-		</button>
 	{:else}
 		<button
 			type="button"
 			class="btn btn-warning"
 			on:click={confirmDelete}
-			label={$_("edit_campaign.save")}
+			label={$_("edit_campaign.save")}>Kasuj</button
 		>
-			Kasuj kampanię
-		</button>
 	{/if}
 </div>
 <div class="mb-3">
@@ -259,6 +264,8 @@
 		<div class="card-body">
 			<div class="input-group">
 				{#if item.type == OrderedItemType.SHIPPING}
+					<span class="input-group-text">&nbsp;&nbsp;</span>
+				{:else if item.type == OrderedItemType.ADMIN_ADDON}
 					<span class="input-group-text">&nbsp;&nbsp;</span>
 				{:else}
 					<span class="input-group-text">{item.ordinal}.</span>

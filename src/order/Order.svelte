@@ -5,7 +5,13 @@
 	import Fa from "svelte-fa";
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
-	import { api, Campaign, Order, OrderedItem } from "../api/Api";
+	import {
+		api,
+		Campaign,
+		Order,
+		OrderedItem,
+		OrderedItemType,
+	} from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
 	import SimpleToast from "../utils/SimpleToast.svelte";
 
@@ -32,7 +38,10 @@
 
 	onMount(async () => {
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		const fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
+		let fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
+		fetchedCampaign.items = fetchedCampaign.items.filter(
+			(v) => v.type != OrderedItemType.ADMIN_ADDON
+		);
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
 		}
@@ -48,6 +57,10 @@
 	});
 
 	async function order() {
+		let items_temp = items
+			.filter((i) => i.amount > 0)
+			.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount }));
+
 		const savedOrder = await api.orderCampaign(uuid, {
 			is_new: new_order,
 			items: items

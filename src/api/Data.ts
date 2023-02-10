@@ -63,9 +63,15 @@ export interface OrderedItem {
 	item_type: OrderedItemType;
 }
 
+export interface OrderedItemAdmin {
+	item_uuid: string;
+	amount: number;
+}
+
 export enum OrderedItemType {
 	PLEDGE,
 	SHIPPING,
+	ADMIN_ADDON,
 }
 
 export interface Order {
@@ -153,7 +159,14 @@ export interface Api {
 	);
 	fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
 	fetchCampaign(uuid: string): Promise<Campaign>;
+
 	orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
+	patchOrder(
+		uuid: string,
+		ouiid: string,
+		item: OrderedItemAdmin[]
+	): Promise<Order>;
+
 	updateCampaign(update: CampaignUpdate): Promise<Campaign>;
 	addCandidate(
 		draft: CampaignCandidate

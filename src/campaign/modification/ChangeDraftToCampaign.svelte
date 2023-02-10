@@ -1,32 +1,38 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { _ } from "svelte-i18n";
-  import { useNavigate } from "svelte-navigator";
-  import { v4 } from "uuid";
-  import { api, Campaign, CampaignItem, CampaignStatus, OrderedItemType } from "../../api/Api";
-  import Order from "../../order/Order.svelte";
-  import EditCampaign from "./EditCampaign.svelte";
+	import { onMount } from "svelte";
+	import { _ } from "svelte-i18n";
+	import { useNavigate } from "svelte-navigator";
+	import { v4 } from "uuid";
+	import {
+		api,
+		Campaign,
+		CampaignItem,
+		CampaignStatus,
+		OrderedItemType,
+	} from "../../api/Api";
+	import Order from "../../order/Order.svelte";
+	import EditCampaign from "./EditCampaign.svelte";
 
-  export let candidate_uuid: string;
+	export let candidate_uuid: string;
 
-  const navigate = useNavigate();
-  if (candidate_uuid == null) {
-    navigate("/");
-  }
+	const navigate = useNavigate();
+	if (candidate_uuid == null) {
+		navigate("/");
+	}
 
-  const newCampaign: () => Campaign = () => ({
-    uuid: v4(),
-    description: "",
-    items: [],
-    locked: false,
-    title: "",
-    img_url: "",
-    url: "",
-    status: CampaignStatus.ACTIVE,
-  });
+	const newCampaign: () => Campaign = () => ({
+		uuid: v4(),
+		description: "",
+		items: [],
+		locked: false,
+		title: "",
+		img_url: "",
+		url: "",
+		status: CampaignStatus.ACTIVE,
+	});
 
-  let campaign: Campaign;
-  let items: CampaignItem[] = [];
+	let campaign: Campaign;
+	let items: CampaignItem[] = [];
 
 	let shipping: CampaignItem = {
 		// ordinal: 0,
@@ -36,49 +42,62 @@
 		// type: OrderedItemType.PLEDGE,
 	};
 
+	onMount(async () => {
+		const candidate = await api.fetchCampaignCandidate(candidate_uuid);
+		campaign = { ...newCampaign(), ...candidate, uuid: v4() };
+	});
 
-  onMount(async () => {
-    const candidate = await api.fetchCampaignCandidate(candidate_uuid);
-    campaign = { ...newCampaign(), ...candidate, uuid: v4() };
-  });
+	function delete_item(item_uuid: string) {
+		items = items
+			.filter((it) => it.uuid !== item_uuid)
+			.map((it, index) => ({ ...it, ordinal: index + 1 }));
+	}
 
-  function delete_item(item_uuid: string) {
-    items = items
-      .filter((it) => it.uuid !== item_uuid)
-      .map((it, index) => ({ ...it, ordinal: index + 1 }));
-  }
+	async function save() {
+		items.forEach((it) => (it.uuid = null));
+		const campaign_with_extra_items: Campaign = {
+			...campaign,
+			items: [...items],
+		};
+		campaign = await api.updateCampaign({
+			campaign: campaign_with_extra_items,
+			candidate_uuid,
+			is_new: true,
+		});
+		items = [];
+		navigate(`/campaigns/edit/${campaign.uuid}`);
+	}
 
-  async function save() {
-    items.forEach((it) => (it.uuid = null));
-    const campaign_with_extra_items: Campaign = {
-      ...campaign,
-      items: [...items],
-    };
-    campaign = await api.updateCampaign({
-      campaign: campaign_with_extra_items,
-      candidate_uuid,
-      is_new: true,
-    });
-    items = [];
-    navigate(`/campaigns/edit/${campaign.uuid}`);
-  }
+	function add_admin_pledge() {
+		items.unshift({
+			name: "",
+			price: 0,
+			uuid: v4(),
+			ordinal: 0,
+			type: OrderedItemType.ADMIN_ADDON,
+		});
+		items = items;
+	}
 
-  function add_item() {
-    let ordinal = campaign.items.length + items.length + 1;
+	function add_item() {
+		let ordinal = items.length + 1;
 		if (Object.keys(shipping).length !== 0) ordinal--;
-    items.push({
-      name: "",
-      price: 0,
-      uuid: v4(),
-      ordinal: ordinal,
-      type: OrderedItemType.PLEDGE
-    });
-    items = items;
-  }
-
+		let admin_pledge = items.filter((i) => {
+			if (i.type === OrderedItemType.ADMIN_ADDON) return i;
+		});
+		if (admin_pledge.length) ordinal -= admin_pledge.length;
+		items.push({
+			name: "",
+			price: 0,
+			uuid: v4(),
+			ordinal: ordinal,
+			type: OrderedItemType.PLEDGE,
+		});
+		items = items;
+	}
 
 	function add_shipping() {
-    console.log(`add shipping`)
+		console.log(`add shipping`);
 
 		if (Object.keys(shipping).length === 0) {
 			shipping.name = "InPost";
@@ -107,30 +126,29 @@
 			items.push({
 				name: cells[0],
 				uuid: v4(),
-				ordinal: parseInt(y)+1,
+				ordinal: parseInt(y) + 1,
 				price: parseInt(cells[1]),
 				type: OrderedItemType.PLEDGE,
 			});
 		}
-    shipping ={}
+		shipping = {};
 	};
-
-
-
 </script>
 
 {#if campaign == null}
-  <h1>{$_("edit_campaign.loading")}</h1>
+	<h1>{$_("edit_campaign.loading")}</h1>
 {:else}
-  <EditCampaign
-    {add_item}
-    {save}
-    {add_shipping}
-    {add_excel}
-    {delete_item}
-    {campaign}
-    {items}
-    title={$_("edit_campaign.title_add", {
-      values: { title: campaign.title },
-    })} />
+	<EditCampaign
+		{add_item}
+		{save}
+		{add_shipping}
+		{add_admin_pledge}
+		{add_excel}
+		{delete_item}
+		{campaign}
+		{items}
+		title={$_("edit_campaign.title_add", {
+			values: { title: campaign.title },
+		})}
+	/>
 {/if}

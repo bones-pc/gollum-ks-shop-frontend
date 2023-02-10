@@ -40,6 +40,7 @@
   "edit_campaign.title_add": "Add campaign {title}",
   "edit_campaign.add_item": "Add item",
   "edit_campaign.add_shipping": "Add shipping",
+  "edit_campaign.add_admin_pledge": "Add admin pledge",
   "edit_campaign.save": "Save campaign",
   "edit_campaign.campaign_title": "Title",
   "edit_campaign.campaign_url": "Url",

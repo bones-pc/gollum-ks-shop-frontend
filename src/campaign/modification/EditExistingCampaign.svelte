@@ -35,6 +35,17 @@
 		if (shipping == undefined) shipping = {};
 	});
 
+	function add_admin_pledge() {
+		removable_items.unshift({
+			name: "",
+			price: 0,
+			uuid: v4(),
+			ordinal: 0,
+			type: OrderedItemType.ADMIN_ADDON,
+		});
+		removable_items = removable_items;
+	}
+
 	function add_shipping() {
 		console.log("shipping");
 		if (Object.keys(shipping).length === 0) {
@@ -70,6 +81,12 @@
 	function add_item() {
 		let ordinal = campaign.items.length + removable_items.length + 1;
 		if (Object.keys(shipping).length !== 0) ordinal--;
+		let items = [...campaign.items, ...removable_items];
+		let admin_pledge = items.filter(
+			(i) => i.type === OrderedItemType.ADMIN_ADDON
+		);
+
+		if (admin_pledge.length) ordinal -= admin_pledge.length;
 		removable_items.push({
 			name: "",
 			price: 0,
@@ -125,6 +142,7 @@
 	<EditCampaign
 		{add_item}
 		{add_shipping}
+		{add_admin_pledge}
 		{add_excel}
 		{save}
 		{delete_item}

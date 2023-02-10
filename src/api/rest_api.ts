@@ -14,6 +14,7 @@ import {
 	User,
 	UserProfile,
 	ErrorResponse,
+	OrderedItemAdmin,
 } from "./Data";
 
 const api_url = get(url);
@@ -297,6 +298,27 @@ export class RestApi implements Api {
 						api_url + "campaigns/" + campaign_uuid + "/order",
 						options("PATCH", payload)
 				  );
+			if (response.ok) {
+				const response_json = await response.json();
+				return backend_order_to_frontend_order(response_json.result[0]);
+			}
+		})();
+	}
+
+	patchOrder(
+		order_uuid: string,
+		ouuid: string,
+		items: OrderedItemAdmin[]
+	): Promise<Order> {
+		return (async () => {
+			const payload = {
+				ouuid: ouuid,
+				items: items,
+			};
+			const response = await fetch(
+				api_url + "orders/" + order_uuid,
+				options("PATCH", payload)
+			);
 			if (response.ok) {
 				const response_json = await response.json();
 				return backend_order_to_frontend_order(response_json.result[0]);

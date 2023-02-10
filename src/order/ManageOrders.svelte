@@ -12,9 +12,11 @@
 		CampaignItem,
 		Order,
 		api,
+		OrderedItemType,
+		OrderedItem,
+		OrderedItemAdmin,
 	} from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
-	import { LoggedUser } from "../authentication/roles";
 
 	export let uuid: string;
 
@@ -52,6 +54,17 @@
 		}
 	}
 
+	let admin_addons: CampaignItem[];
+
+	async function change_order(
+		campaign_uuid: string,
+		owner_uuid: string,
+		items: OrderedItemAdmin[]
+	) {
+		const savedOrder = await api.patchOrder(campaign_uuid, owner_uuid, items);
+		// showToast();
+	}
+
 	const sort_by_order_date = (a: Order, b: Order) => {
 		if (a.order_date < b.order_date) {
 			return -1;
@@ -68,7 +81,10 @@
 			api.fetchCampaign(uuid),
 		]);
 		orders = o.sort(sort_by_order_date);
+		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
+		// console.log(o);
+		// console.log(c);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -107,6 +123,17 @@
 	<div>
 		Tytuł przelewu:
 		<CopyToClipboardField copy_value={campaign.payment_details} />
+	</div>
+	<div>
+		Dodatkowe koszty:
+		<ul>
+			{#each admin_addons as addon}
+				<li>
+					{addon.name}: {addon.price}
+					<button class="btn btn-outline-secondary change-amount">+</button>
+				</li>
+			{/each}
+		</ul>
 	</div>
 
 	<h4>{$_("manage_orders.per_user_summary")}</h4>
@@ -149,22 +176,33 @@
 		<ul>
 			{#each order.items as item}
 				<li>
-					{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
-						item.item_uuid
-					).name}: {item.amount}
-					<button
-						type="button"
-						class="btn btn-outline-secondary change-amount"
-						on:click={() => {
-							item.amount++;
-						}}>+</button
-					>
-					<button
-						type="button"
-						class="btn btn-outline-secondary change-amount"
-						on:click={() => (item.amount = Math.max(0, item.amount - 1))}
-						>-</button
-					>
+					<div class="row">
+						<div class="col-md-3 mid">
+							{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
+								item.item_uuid
+							).name}: {item.amount}
+						</div>
+						<div class="col-md-1 mid">
+							<button
+								type="button"
+								class="btn btn-outline-secondary change-amount"
+								on:click={async () => {
+									item.amount++;
+									await change_order(campaign.uuid, order.ouuid, order.items);
+								}}>+</button
+							>
+						</div>
+						<div class="col-md-8">
+							<button
+								type="button"
+								class="btn btn-outline-secondary change-amount"
+								on:click={async () => {
+									item.amount = Math.max(0, item.amount - 1);
+									await change_order(campaign.uuid, order.ouuid, order.items);
+								}}>-</button
+							>
+						</div>
+					</div>
 				</li>
 			{/each}
 		</ul>
@@ -175,7 +213,22 @@
 	.money {
 		max-width: 120px;
 	}
+	.mid {
+		vertical-align: middle;
+	}
 	ul {
 		list-style-type: none;
+	}
+	.circle-btn {
+		background-color: #ffffff;
+		border: 1;
+		color: rgb(0, 0, 0);
+		padding: 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 2px 2px;
+		border-radius: 50%;
 	}
 </style>
