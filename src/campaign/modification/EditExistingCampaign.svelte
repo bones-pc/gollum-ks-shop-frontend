@@ -24,6 +24,7 @@
 		// uuid: v4(),
 		// type: OrderedItemType.SHIPPING,
 	};
+	let shipping_items_count: number = 0;
 
 	$: items = [...(campaign == null ? [] : campaign.items), ...removable_items];
 
@@ -33,6 +34,7 @@
 			return it.type == 1;
 		});
 		if (shipping == undefined) shipping = {};
+		shipping_items_count = campaign.items.filter((v) => v.ordinal == 0).length;
 	});
 
 	function add_admin_pledge() {
@@ -113,7 +115,7 @@
 			removable_items.push({
 				name: cells[0],
 				uuid: v4(),
-				ordinal: parseInt(y) + 1,
+				ordinal: parseInt(y) + campaign.items.length - shipping_items_count + 1,
 				price: parseInt(cells[1]),
 				type: OrderedItemType.PLEDGE,
 			});
