@@ -91,32 +91,46 @@
 	};
 	async function downloadCSV() {
 		let output_csv = "";
-		let row =
-			"Imie, Nazwisko, login, zapłacone, liczba, pledge, cena, data_zamowienia,\r\n";
+		let legenda = "\r\n\r\n";
+		let first_row = ",,,,,ceny:,";
+		let row = "Imie,Nazwisko,login,zapłacone,do zaplaty,data_zamowienia,";
+		campaign.items.forEach((item) => {
+			legenda += `${item.ordinal},` + `${item.name}\r\n`;
+			first_row += `${item.price},`;
+			row += `${item.ordinal},`;
+		});
+		row += "\r\n";
+		output_csv += first_row + "\r\n";
 		for (let i = 0; i < orders.length; i++) {
 			let ppl = orders[i];
 			let ppl_orders = ppl.items;
-			console.log(ppl);
-			ppl_orders.forEach((item) => {
-				let campaign_pledge = campaign.items.filter(
-					(v) => v.uuid === item.item_uuid
-				);
-				row += `"${ppl.firstname}",`;
-				row += `"${ppl.firstname}",`;
-				row += `"${ppl.lastname}",`;
-				row += `"${ppl.username}",`;
-				row += `"${ppl.paid_amount}",`;
-				row += `"${item.amount}",`;
-				row += `"${campaign_pledge[0].name}",`;
-				row += `"${campaign_pledge[0].price}",`;
-				row += `"${ppl.order_date}",`;
-				row += "\r\n";
-				output_csv += row;
-				row = "";
-			});
-		}
-		console.log(output_csv);
 
+			let pledges_txt = "";
+			let to_pay = 0;
+			campaign.items.forEach((pledge) => {
+				let ordered_items = ppl_orders.filter(
+					(ordered) => pledge.uuid === ordered.item_uuid
+				);
+				if (ordered_items.length) {
+					pledges_txt += `${ordered_items[0].amount},`;
+					to_pay += pledge.price * ordered_items[0].amount;
+				} else {
+					pledges_txt += "0,";
+				}
+			});
+			console.log(pledges_txt);
+			row += `"${ppl.firstname}",`;
+			row += `"${ppl.lastname}",`;
+			row += `"${ppl.username}",`;
+			row += `"${ppl.paid_amount}",`;
+			row += `${to_pay},`;
+			row += `"${ppl.order_date.split("T")[0]}",`;
+			row += pledges_txt;
+			row += "\r\n";
+			output_csv += row;
+			row = "";
+		}
+		output_csv += legenda;
 		let download = document.getElementById("download");
 		download.setAttribute(
 			"href",
@@ -134,6 +148,8 @@
 		orders = o.sort(sort_by_order_date);
 		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
+		console.log(c);
+		console.log(o);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -275,17 +291,5 @@
 	}
 	ul {
 		list-style-type: none;
-	}
-	.circle-btn {
-		background-color: #ffffff;
-		border: 1;
-		color: rgb(0, 0, 0);
-		padding: 10px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 2px 2px;
-		border-radius: 50%;
 	}
 </style>
