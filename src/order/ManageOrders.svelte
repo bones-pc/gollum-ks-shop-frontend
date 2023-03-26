@@ -188,7 +188,7 @@
 			<InProgressButton on_click_function={downloadCSV} label="Ściągnij CSV" />
 		</div>
 	</div>
-	<a id="download" />
+	<a id="download">&nbsp;</a>
 
 	<div>
 		Tytuł przelewu:

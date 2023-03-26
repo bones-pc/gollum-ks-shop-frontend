@@ -4,7 +4,6 @@
 	export let onSelected;
 	export let showBackdrop = true;
 	export let closeTitle = "close";
-	export let selected_item = 0;
 	export let list = [];
 
 	const picklist_header = "Wybierz Kampanię";

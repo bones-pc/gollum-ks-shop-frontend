@@ -65,16 +65,11 @@
 <style>
 	.img {
 		width: 90px;
-
 		object-fit: cover;
 		overflow: hidden;
 		float: left;
 		font-size: 1rem;
 		line-height: 26px;
 		text-align: center;
-	}
-	.to-right {
-		margin-left: auto;
-		margin-right: 0;
 	}
 </style>

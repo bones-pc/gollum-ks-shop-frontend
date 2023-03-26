@@ -1,5 +1,4 @@
 <script lang="ts">
-	export let toast_body = "";
 	export let toast_id = "simple_toast";
 </script>
 

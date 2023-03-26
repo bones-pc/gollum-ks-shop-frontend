@@ -3,8 +3,6 @@
 	import SimpleToast from "./SimpleToast.svelte";
 	import Fa from "svelte-fa";
 	import { _ } from "svelte-i18n";
-
-	export let legend_body = "test";
 	export let legend_id = "simple_legend";
 </script>
 
