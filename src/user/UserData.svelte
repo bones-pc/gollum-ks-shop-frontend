@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { faCopy } from "@fortawesome/free-regular-svg-icons";
-	import Fa from "svelte-fa";
 	import { _ } from "svelte-i18n";
 	import type { UserProfile } from "../api/Api";
 	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
@@ -8,7 +6,7 @@
 
 	// maybe change needed to more Svelte way ?
 	function copyText(attr_id) {
-		let copyText = document.getElementById(attr_id);
+		let copyText:HTMLInputElement = document.getElementById(attr_id);
 		copyText.select();
 		copyText.setSelectionRange(0, 99999); // For mobile devices
 		navigator.clipboard.writeText(copyText.value);
@@ -16,7 +14,6 @@
 </script>
 
 <h1>{$_("nav.userprofile")} {user.username}</h1>
-
 <div class="containers">
 	<table>
 		<tr>
@@ -63,13 +60,6 @@
 			</td>
 		</tr>
 		<tr>
-			<td>{$_("user_profile.inpost")}</td>
-			<td>&nbsp;</td>
-			<td>
-				<CopyToClipboardField copy_value={user.inpost} />
-			</td>
-		</tr>
-		<tr>
 			<td>{$_("user_profile.email")}</td>
 					<td>&nbsp;</td>
 			<td
@@ -82,6 +72,13 @@
 			<td
 				><CopyToClipboardField copy_value={user.phone} /></td
 			>
+		</tr>
+		<tr>
+			<td>{$_("user_profile.inpost")}</td>
+			<td>&nbsp;</td>
+			<td>
+				<CopyToClipboardField copy_value={user.inpost} />
+			</td>
 		</tr>
 	</table>
 </div>
