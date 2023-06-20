@@ -3,4 +3,5 @@ export interface AccordionItem {
   url?: string;
   img_url: string;
   id: string;
+  purchased: boolean;
 }
