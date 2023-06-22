@@ -29,6 +29,10 @@
 		img_url: "",
 		url: "",
 		status: CampaignStatus.ACTIVE,
+		payment_details:'',
+		added_date: new Date(),
+		due_date: new Date(),
+		purchased: false,
 	});
 
 	let campaign: Campaign;

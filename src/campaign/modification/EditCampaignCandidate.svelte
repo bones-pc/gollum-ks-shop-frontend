@@ -24,6 +24,7 @@
 		liking_users: [],
 		description: "",
 		status: CampaignStatus.DRAFT,
+		purchased: false,
 	});
 
 	let ks_name: string;

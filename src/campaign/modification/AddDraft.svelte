@@ -23,6 +23,7 @@
 		liking_users: [],
 		description: "",
 		status: CampaignStatus.DRAFT,
+		purchased: false,
 	});
 	let ks_name: string;
 	let selected_item = false;

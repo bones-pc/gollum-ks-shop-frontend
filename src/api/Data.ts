@@ -50,10 +50,10 @@ export interface Campaign {
   payment_details: string;
   items: CampaignItem[];
   status: CampaignStatus;
-  purchased: boolean;
   description: string;
   added_date: Date;
   due_date: Date;
+  purchased: boolean;
 }
 
 export interface OrderedItem {
@@ -105,6 +105,7 @@ export interface CampaignCandidate {
   liking_users: string[];
   description: string;
   status: CampaignStatus;
+  purchased: boolean;
 }
 
 export interface CampaignsSearchParams {

@@ -26,6 +26,7 @@
 		payment_details: "",
 		added_date: new Date(),
 		due_date: new Date(),
+		purchased:false,
 	});
 
 	let campaign: Campaign;
@@ -57,6 +58,7 @@
 			}
 		}
 	}
+	const add_admin_pledge = ()=>{};
 
 	function add_shipping() {
 		if (Object.keys(shipping).length === 0) {
@@ -159,6 +161,7 @@
 	<EditCampaign
 		{add_item}
 		{add_shipping}
+		{add_admin_pledge}
 		{add_excel}
 		{save}
 		{delete_item}
