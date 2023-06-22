@@ -27,7 +27,7 @@
 			...fetch_filter,
 		});
 		return campaigns.map(
-			({ uuid, title, url, img_url, due_date, added_date, description }) => ({
+			({ uuid, title, url, img_url, due_date, added_date, description, purchased }) => ({
 				id: uuid,
 				title,
 				url,
@@ -35,6 +35,7 @@
 				due_date,
 				added_date,
 				description,
+				purchased,
 			})
 		);
 	}
