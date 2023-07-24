@@ -118,8 +118,6 @@
 					<UserDetail uuid={params.uuid} />
 				</Route>
 			{/if}
-
-			{#if $role.is_admin()}{/if}
 		{/if}
 		<Footer />
 	</div>

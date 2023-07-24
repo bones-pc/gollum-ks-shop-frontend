@@ -421,7 +421,7 @@ export class RestApi implements Api {
 				if (response_json.result.length > 0) {
 					return backend_campaign_to_frontend_campaign(response_json.result[0]);
 				}
-			} else if (response.status_code === ResponseStatusCode.NOT_ALLOWED) {
+			} else if (response.status === 403) {
 				const error_response: ErrorResponse = {
 					status_code: ResponseStatusCode.NOT_ALLOWED,
 					message: "brak uprawnień",
