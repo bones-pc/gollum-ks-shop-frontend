@@ -7,10 +7,21 @@
 		CampaignCandidate,
 		CampaignStatus,
 		ErrorResponse,
+		ResponseStatusCode,
 	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
-	import CampaignsCandidates from "../listing/CampaignsCandidates.svelte";
+
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../../utils/SimpleToast.svelte";
+
+	let toast_message = "";
+	let toast_id = "draft_add_toast";
+	function showToast() {
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		toast.show();
+	}
 
 	let save_in_progress = false;
 
@@ -37,9 +48,19 @@
 	async function save() {
 		let draft_response: CampaignCandidate | ErrorResponse;
 		draft_response = await api.addCandidate(draft);
-		console.log(`resp: ${draft_response}`);
-		if (draft_response.status_code == 409) {
+
+		if (draft_response.status_code === 409) {
 			warning = "Kampania już istnieje";
+		} else if (
+			(draft_response as ErrorResponse).status_code ===
+			ResponseStatusCode.NOT_ALLOWED
+		) {
+			warning = "Brak uprawnień";
+			toast_message = "Brak uprawnień";
+			showToast();
+			setTimeout(() => {
+				navigate("/drafts");
+			}, 2000);
 		} else {
 			warning = null;
 			navigate("/drafts");
@@ -169,3 +190,6 @@
 	closeTitle={"Odrzuć"}
 	list={campaign_list_modal}
 />
+<SimpleToast {toast_id}
+	><div slot="toast-body">{toast_message}</div></SimpleToast
+>

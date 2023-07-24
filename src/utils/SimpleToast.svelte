@@ -9,6 +9,7 @@
 	aria-atomic="true"
 	id={toast_id}
 	style="z-index: 11"
+	color="yellow"
 >
 	<div class="d-flex">
 		<div class="toast-body">

@@ -26,6 +26,7 @@
 	import UserPasswordReset from "./authentication/UserPasswordReset.svelte";
 	import UserPasswordResetInit from "./authentication/UserPasswordResetInit.svelte";
 	import Footer from "./Footer.svelte";
+	import { permissions } from "./authentication/roles";
 
 	onMount(async () => {
 		await authentication_manager.store_credentials_if_authenticated();
@@ -83,29 +84,42 @@
 				<UserProfile />
 			</Route>
 
-			{#if $role.is_admin()}
-				<Route path="/campaigns/add">
-					<AddNewCampaign />
-				</Route>
+			<Route path="/campaigns/add">
+				<AddNewCampaign />
+			</Route>
+
+			{#if $role.check_role(permissions.campaign.CREATE)}
 				<Route path="/campaigns/add/:uuid" let:params>
 					<ChangeDraftToCampaign candidate_uuid={params.uuid} />
 				</Route>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<Route path="/campaigns/candidate/edit/:uuid" let:params>
 					<EditCampaignCandidate candidate_uuid={params.uuid} />
 				</Route>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<Route path="/campaigns/edit/:uuid" let:params>
 					<EditExistingCampaign uuid={params.uuid} />
 				</Route>
+			{/if}
+			{#if $role.check_role(permissions.orders.READ)}
 				<Route path="/orders/:uuid" let:params>
 					<ManageOrders uuid={params.uuid} />
 				</Route>
+			{/if}
+			{#if $role.check_role(permissions.user.UPDATE)}
 				<Route path="/users">
 					<ManageUsers />
 				</Route>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<Route path="/user-detail/:uuid" let:params>
 					<UserDetail uuid={params.uuid} />
 				</Route>
 			{/if}
+
+			{#if $role.is_admin()}{/if}
 		{/if}
 		<Footer />
 	</div>

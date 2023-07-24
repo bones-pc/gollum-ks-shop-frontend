@@ -5,6 +5,7 @@
 	import AccordionList from "../../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
+	import { permissions } from "../../authentication/roles";
 
 	const navigate = useNavigate();
 	const fetch_filter = { status: CampaignStatus.CLOSED };
@@ -22,12 +23,21 @@
 	}
 
 	async function fetch(search: string): Promise<AccordionItem[]> {
-		const campaigns: Campaign[] = await api.fetchCampaigns({
+		const campaigns = await api.fetchCampaigns({
 			titleLike: search,
 			...fetch_filter,
 		});
-		return campaigns.map(
-			({ uuid, title, url, img_url, due_date, added_date, description, purchased }) => ({
+		return (campaigns as Campaign[]).map(
+			({
+				uuid,
+				title,
+				url,
+				img_url,
+				due_date,
+				added_date,
+				description,
+				purchased,
+			}) => ({
 				id: uuid,
 				title,
 				url,
@@ -39,6 +49,7 @@
 			})
 		);
 	}
+	let menu_count = 0;
 </script>
 
 <h1>{$_("closed_campaigns.title")}</h1>
@@ -46,32 +57,36 @@
 <AccordionList items_provider={fetch} items={closed_campaigns}>
 	<svelte:fragment slot="item-actions" let:item>
 		<ul>
-			{#if $role.is_admin()}
-				<ul>
+			<ul>
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<Link to="/campaigns/edit/{item.id}">
 							{$_("closed_campaigns.edit_campaign")}
 						</Link>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.orders.UPDATE)}
 					<li>
 						<Link to="/orders/{item.id}">
 							{$_("closed_campaigns.manage_orders")}
 						</Link>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<span class="fake-link" on:click={() => unlock(item.id)}>
 							{$_("closed_campaigns.convert_to_active")}
 						</span>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<span class="fake-link" on:click={() => lock(item.id)}>
 							{$_("closed_campaigns.convert_to_archived")}
 						</span>
 					</li>
-				</ul>
-			{:else}
-				{$_("closed_campaigns.no_actions")}
-			{/if}
+				{/if}
+			</ul>
 		</ul>
 	</svelte:fragment>
 </AccordionList>

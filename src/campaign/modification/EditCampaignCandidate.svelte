@@ -9,9 +9,13 @@
 		CampaignCandidate,
 		CampaignStatus,
 		ErrorResponse,
+		KSCampaignListItem,
+		ResponseStatusCode,
 	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	let save_in_progress = false;
 
@@ -35,9 +39,7 @@
 	let draft: CampaignCandidate = newDraft();
 	let campaign_list: CampaignCandidate[];
 	let campaign_list_modal = [];
-
 	export let candidate_uuid: string;
-	console.log(candidate_uuid);
 
 	onMount(async () => {
 		draft = await api.fetchCampaignCandidate(candidate_uuid);
@@ -45,12 +47,29 @@
 		console.log(`mount - ${JSON.stringify(draft)}`);
 	});
 
+	let toast_message = "";
+	let toast_id = "updated_draft_toast";
+	function showToast() {
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		toast.show();
+	}
+
 	async function save() {
-		let draft_reponse: CampaignCandidate & ErrorResponse;
-		draft_reponse = await api.patchCandidate(draft);
-		console.log(`to save - ${JSON.stringify(draft)}`);
-		console.log(`response- ${JSON.stringify(draft_reponse)}`);
-		navigate("/drafts");
+		let draft_response: CampaignCandidate | ErrorResponse;
+		draft_response = await api.patchCandidate(draft);
+		toast_message = "Zaktualizowane!";
+		if (
+			(draft_response as ErrorResponse)?.status_code ===
+			ResponseStatusCode.NOT_ALLOWED
+		) {
+			toast_message = "Brak uprawnień";
+		}
+
+		showToast();
+		setTimeout(() => {
+			navigate("/drafts");
+		}, 2000);
 	}
 
 	function closeList() {
@@ -70,12 +89,12 @@
 		draft.description = campaign_list[item_idx].description;
 	}
 
-	async function search_campaign_in_ks() {
+	async function search_campaign_in_ks(): Promise<void> {
 		campaign_list = await api.fetchKSCampaigns(ks_name);
+		let return_item: KSCampaignListItem;
 		if (campaign_list.length > 0) {
 			campaign_list_modal_visible = true;
 			campaign_list_modal = campaign_list.map((e, idx) => {
-				let return_item = {};
 				return_item.title = e.title;
 				return_item.idx = idx;
 				return return_item;
@@ -176,3 +195,7 @@
 	closeTitle={"Odrzuć"}
 	list={campaign_list_modal}
 />
+
+<SimpleToast {toast_id}>
+	<div slot="toast-body">{toast_message}</div></SimpleToast
+>
