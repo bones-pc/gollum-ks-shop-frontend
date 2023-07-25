@@ -60,7 +60,6 @@
 			uuids: (fetched_orders as PastOrder[]).map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
-		console.log(fetched_campaigns);
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
 		);

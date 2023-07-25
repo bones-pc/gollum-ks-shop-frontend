@@ -219,7 +219,7 @@ export class RestApi implements Api {
 	fetchUserOrders(): Promise<Order[] | ErrorResponse> {
 		return (async () => {
 			const response = await fetch(api_url + "orders", options("GET"));
-			console.log(response);
+			// console.log(response);
 			if (response.ok) {
 				console.log(response);
 				const response_json = await response.json();
