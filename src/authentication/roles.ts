@@ -13,25 +13,23 @@ export const permissions = {
 		UPDATE: "campaign.update",
 		DELETE: "campaign.delete",
 	},
-
 	draft: {
-		READ: "campaign.read",
-		CREATE: "campaign.create",
-		UPDATE: "campaign.update",
-		DELETE: "campaign.delete",
-	},
-
-	orders: {
-		READ: "order.read",
-		CREATE: "order.create",
-		UPDATE: "order.update",
-		DELETE: "order.delete",
+		READ: "draft.read",
+		CREATE: "draft.create",
+		UPDATE: "draft.update",
+		DELETE: "draft.delete",
 	},
 	own_orders: {
 		READ: "own_order.read",
 		CREATE: "own_order.create",
 		UPDATE: "own_order.update",
 		DELETE: "own_order.delete",
+	},
+	orders: {
+		READ: "order.read",
+		CREATE: "order.create",
+		UPDATE: "order.update",
+		DELETE: "order.delete",
 	},
 	user: {
 		READ: "user.read",
@@ -69,6 +67,11 @@ const role_permissions = {
 		permissions.own_orders.DELETE,
 
 		permissions.orders.READ,
+
+		permissions.pledge.READ,
+
+		permissions.draft.READ,
+		permissions.draft.CREATE,
 	],
 	USER: [
 		permissions.campaign.READ,
