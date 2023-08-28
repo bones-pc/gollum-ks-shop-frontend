@@ -25,6 +25,7 @@
 		.map((i) => i.item.price * i.amount)
 		.reduce((acc, x) => acc + x, 0);
 
+	let toast_body = "Zamówienie złożone.";
 	function fill_form(campaign: Campaign, order: Order) {
 		const orderItems = new Map<string, OrderedItem>();
 		if (order != null) {
@@ -67,9 +68,14 @@
 				.filter((i) => i.amount > 0)
 				.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount })),
 		});
-		new_order = false;
-		fill_form(campaign, savedOrder);
-		showToast();
+		if (savedOrder.status_code === 409) {
+			showToast(savedOrder.message);
+			return;
+		} else {
+			new_order = false;
+			fill_form(campaign, savedOrder);
+		}
+		showToast("Zamówienie złożone");
 	}
 
 	// maybe change needed to more Svelte way ?
@@ -81,7 +87,8 @@
 	}
 
 	let toast_id = "order_toast";
-	function showToast() {
+	function showToast(message: string) {
+		toast_body = message;
 		let my_toast_el = document.getElementById(toast_id);
 		let toast = new Toast(my_toast_el);
 		toast.show();
@@ -248,7 +255,7 @@
 {/if}
 
 <SimpleToast {toast_id}>
-	<div slot="toast-body">Zamówienie dodane.</div></SimpleToast
+	<div slot="toast-body">{toast_body}</div></SimpleToast
 >
 
 <style>
