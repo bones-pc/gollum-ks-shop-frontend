@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Toast } from "bootstrap";
-	import { faCopy } from "@fortawesome/free-regular-svg-icons";
 	import { marked } from "marked";
-	import Fa from "svelte-fa";
 	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 	import {
@@ -14,6 +12,7 @@
 	} from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
 	import SimpleToast from "../utils/SimpleToast.svelte";
+	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
 
 	export let uuid: string;
 
@@ -78,14 +77,6 @@
 		showToast("Zamówienie złożone");
 	}
 
-	// maybe change needed to more Svelte way ?
-	function copyText() {
-		let copyText = document.getElementById("payment_detail");
-		copyText.select();
-		copyText.setSelectionRange(0, 99999); // For mobile devices
-		navigator.clipboard.writeText(copyText.value);
-	}
-
 	let toast_id = "order_toast";
 	function showToast(message: string) {
 		toast_body = message;
@@ -119,24 +110,10 @@
 		</div>
 		<div class="col py-3 py-md-0">
 			{@html marked(campaign.description)}
-
 			<div>
-				Tytuł przelewu:
-				<input
-					class="input_copy"
-					id="payment_detail"
-					readonly="readonly"
-					value={campaign.payment_details}
+				Tytuł przelewu: <CopyToClipboardField
+					copy_value={campaign.payment_details}
 				/>
-				<button
-					class="btn btn-light non-collapsing"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target
-					on:click={() => copyText()}
-				>
-					<Fa icon={faCopy} primaryColor="blue" />
-				</button>
 			</div>
 		</div>
 	</div>

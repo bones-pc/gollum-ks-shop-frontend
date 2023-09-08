@@ -1,8 +1,16 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
-	import { api, Campaign, CampaignItem, OrderStatus } from "../api/Api";
+	import {
+		api,
+		AssignedToUser,
+		Campaign,
+		CampaignItem,
+		Order,
+		OrderStatus,
+	} from "../api/Api";
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
+	import InProgressButton from "../utils/InProgressButton.svelte";
 
 	export let uuid: string;
 
@@ -20,8 +28,30 @@
 		items: PastItem[];
 	}
 
+	interface PaidAmount {
+		paid_amount: number;
+		campaign_uuid: string;
+		order_uuid: string;
+	}
+
+	async function confirm(paid: PaidAmount) {
+		const order: Order & AssignedToUser = {
+			...paid,
+			items: [],
+			order_date: new Date(),
+			tracking_no: "",
+			status: OrderStatus.ACTIVE,
+			ouuid: "",
+			username: "",
+			firstname: "",
+			lastname: "",
+		};
+		await api.updatePaidAmount(order);
+	}
+
 	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
 		const fetched_orders = await api.fetchUserOrdersAdmin(uuid);
+		console.log(fetched_orders);
 		const fetched_campaigns = await api.fetchCampaigns({
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,
@@ -134,20 +164,37 @@
 						<th scope="row">{i.name}</th>
 						<td>{i.amount}</td>
 						<td>{i.price} {$_("currency.pln")}</td>
-						<td>{i.amount * i.price} {$_("currency.pln")}</td>
+						<td>
+							<input class="paid_edit" disabled value={i.amount * i.price} />
+							{$_("currency.pln")}</td
+						>
 					</tr>
 				{/each}
 				<tr>
 					<th scope="row">{$_("orders_history.total")}</th>
 					<td />
 					<td />
-					<td>{total} {$_("currency.pln")}</td>
+					<td>
+						<input class="paid_edit" disabled value={total} />
+						{$_("currency.pln")}</td
+					>
 				</tr>
 				<tr>
 					<th scope="row">{$_("orders_history.paid_confirmed")}</th>
 					<td />
 					<td />
-					<td>{item.paid_value} {$_("currency.pln")}</td>
+					<td>
+						<!-- {item.paid_value} -->
+						<input
+							class="paid_edit"
+							id="paid_edit_id"
+							value={item.paid_value}
+						/>
+						{$_("currency.pln")}<InProgressButton
+							on_click_function={async () => confirm(item)}
+							label="Zapisz"
+						/>
+					</td>
 				</tr>
 				{#if to_pay > 0}
 					<tr>
@@ -155,7 +202,7 @@
 						<td />
 						<td />
 						<td class:text-danger={to_pay > 0}>
-							{to_pay}
+							<input class="paid_edit" disabled value={to_pay} />
 							{$_("currency.pln")}
 						</td>
 					</tr>
@@ -185,5 +232,12 @@
 	th {
 		text-decoration: none !important;
 		font-weight: normal !important;
+	}
+	.paid_edit {
+		border: none;
+		color: black;
+		background: transparent;
+		outline: none;
+		width: 30%;
 	}
 </style>

@@ -3,8 +3,6 @@
 	import { Link } from "svelte-navigator";
 	import { _ } from "svelte-i18n";
 	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
-	import { faCopy } from "@fortawesome/free-regular-svg-icons";
-	import Fa from "svelte-fa";
 
 	import {
 		AssignedToUser,
@@ -131,6 +129,7 @@
 			row += `"${ppl.username}",`;
 			row += `"${ppl.paid_amount}",`;
 			row += `${to_pay},`;
+			// row += `"${ppl.order_date.toDateString().split("T")[0]}",`;
 			row += `"${ppl.order_date.split("T")[0]}",`;
 			row += pledges_txt;
 			row += "\r\n";
@@ -155,8 +154,6 @@
 		orders = o.sort(sort_by_order_date);
 		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
-		console.log(c);
-		console.log(o);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -198,8 +195,9 @@
 	<a id="download">&nbsp;</a>
 
 	<div>
-		Tytuł przelewu:
-		<CopyToClipboardField copy_value={campaign.payment_details} />
+		Tytuł przelewu: <CopyToClipboardField
+			copy_value={campaign.payment_details}
+		/>
 	</div>
 	<div>
 		Dodatkowe koszty:
@@ -234,7 +232,7 @@
 			</span>
 			<InProgressButton
 				on_click_function={async () => confirm(order)}
-				label="Confirm"
+				label="Zapisz"
 			/>
 
 			{$_("manage_orders.tracking")}
