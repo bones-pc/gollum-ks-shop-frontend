@@ -154,6 +154,7 @@
 		orders = o.sort(sort_by_order_date);
 		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
+		console.log(o, c);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {

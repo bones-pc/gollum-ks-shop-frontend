@@ -41,7 +41,7 @@
 	let index = 1;
 </script>
 
-<h1>{$_("nav.user_orders")}: {user.username}</h1>
+<!-- <h1>{$_("nav.user_orders")}: {user.username}</h1> -->
 
 <table class="table">
 	<thead>
@@ -83,7 +83,7 @@
 		<tr>
 			<td colspan="4">
 				<button
-					class="accordion-button collapsed"
+					class=" collapsed"
 					type="button"
 					data-bs-toggle="collapse"
 					data-bs-target={"#collapse" + index + "a"}

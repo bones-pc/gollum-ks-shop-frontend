@@ -19,7 +19,7 @@ export enum CampaignStatus {
 	CLOSED,
 	// a proposal from users
 	DRAFT,
-	// delivered
+	// delivered to users
 	ARCHIVED,
 	// to be trashed - check if not mistake ;)
 	DELETED,
@@ -29,6 +29,9 @@ export enum CampaignStatus {
 	DRAFT_DENIED,
 	// conditions negotiated
 	DRAFT_NEGOTIATED,
+
+	//placeholder for UI
+	PLACEHOLDER,
 }
 
 export enum OrderStatus {
@@ -54,6 +57,7 @@ export interface Campaign {
 	added_date: Date;
 	due_date: Date;
 	purchased: boolean;
+	likes?: number;
 }
 
 export interface OrderedItem {
@@ -84,6 +88,7 @@ export interface Order {
 	ouuid: string;
 	items: OrderedItem[];
 	paid_amount: number;
+	user_paid?: number;
 }
 
 export interface OrderUpdate {
@@ -164,8 +169,10 @@ export interface Api {
 
 	orderCampaign(
 		uuid: string,
-		items: OrderUpdate
+		items: OrderUpdate,
+		user_paid?: number
 	): Promise<Order | ErrorResponse>;
+
 	patchOrder(
 		uuid: string,
 		ouiid: string,

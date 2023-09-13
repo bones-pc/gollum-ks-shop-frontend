@@ -17,9 +17,7 @@
 	import { _ } from "svelte-i18n";
 
 	let candidates: (CampaignCandidate & AccordionItem)[] = [];
-
 	const navigate = useNavigate();
-
 	const sort_by_likes = (a: CampaignCandidate, b: CampaignCandidate) => {
 		if (a.liking_users.length > b.liking_users.length) {
 			return -1;
@@ -41,6 +39,10 @@
 	): Promise<(CampaignCandidate & AccordionItem)[]> {
 		const fetched_candidates: CampaignCandidate[] =
 			await api.fetchCampaignCandidates(search);
+		fetched_candidates.forEach((c) => {
+			if (c.liking_users.includes($user_uuid)) c.liked = true;
+			else c.liked = false;
+		});
 		let confirmed_drafts = fetched_candidates
 			.filter((c) => c.status === CampaignStatus.DRAFT_CONFIRMED)
 			.sort(sort_by_likes)
@@ -107,7 +109,6 @@
 		} else {
 			status = CampaignStatus.DRAFT_CONFIRMED;
 		}
-		console.log(status);
 		let campaign_result = await api.changeStatus(item.uuid, status);
 		candidates = await fetch(null);
 	}
@@ -150,7 +151,10 @@
 			</div>
 			<div class="col-12 col-md">
 				<!-- https://stackoverflow.com/questions/67281841/bootstrap-link-in-accordion-header-stoppropagation-not-working -->
-				{#if item.liking_users.includes($user_uuid)}
+				{#if item.status === CampaignStatus.PLACEHOLDER}
+					<Fa icon={faHeart} primaryColor="red" />
+					Polubiono...
+				{:else if item.liked}
 					<button
 						class="btn btn-light non-collapsing"
 						type="button"
@@ -176,13 +180,14 @@
 					>
 						<Fa icon={faHeartOpen} />
 						{$_(
-							item.liking_users.length === 1
+							item.liking_users?.length === 1
 								? "proposed_campaigns.single_like"
 								: "proposed_campaigns.likes",
-							{ values: { count: item.liking_users.length } }
+							{ values: { count: item.liking_users?.length } }
 						)}
 					</button>
 				{/if}
+
 				{#if item.status == CampaignStatus.DRAFT_CONFIRMED}
 					<span class="badge bg-success"
 						>{$_("proposed_campaigns.confirmed")}</span

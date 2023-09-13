@@ -75,7 +75,7 @@
   "manage_orders.delete_user_order": "Kasuj",
   "order.loading": "Trwa ładowanie",
   "order.title": "{campaign_title}",
-  "order.confirm": "Złóż zamówienie",
+  "order.confirm": "Aktualizuj zamówienie",
   "order.no_items": "Brak pozycji do zamówienia",
   "order.quantity": "Ilość sztuk",
   "orders_history.title": "Historia zamówień",

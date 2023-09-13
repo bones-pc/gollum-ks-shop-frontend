@@ -38,6 +38,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
 		added_date: campaign.added_date,
 		due_date: campaign.due_date,
 		purchased: campaign.purchased,
+		likes: campaign.liking_users.length,
 	};
 }
 
@@ -95,6 +96,7 @@ function backend_order_to_frontend_order(order: any): Order {
 		status: order.status,
 		tracking_no: order.tracking_no,
 		paid_amount: Number.parseInt(order.paid_amount),
+		user_paid: Number.parseFloat(order.user_paid),
 		items: order.items?.map((i) => ({
 			item_uuid: i.uuid,
 			amount: Number.parseInt(i.amount),
@@ -285,7 +287,8 @@ export class RestApi implements Api {
 
 	orderCampaign(
 		campaign_uuid: string,
-		update: OrderUpdate
+		update: OrderUpdate,
+		user_paid?: number
 	): Promise<Order | ErrorResponse> {
 		return (async () => {
 			const payload = {
@@ -293,6 +296,7 @@ export class RestApi implements Api {
 					pledge_id: it.item_uuid,
 					amount: it.amount,
 				})),
+				user_paid,
 			};
 			let error_response: ErrorResponse = {
 				status_code: 409,

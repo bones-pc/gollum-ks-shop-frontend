@@ -13,6 +13,9 @@
 	import InProgressButton from "../utils/InProgressButton.svelte";
 	import SimpleToast from "../utils/SimpleToast.svelte";
 	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
+	import Fa from "svelte-fa";
+	import { faHeart } from "@fortawesome/free-solid-svg-icons";
+	import Modal from "../utils/Modal.svelte";
 
 	export let uuid: string;
 
@@ -20,6 +23,8 @@
 	let items = [];
 	let new_order = null;
 	let paid_amount = 0;
+	let user_paid = 0;
+	let showPopup = false;
 	$: totalPrice = items
 		.map((i) => i.item.price * i.amount)
 		.reduce((acc, x) => acc + x, 0);
@@ -35,6 +40,13 @@
 			item: { ...i },
 		}));
 	}
+
+	const onClickOK = () => {
+		showPopup = false;
+	};
+	const onPopupClose = () => {
+		showPopup = false;
+	};
 
 	onMount(async () => {
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
@@ -54,19 +66,25 @@
 			fill_form(fetchedCampaign, fetchedOrder);
 			campaign = fetchedCampaign;
 		}
+		user_paid = fetchedOrder.user_paid;
+		console.log(user_paid);
 	});
 
 	async function order() {
+		showPopup = true;
 		let items_temp = items
 			.filter((i) => i.amount > 0)
 			.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount }));
-
-		const savedOrder = await api.orderCampaign(uuid, {
-			is_new: new_order,
-			items: items
-				.filter((i) => i.amount > 0)
-				.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount })),
-		});
+		const savedOrder = await api.orderCampaign(
+			uuid,
+			{
+				is_new: new_order,
+				items: items
+					.filter((i) => i.amount > 0)
+					.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount })),
+			},
+			user_paid
+		);
 		if (savedOrder.status_code === 409) {
 			showToast(savedOrder.message);
 			return;
@@ -74,7 +92,7 @@
 			new_order = false;
 			fill_form(campaign, savedOrder);
 		}
-		showToast("Zamówienie złożone");
+		// showToast("Zamówienie złożone");
 	}
 
 	let toast_id = "order_toast";
@@ -89,7 +107,9 @@
 {#if campaign == null}
 	<h1>{$_("order.loading")}</h1>
 {:else}
-	<h1>{$_("order.title", { values: { campaign_title: campaign.title } })}</h1>
+	<h1>
+		{$_("order.title", { values: { campaign_title: campaign.title } })}
+	</h1>
 	<div class="img-responsive row mb-2">
 		<div class="col-12 col-md-4">
 			{#if campaign.url == null}
@@ -115,10 +135,20 @@
 					copy_value={campaign.payment_details}
 				/>
 			</div>
+			<Fa icon={faHeart} primaryColor="red" />
+			{campaign.likes} polubień.
+			<div>Data końca zbiórki: {campaign.due_date}</div>
 		</div>
 	</div>
 
 	<div class="mb-2">
+		Moje wpłaty:
+		<input
+			name="user_paid"
+			type="number"
+			placeholder="wpisz informacyjnie dla siebie"
+			bind:value={user_paid}
+		/>
 		<InProgressButton
 			on_click_function={async () => order()}
 			label={$_("order.confirm")}
@@ -234,6 +264,17 @@
 <SimpleToast {toast_id}>
 	<div slot="toast-body">{toast_body}</div></SimpleToast
 >
+
+<Modal
+	title={"Yay!"}
+	action={"Cool."}
+	small={true}
+	open={showPopup}
+	onClick={() => onClickOK()}
+	onClosed={() => onPopupClose()}
+>
+	Zamówione: {campaign.title}.
+</Modal>
 
 <style>
 	.fade-text {

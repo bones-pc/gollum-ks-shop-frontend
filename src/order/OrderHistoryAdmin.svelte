@@ -11,9 +11,9 @@
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
 	import InProgressButton from "../utils/InProgressButton.svelte";
+	import { text } from "svelte/internal";
 
 	export let uuid: string;
-
 	interface PastItem {
 		name: string;
 		price: number;
@@ -33,8 +33,9 @@
 		campaign_uuid: string;
 		order_uuid: string;
 	}
-
+	let paid_value;
 	async function confirm(paid: PaidAmount) {
+		console.log(paid);
 		const order: Order & AssignedToUser = {
 			...paid,
 			items: [],
@@ -84,6 +85,7 @@
 				id: c.uuid,
 				img_url: c.img_url,
 				order_uuid: o.order_uuid,
+				purchased: false,
 			});
 		}
 		return new_orders;
@@ -118,6 +120,8 @@
 			<span class="badge bg-info">
 				{$_("orders_history.overpaid")}
 			</span>
+		{:else if item.paid_value === undefined}
+			<span />
 		{:else}
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
@@ -187,11 +191,20 @@
 						<!-- {item.paid_value} -->
 						<input
 							class="paid_edit"
-							id="paid_edit_id"
+							id={"paid" + item.id}
 							value={item.paid_value}
 						/>
 						{$_("currency.pln")}<InProgressButton
-							on_click_function={async () => confirm(item)}
+							on_click_function={async () => {
+								paid_value = document.getElementById("paid" + item.id).value;
+								console.log(paid_value);
+								const paid_item = {
+									paid_amount: paid_value,
+									campaign_uuid: item.id,
+									order_uuid: item.order_uuid,
+								};
+								confirm(paid_item);
+							}}
 							label="Zapisz"
 						/>
 					</td>
