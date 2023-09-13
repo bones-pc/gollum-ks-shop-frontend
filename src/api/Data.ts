@@ -56,7 +56,9 @@ export interface Campaign {
 	description: string;
 	added_date: Date;
 	due_date: Date;
+	end_date: Date;
 	purchased: boolean;
+	liking_users?: string[];
 	likes?: number;
 }
 
@@ -166,7 +168,7 @@ export interface Api {
 	);
 	fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
 	fetchCampaign(uuid: string): Promise<Campaign>;
-
+	fetchCampaignBuyer(uuid: string): Promise<string[]>;
 	orderCampaign(
 		uuid: string,
 		items: OrderUpdate,

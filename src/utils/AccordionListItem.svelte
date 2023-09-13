@@ -3,6 +3,7 @@
 	import { role } from "../stores";
 	import { CampaignStatus } from "../api/Data";
 	import CampaignsCandidates from "../campaign/listing/CampaignsCandidates.svelte";
+	import { Link } from "svelte-navigator";
 	export let item: AccordionItem;
 </script>
 
@@ -16,8 +17,16 @@
 						src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
 						alt="item miniature"
 					/>
+				{:else if $role.is_admin()}
+					<Link to="/orders/{item.id}">
+						<img
+							class="accordion-list-item"
+							src={item.img_url}
+							alt="item miniature"
+						/>
+					</Link>
 				{:else}
-					<a href={item.url} target="_blank">
+					<a href={item.url}>
 						<img
 							class="accordion-list-item"
 							src={item.img_url}

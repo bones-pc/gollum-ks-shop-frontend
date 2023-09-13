@@ -257,6 +257,18 @@
 			disabled={save_in_progress}
 		/>
 	</div>
+	<div class="mb-2 col-md-6">
+		<label class="form-label" for="campaign_payment">
+			{$_("edit_campaign.end_date")}
+		</label>
+		<input
+			class="form-control"
+			type="date"
+			id="campaign_end_date"
+			bind:value={campaign.end_date}
+			disabled={save_in_progress}
+		/>
+	</div>
 </div>
 
 {#each [...items] as item, index}

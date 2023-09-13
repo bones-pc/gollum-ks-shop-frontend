@@ -59,6 +59,7 @@
 				status: c.status,
 			});
 		}
+		console.log(new_orders);
 		return new_orders;
 	}
 </script>
@@ -76,7 +77,7 @@
 			<span class="badge bg-warning">
 				{$_("orders_history.partially_paid")}
 			</span>
-		{:else}
+		{:else if item.status !== CampaignStatus.ARCHIVED}
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
 		<div class="ms-3">

@@ -36,8 +36,10 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
 		status: campaign.status as CampaignStatus,
 		description: campaign.description,
 		added_date: campaign.added_date,
+		end_date: campaign.end_date,
 		due_date: campaign.due_date,
 		purchased: campaign.purchased,
+		liking_users: campaign.liking_users,
 		likes: campaign.liking_users.length,
 	};
 }
@@ -71,21 +73,6 @@ function backend_user_to_frontend_user(user: any): User {
 		zip: user.zip,
 	};
 }
-
-// function backend_user_profile_to_frontend_user_profile(user: any): UserProfile {
-//   return {
-//     uuid: user.uuid,
-//     activated: user.active,
-//     username: user.username,
-//     firstname: user.firstname,
-//     lastname: user.lastname,
-//     phone: user.phone,
-//     zip: user.zip,
-//     city: user.city,
-//     street: user.street,
-//     inpost: user.inpost,
-//   };
-// }
 
 function backend_order_to_frontend_order(order: any): Order {
 	return {
@@ -382,6 +369,19 @@ export class RestApi implements Api {
 			if (response.ok) {
 				const response_json = await response.json();
 				return response_json.map(backend_campaign_to_frontend_campaign);
+			}
+		})();
+	}
+
+	fetchCampaignBuyer(uuid: string): Promise<string[]> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/" + uuid + "/purchased",
+				options("GET")
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
 			}
 		})();
 	}

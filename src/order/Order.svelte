@@ -15,7 +15,9 @@
 	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
 	import Fa from "svelte-fa";
 	import { faHeart } from "@fortawesome/free-solid-svg-icons";
+	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Modal from "../utils/Modal.svelte";
+	import { role, user_uuid } from "../stores";
 
 	export let uuid: string;
 
@@ -48,9 +50,25 @@
 		showPopup = false;
 	};
 
+	async function like(candidate_uuid: string) {
+		await api.likeCandidate(candidate_uuid);
+		campaign.liked = true;
+		campaign.likes++;
+	}
+
+	async function unlike(candidate_uuid: string) {
+		await api.unlikeCandidate(candidate_uuid);
+		campaign.liked = false;
+		campaign.likes--;
+	}
+
 	onMount(async () => {
-		let fetchedOrder: Order = await api.fetchOrder(uuid);
 		let fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
+		if (fetchedCampaign.liking_users.includes($user_uuid))
+			fetchedCampaign.liked = true;
+		else fetchedCampaign.liked = false;
+
+		let fetchedOrder: Order = await api.fetchOrder(uuid);
 		fetchedCampaign.items = fetchedCampaign.items.filter(
 			(v) => v.type != OrderedItemType.ADMIN_ADDON
 		);
@@ -66,8 +84,7 @@
 			fill_form(fetchedCampaign, fetchedOrder);
 			campaign = fetchedCampaign;
 		}
-		user_paid = fetchedOrder.user_paid;
-		console.log(user_paid);
+		user_paid = fetchedOrder?.user_paid | 0;
 	});
 
 	async function order() {
@@ -135,9 +152,44 @@
 					copy_value={campaign.payment_details}
 				/>
 			</div>
-			<Fa icon={faHeart} primaryColor="red" />
-			{campaign.likes} polubień.
+
+			{#if campaign.liked}
+				<button
+					class="btn btn-light non-collapsing"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target
+					on:click={() => unlike(campaign.uuid)}
+				>
+					<Fa icon={faHeart} primaryColor="red" />
+					{$_(
+						campaign.likes === 1
+							? "proposed_campaigns.single_like"
+							: "proposed_campaigns.likes",
+						{ values: { count: campaign.likes } }
+					)}
+				</button>
+			{:else}
+				<button
+					class="btn btn-light non-collapsing"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target
+					on:click={() => like(campaign.uuid)}
+				>
+					<Fa icon={faHeartOpen} />
+					{$_(
+						campaign.likes === 1
+							? "proposed_campaigns.single_like"
+							: "proposed_campaigns.likes",
+						{ values: { count: campaign.likes } }
+					)}
+				</button>
+			{/if}
 			<div>Data końca zbiórki: {campaign.due_date}</div>
+			{#if campaign.end_date}<div>
+					Data zamknięcia Kickstartera: {campaign.end_date}
+				</div>{/if}
 		</div>
 	</div>
 

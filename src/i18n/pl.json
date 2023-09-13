@@ -38,6 +38,7 @@
   "edit_campaign.description_must_not_be_empty": "Opis kampanii nie może być pusty",
   "edit_campaign.transfer_must_not_be_empty": "Tytuł przelewu nie może być pusty",
   "edit_campaign.due_date":"Data wpłat",
+  "edit_campaign.end_date":"Koniec Kickstartera",
   "edit_campaign.title_edit": "Edytuj kampanię {title}",
   "edit_campaign.title_add": "Dodaj kampanie {title}",
   "edit_campaign.add_item": "Pozycja",
