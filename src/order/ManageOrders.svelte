@@ -21,9 +21,12 @@
 	let orders: (Order & AssignedToUser)[] = null;
 	let campaign: Campaign;
 	let totalItems = [];
+	let totalCampaignItems = [];
 	let totalGathered = 0;
 	let totalPrice = 0;
 	let tracking_no = "";
+
+	let admin_addons = [];
 
 	$: itemByUuid = new Map<string, CampaignItem>(
 		campaign?.items?.map((item) => [item.uuid, item]) ?? []
@@ -38,21 +41,26 @@
 					itemOccurrences.set(item.item_uuid, previous + item.amount);
 				})
 			);
-			totalItems = campaign.items
-				.map((item) => ({
-					...item,
-					total_amount: itemOccurrences.get(item.uuid) ?? 0,
-				}))
-				.filter((item) => item.total_amount > 0);
+			totalCampaignItems = campaign.items.map((item) => ({
+				...item,
+				total_amount: itemOccurrences.get(item.uuid) ?? 0,
+			}));
+
+			totalItems = totalCampaignItems.filter((item) => item.total_amount > 0);
 			totalPrice = totalItems.reduce(
 				(acc, item) => acc + item.total_amount * item.price,
 				0
 			);
 			totalGathered = orders.reduce((acc, order) => acc + order.paid_amount, 0);
+
+			admin_addons = totalCampaignItems.filter((ti) => {
+				for (let oi of campaign.items) {
+					if (ti.uuid === oi.uuid && oi.type === OrderedItemType.ADMIN_ADDON)
+						return ti;
+				}
+			});
 		}
 	}
-
-	let admin_addons: CampaignItem[];
 
 	function addAdminOrder(addon) {
 		console.log(addon);
@@ -152,9 +160,8 @@
 			api.fetchCampaign(uuid),
 		]);
 		orders = o.sort(sort_by_order_date);
-		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
-		console.log(o, c);
+		// console.log(o, c);
 	});
 
 	async function confirm(order: Order & AssignedToUser) {
@@ -205,7 +212,7 @@
 		<ul>
 			{#each admin_addons as addon}
 				<li>
-					{addon.name}: {addon.price}
+					{addon.name}: {addon.total_amount}
 					<button
 						class="btn btn-outline-secondary change-amount"
 						on:click={() => addAdminOrder(addon)}>+</button
