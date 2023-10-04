@@ -63,7 +63,6 @@
 	}
 
 	function addAdminOrder(addon) {
-		console.log(addon);
 		const empty_addon: OrderedItem = {
 			item_uuid: addon.uuid,
 			amount: 1,
@@ -77,8 +76,10 @@
 				order.items = [...order.items, empty_addon];
 			// order.items = [...order.items, { amount: 1, item_uuid: addon.uuid }];
 		}
-		orders.forEach((order) => {});
-		// change_order(campaign_uuid, )
+		orders.forEach(async (order) => {
+			await change_order(campaign.uuid, order.ouuid, order.items);
+		});
+
 		orders = orders;
 		campaign = campaign;
 	}
