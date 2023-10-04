@@ -2,7 +2,7 @@
 	import { Toast } from "bootstrap";
 	import { marked } from "marked";
 	import { onMount } from "svelte";
-	import { _ } from "svelte-i18n";
+	import { _, t } from "svelte-i18n";
 	import {
 		api,
 		Campaign,
@@ -69,9 +69,14 @@
 		else fetchedCampaign.liked = false;
 
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		fetchedCampaign.items = fetchedCampaign.items.filter(
-			(v) => v.type != OrderedItemType.ADMIN_ADDON
-		);
+
+		fetchedOrder.items = fetchedOrder.items.map((i) => {
+			const item_type = fetchedCampaign.items.filter(
+				(v) => v.uuid === i.item_uuid
+			);
+			return { ...i, type: item_type[0].type };
+		});
+
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
 		}
@@ -214,55 +219,59 @@
 		</div>
 	{/if}
 	{#each items as { amount, item }}
-		<div
-			class="card mb-2"
-			style="width: 100%;"
-			class:selected_item={amount > 0}
-		>
-			<div class="card-body row">
-				<div class="col-12 col-lg">
-					<h5 class:fade-text={amount == null || amount === 0}>
-						{#if item.ordinal > 0}
-							{item.ordinal}. {item.name}
-							<span class="ms-2 badge bg-secondary">
-								{item.price}
-								{$_("currency.pln")}
-							</span>
-						{:else}
-							{item.name}
-							<span class="ms-2 badge bg-secondary">
-								{item.price}
-								{$_("currency.pln")}
-							</span>
-						{/if}
-					</h5>
-				</div>
-				<div class="col-12 col-lg-4">
-					<div class="input-group justify-content-lg-end">
-						<span class="input-group-text">{$_("order.quantity")}</span>
-						<button
-							type="button"
-							class="btn btn-outline-secondary change-amount"
-							on:click={() => {
-								if (!item.ordinal) {
-									amount == 0 ? amount++ : amount;
-								} else amount++;
-							}}
-						>
-							+
-						</button>
-						<span class="input-group-text amount">{amount}</span>
-						<button
-							type="button"
-							class="btn btn-outline-secondary change-amount"
-							on:click={() => (amount = Math.max(0, amount - 1))}
-						>
-							-
-						</button>
+		{#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0}
+			<div
+				class="card mb-2"
+				style="width: 100%;"
+				class:selected_item={amount > 0}
+			>
+				<div class="card-body row">
+					<div class="col-12 col-lg">
+						<h5 class:fade-text={amount == null || amount === 0}>
+							{#if item.ordinal > 0}
+								{item.ordinal}. {item.name}
+								<span class="ms-2 badge bg-secondary">
+									{item.price}
+									{$_("currency.pln")}
+								</span>
+							{:else}
+								{item.name}
+								<span class="ms-2 badge bg-secondary">
+									{item.price}
+									{$_("currency.pln")}
+								</span>
+							{/if}
+						</h5>
+					</div>
+					<div class="col-12 col-lg-4">
+						<div class="input-group justify-content-lg-end">
+							{#if item.type !== OrderedItemType.ADMIN_ADDON}
+								<span class="input-group-text">{$_("order.quantity")}</span>
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={() => {
+										if (!item.ordinal) {
+											amount == 0 ? amount++ : amount;
+										} else amount++;
+									}}
+								>
+									+
+								</button>
+								<span class="input-group-text amount">{amount}</span>
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={() => (amount = Math.max(0, amount - 1))}
+								>
+									-
+								</button>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 	{/each}
 
 	{@const to_pay = totalPrice - paid_amount}
