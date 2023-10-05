@@ -2,7 +2,7 @@
 	import { Toast } from "bootstrap";
 	import { marked } from "marked";
 	import { onMount } from "svelte";
-	import { _, t } from "svelte-i18n";
+	import { _ } from "svelte-i18n";
 	import {
 		api,
 		Campaign,
@@ -67,20 +67,24 @@
 		if (fetchedCampaign.liking_users.includes($user_uuid))
 			fetchedCampaign.liked = true;
 		else fetchedCampaign.liked = false;
-
+		console.log('c',fetchedCampaign)
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-
-		fetchedOrder.items = fetchedOrder.items.map((i) => {
+		console.log('o',fetchedOrder)
+		const new_items = fetchedOrder?.items.map((i) => {
 			const item_type = fetchedCampaign.items.filter(
 				(v) => v.uuid === i.item_uuid
 			);
 			return { ...i, type: item_type[0].type };
 		});
-
+		console.log('i',new_items)
+		
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
 		}
 		new_order = fetchedOrder == null;
+		if(!new_order){		fetchedOrder.items = new_items}
+		
+
 		if (fetchedCampaign == null) {
 			items = [];
 			campaign = null;
@@ -107,6 +111,7 @@
 			},
 			user_paid
 		);
+		console.log(user_paid)
 		if (savedOrder.status_code === 409) {
 			showToast(savedOrder.message);
 			return;
