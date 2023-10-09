@@ -67,23 +67,22 @@
 		if (fetchedCampaign.liking_users.includes($user_uuid))
 			fetchedCampaign.liked = true;
 		else fetchedCampaign.liked = false;
-		console.log('c',fetchedCampaign)
+		console.log("c", fetchedCampaign);
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		console.log('o',fetchedOrder)
+		console.log("o", fetchedOrder);
 		const new_items = fetchedOrder?.items.map((i) => {
 			const item_type = fetchedCampaign.items.filter(
 				(v) => v.uuid === i.item_uuid
 			);
 			return { ...i, type: item_type[0].type };
 		});
-		console.log('i',new_items)
-		
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
 		}
 		new_order = fetchedOrder == null;
-		if(!new_order){		fetchedOrder.items = new_items}
-		
+		if (!new_order) {
+			fetchedOrder.items = new_items;
+		}
 
 		if (fetchedCampaign == null) {
 			items = [];
@@ -101,6 +100,10 @@
 		let items_temp = items
 			.filter((i) => i.amount > 0)
 			.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount }));
+
+		console.log(`items ${items}`);
+		console.log(`user paid ${user_paid}`);
+
 		const savedOrder = await api.orderCampaign(
 			uuid,
 			{
@@ -111,7 +114,7 @@
 			},
 			user_paid
 		);
-		console.log(user_paid)
+
 		if (savedOrder.status_code === 409) {
 			showToast(savedOrder.message);
 			return;
