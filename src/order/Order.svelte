@@ -32,6 +32,7 @@
 		.reduce((acc, x) => acc + x, 0);
 
 	let toast_body = "Zamówienie złożone.";
+
 	function fill_form(campaign: Campaign, order: Order) {
 		const orderItems = new Map<string, OrderedItem>();
 		if (order != null) {
@@ -39,8 +40,10 @@
 		}
 		items = campaign.items.map((i) => ({
 			amount: orderItems.get(i.uuid)?.amount ?? 0,
+			old_amount: orderItems.get(i.uuid)?.amount ?? 0,
 			item: { ...i },
 		}));
+		console.log(items);
 	}
 
 	const onClickOK = () => {
@@ -67,14 +70,13 @@
 		if (fetchedCampaign.liking_users.includes($user_uuid))
 			fetchedCampaign.liked = true;
 		else fetchedCampaign.liked = false;
-		console.log("c", fetchedCampaign);
+
 		let fetchedOrder: Order = await api.fetchOrder(uuid);
-		console.log("o", fetchedOrder);
 		const new_items = fetchedOrder?.items.map((i) => {
 			const item_type = fetchedCampaign.items.filter(
 				(v) => v.uuid === i.item_uuid
 			);
-			return { ...i, type: item_type[0].type };
+			return { ...i, type: item_type[0].type, old_amount: i.amount };
 		});
 		if (fetchedOrder) {
 			paid_amount = fetchedOrder.paid_amount;
@@ -100,10 +102,7 @@
 		let items_temp = items
 			.filter((i) => i.amount > 0)
 			.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount }));
-
-		console.log(`items ${items}`);
-		console.log(`user paid ${user_paid}`);
-
+		console.log(`is new ${new_order}`);
 		const savedOrder = await api.orderCampaign(
 			uuid,
 			{
@@ -226,7 +225,7 @@
 			<span>{$_("order.no_items")}</span>
 		</div>
 	{/if}
-	{#each items as { amount, item }}
+	{#each items as { amount, old_amount, item }}
 		{#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0}
 			<div
 				class="card mb-2"
@@ -270,7 +269,14 @@
 								<button
 									type="button"
 									class="btn btn-outline-secondary change-amount"
-									on:click={() => (amount = Math.max(0, amount - 1))}
+									on:click={() => {
+										amount = Math.max(old_amount, amount - 1);
+										if (amount == old_amount) {
+											showToast(
+												"Dlaczego nie mogę zmniejszać? Na podstawie Twojej wcześnijeszej deklaracji negocjuję ceny... skontaktuj się z bezpośrednio, coś się wymyśli..."
+											);
+										}
+									}}
 								>
 									-
 								</button>
