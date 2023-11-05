@@ -27,6 +27,7 @@
 			titleLike: search,
 			...fetch_filter,
 		});
+		console.log(campaigns);
 		return campaigns.map(
 			({
 				uuid,
@@ -37,6 +38,8 @@
 				added_date,
 				description,
 				purchased,
+				items,
+				status,
 			}) => ({
 				id: uuid,
 				title,
@@ -46,6 +49,8 @@
 				added_date,
 				description,
 				purchased,
+				items,
+				status,
 			})
 		);
 	}
@@ -131,7 +136,15 @@
 					</li>
 				</ul>
 			{:else}
-				{$_("closed_campaigns.no_actions")}
+				<ul>
+					{#each item.items as pledge (pledge.uuid)}
+						{#if pledge.type == 0}
+							<li>
+								{pledge.name}: {pledge.price}
+							</li>
+						{/if}
+					{/each}
+				</ul>
 			{/if}
 		</ul>
 	</svelte:fragment>
