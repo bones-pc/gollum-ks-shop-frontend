@@ -6,9 +6,7 @@
 	import { api, Campaign, CampaignItem, CampaignStatus } from "../../api/Api";
 	import EditCampaign from "./EditCampaign.svelte";
 	import { get } from "svelte/store";
-
 	import { OrderedItemType } from "../../api/Api";
-	import OrdersHistory from "../../order/OrdersHistory.svelte";
 
 	const whitespaces = /^\s*$/;
 	let warning = null;
@@ -26,7 +24,8 @@
 		payment_details: "",
 		added_date: new Date(),
 		due_date: new Date(),
-		purchased:false,
+		end_date: null,
+		purchased: false,
 	});
 
 	let campaign: Campaign;
@@ -58,7 +57,7 @@
 			}
 		}
 	}
-	const add_admin_pledge = ()=>{};
+	const add_admin_pledge = () => {};
 
 	function add_shipping() {
 		if (Object.keys(shipping).length === 0) {
@@ -83,7 +82,7 @@
 			type: OrderedItemType.PLEDGE,
 		});
 		items = items;
-		console.log(items)
+		console.log(items);
 	}
 
 	const add_excel = (excel_helper: string) => {
@@ -102,12 +101,12 @@
 			items.push({
 				name: cells[0],
 				uuid: v4(),
-				ordinal: parseInt(y)+1,
+				ordinal: parseInt(y) + 1,
 				price: parseInt(cells[1]),
 				type: OrderedItemType.PLEDGE,
 			});
 		}
-		shipping={}
+		shipping = {};
 	};
 
 	function validate_form() {

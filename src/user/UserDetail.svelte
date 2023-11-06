@@ -6,6 +6,7 @@
 	import type { UserProfile } from "../api/Api";
 	import UserDataComponent from "./UserData.svelte";
 	import OrderHistoryAdmin from "../order/OrderHistoryAdmin.svelte";
+	import { subscription_due_date } from "../stores";
 
 	let user: UserProfile = {
 		firstname: "",
@@ -19,13 +20,15 @@
 		email: "",
 		street: "",
 		city: "",
+		subscription_due: null,
 	};
 	let orders: Order[] = [];
-
+	let sub_due_date: Date;
 	export let uuid: string;
 
 	onMount(async () => {
 		user = await api.fetchUserProfileAdmin(uuid);
+		user.subscription_due = user.subscription_due?.split("T")[0];
 	});
 
 	async function activate(uuid: string) {
@@ -36,6 +39,10 @@
 	async function deactivate(uuid: string) {
 		const new_user = await api.deactivateUser(uuid);
 		// users[users.findIndex((it) => it.uuid === new_user.uuid)] = new_user;
+	}
+
+	async function updateSubscriptionDate(user_uuid: string, date: Date) {
+		const user = await api.updateSubscription(user_uuid, date);
 	}
 
 	let index = 1;
@@ -77,6 +84,21 @@
 						{$_("manage_users.activate")} User
 					</button>
 				{/if}
+			</td>
+			<td>
+				<div class="mb-2 col-md-6">
+					<label class="form-label" for="campaign_payment">
+						{$_("subscription.due_date")}
+					</label>
+					<input
+						on:change={() =>
+							updateSubscriptionDate(user.uuid, user.subscription_due)}
+						class="form-control"
+						bind:value={user.subscription_due}
+						type="date"
+						id="subscription_date"
+					/>
+				</div>
 			</td>
 		</tr>
 

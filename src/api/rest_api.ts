@@ -548,6 +548,22 @@ export class RestApi implements Api {
 		})();
 	}
 
+	updateSubscription(user_uuid: string, date: Date): Promise<User> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/" + user_uuid,
+				options("PATCH", { subscription_due: date })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return {
+					...backend_user_to_frontend_user(response_json),
+					uuid: user_uuid,
+				};
+			}
+		})();
+	}
+
 	deactivateUser(user_uuid: string): Promise<User> {
 		return (async () => {
 			const response = await fetch(

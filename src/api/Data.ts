@@ -1,3 +1,4 @@
+import { user_uuid, subscription_due_date } from "../stores";
 export interface ErrorResponse {
 	status_code: number;
 	message: string;
@@ -149,6 +150,7 @@ export interface UserProfile {
 	city: string;
 	zip: string;
 	inpost: string;
+	subscription_due: Date;
 }
 
 export interface Api {
@@ -204,6 +206,7 @@ export interface Api {
 	activateUser(user_uuid: string): Promise<User>;
 	deactivateUser(user_uuid: string): Promise<User>;
 	updateUserProfile(user: UserProfile): Promise<UserProfile>;
+	updateSubscription(user_uuid: string, date: Date): Promise<UserProfile>;
 	resetPassword(password: string, token: string): Promise<Boolean>;
 	initPasswordReset(email: string): Promise<Boolean>;
 }
