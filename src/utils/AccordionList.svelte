@@ -2,7 +2,6 @@
 	import { onMount } from "svelte";
 	import { flip } from "svelte/animate";
 	import { fade } from "svelte/transition";
-	import AccordeonHeader from "./AccordeonHeader.svelte";
 
 	import AccordionListItem from "./AccordionListItem.svelte";
 	import AccordionListNav from "./AccordionListNav.svelte";

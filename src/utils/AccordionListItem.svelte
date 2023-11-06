@@ -2,7 +2,7 @@
 	import type { AccordionItem } from "./accordion_item";
 	import { role } from "../stores";
 	import { CampaignStatus } from "../api/Data";
-	import CampaignsCandidates from "../campaign/listing/CampaignsCandidates.svelte";
+
 	import { Link } from "svelte-navigator";
 	export let item: AccordionItem;
 </script>
@@ -104,7 +104,7 @@
 	.accordion-button:focus {
 		box-shadow: none !important;
 	}
-	.notyetpaid {
+	/* .notyetpaid {
 		margin: 10px;
-	}
+	} */
 </style>
