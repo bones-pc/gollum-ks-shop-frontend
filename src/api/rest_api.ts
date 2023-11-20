@@ -51,6 +51,7 @@ function backend_draft_to_frontend_draft(
 		uuid: draft.uuid,
 		title: draft.name || draft.campaign_name,
 		img_url: draft.img_url,
+		added_date:draft.added_date
 		url: draft.url,
 		// todo - Piotr should fix it soon
 		liking_users: draft?.liking_users?.filter((it) => it != null),
@@ -59,6 +60,7 @@ function backend_draft_to_frontend_draft(
 		status_code: 200,
 		message: "ok",
 		purchased: false,
+		demotion: draft.demotion
 	};
 }
 
@@ -451,6 +453,7 @@ export class RestApi implements Api {
 			);
 			if (response.ok) {
 				const response_json = await response.json();
+				console.log(response_json)
 				return response_json.map(backend_draft_to_frontend_draft);
 			}
 		})();

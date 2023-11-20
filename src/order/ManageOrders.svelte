@@ -262,35 +262,37 @@
 		</div>
 		<ul>
 			{#each order.items as item}
-				<li>
-					<div class="row">
-						<div class="col-md-3 mid">
-							{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
-								item.item_uuid
-							).name}: {item.amount}
+				{#if item.amount > 0}
+					<li>
+						<div class="row">
+							<div class="col-md-3 mid">
+								{itemByUuid.get(item.item_uuid).ordinal}. {itemByUuid.get(
+									item.item_uuid
+								).name}: {item.amount}
+							</div>
+							<div class="col-md-1 mid">
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={async () => {
+										item.amount++;
+										await change_order(campaign.uuid, order.ouuid, order.items);
+									}}>+</button
+								>
+							</div>
+							<div class="col-md-8">
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={async () => {
+										item.amount = Math.max(0, item.amount - 1);
+										await change_order(campaign.uuid, order.ouuid, order.items);
+									}}>-</button
+								>
+							</div>
 						</div>
-						<div class="col-md-1 mid">
-							<button
-								type="button"
-								class="btn btn-outline-secondary change-amount"
-								on:click={async () => {
-									item.amount++;
-									await change_order(campaign.uuid, order.ouuid, order.items);
-								}}>+</button
-							>
-						</div>
-						<div class="col-md-8">
-							<button
-								type="button"
-								class="btn btn-outline-secondary change-amount"
-								on:click={async () => {
-									item.amount = Math.max(0, item.amount - 1);
-									await change_order(campaign.uuid, order.ouuid, order.items);
-								}}>-</button
-							>
-						</div>
-					</div>
-				</li>
+					</li>
+				{/if}
 			{/each}
 		</ul>
 	{/each}

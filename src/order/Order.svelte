@@ -6,6 +6,7 @@
 	import {
 		api,
 		Campaign,
+		CampaignStatus,
 		Order,
 		OrderedItem,
 		OrderedItemType,
@@ -22,6 +23,7 @@
 	export let uuid: string;
 
 	let campaign: Campaign = null;
+	let campaignStatus: CampaignStatus = CampaignStatus.ACTIVE;
 	let items = [];
 	let new_order = null;
 	let paid_amount = 0;
@@ -43,7 +45,6 @@
 			old_amount: orderItems.get(i.uuid)?.amount ?? 0,
 			item: { ...i },
 		}));
-		console.log(items);
 	}
 
 	const onClickOK = () => {
@@ -67,6 +68,7 @@
 
 	onMount(async () => {
 		let fetchedCampaign: Campaign = await api.fetchCampaign(uuid);
+		campaignStatus = fetchedCampaign.status;
 		if (fetchedCampaign.liking_users.includes($user_uuid))
 			fetchedCampaign.liked = true;
 		else fetchedCampaign.liked = false;
@@ -102,7 +104,7 @@
 		let items_temp = items
 			.filter((i) => i.amount > 0)
 			.map((i) => ({ item_uuid: i.item.uuid, amount: i.amount }));
-		console.log(`is new ${new_order}`);
+
 		const savedOrder = await api.orderCampaign(
 			uuid,
 			{
@@ -158,6 +160,9 @@
 			{/if}
 		</div>
 		<div class="col py-3 py-md-0">
+			{#if campaignStatus == CampaignStatus.CLOSED}
+				<span class="badge bg-danger">Zamknięta</span>
+			{/if}
 			{@html marked(campaign.description)}
 			<div>
 				Tytuł przelewu: <CopyToClipboardField
@@ -205,135 +210,137 @@
 		</div>
 	</div>
 
-	<div class="mb-2">
-		Moje wpłaty:
-		<input
-			name="user_paid"
-			type="number"
-			placeholder="wpisz informacyjnie dla siebie"
-			bind:value={user_paid}
-		/>
-		<InProgressButton
-			on_click_function={async () => order()}
-			label={$_("order.confirm")}
-			disabled_predicate={() => totalPrice <= 0 && new_order}
-		/>
-	</div>
-
-	{#if items.length === 0}
-		<div>
-			<span>{$_("order.no_items")}</span>
+	{#if campaignStatus != CampaignStatus.CLOSED}
+		<div class="mb-2">
+			Moje wpłaty:
+			<input
+				name="user_paid"
+				type="number"
+				placeholder="wpisz informacyjnie dla siebie"
+				bind:value={user_paid}
+			/>
+			<InProgressButton
+				on_click_function={async () => order()}
+				label={$_("order.confirm")}
+				disabled_predicate={() => totalPrice <= 0 && new_order}
+			/>
 		</div>
-	{/if}
-	{#each items as { amount, old_amount, item }}
-		{#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0}
-			<div
-				class="card mb-2"
-				style="width: 100%;"
-				class:selected_item={amount > 0}
-			>
-				<div class="card-body row">
-					<div class="col-12 col-lg">
-						<h5 class:fade-text={amount == null || amount === 0}>
-							{#if item.ordinal > 0}
-								{item.ordinal}. {item.name}
-								<span class="ms-2 badge bg-secondary">
-									{item.price}
-									{$_("currency.pln")}
-								</span>
-							{:else}
-								{item.name}
-								<span class="ms-2 badge bg-secondary">
-									{item.price}
-									{$_("currency.pln")}
-								</span>
-							{/if}
-						</h5>
-					</div>
-					<div class="col-12 col-lg-4">
-						<div class="input-group justify-content-lg-end">
-							{#if item.type !== OrderedItemType.ADMIN_ADDON}
-								<span class="input-group-text">{$_("order.quantity")}</span>
-								<button
-									type="button"
-									class="btn btn-outline-secondary change-amount"
-									on:click={() => {
-										if (!item.ordinal) {
-											amount == 0 ? amount++ : amount;
-										} else amount++;
-									}}
-								>
-									+
-								</button>
-								<span class="input-group-text amount">{amount}</span>
-								<button
-									type="button"
-									class="btn btn-outline-secondary change-amount"
-									on:click={() => {
-										amount = Math.max(old_amount, amount - 1);
-										if (amount == old_amount) {
-											showToast(
-												"Dlaczego nie mogę zmniejszać? Na podstawie Twojej wcześnijeszej deklaracji negocjuję ceny... skontaktuj się z bezpośrednio, coś się wymyśli..."
-											);
-										}
-									}}
-								>
-									-
-								</button>
-							{/if}
+
+		{#if items.length === 0}
+			<div>
+				<span>{$_("order.no_items")}</span>
+			</div>
+		{/if}
+		{#each items as { amount, old_amount, item }}
+			{#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0}
+				<div
+					class="card mb-2"
+					style="width: 100%;"
+					class:selected_item={amount > 0}
+				>
+					<div class="card-body row">
+						<div class="col-12 col-lg">
+							<h5 class:fade-text={amount == null || amount === 0}>
+								{#if item.ordinal > 0}
+									{item.ordinal}. {item.name}
+									<span class="ms-2 badge bg-secondary">
+										{item.price}
+										{$_("currency.pln")}
+									</span>
+								{:else}
+									{item.name}
+									<span class="ms-2 badge bg-secondary">
+										{item.price}
+										{$_("currency.pln")}
+									</span>
+								{/if}
+							</h5>
+						</div>
+						<div class="col-12 col-lg-4">
+							<div class="input-group justify-content-lg-end">
+								{#if item.type !== OrderedItemType.ADMIN_ADDON}
+									<span class="input-group-text">{$_("order.quantity")}</span>
+									<button
+										type="button"
+										class="btn btn-outline-secondary change-amount"
+										on:click={() => {
+											if (!item.ordinal) {
+												amount == 0 ? amount++ : amount;
+											} else amount++;
+										}}
+									>
+										+
+									</button>
+									<span class="input-group-text amount">{amount}</span>
+									<button
+										type="button"
+										class="btn btn-outline-secondary change-amount"
+										on:click={() => {
+											amount = Math.max(old_amount, amount - 1);
+											if (amount == old_amount) {
+												showToast(
+													"Dlaczego nie mogę zmniejszać? Na podstawie Twojej wcześnijeszej deklaracji negocjuję ceny... skontaktuj się z bezpośrednio, coś się wymyśli..."
+												);
+											}
+										}}
+									>
+										-
+									</button>
+								{/if}
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		{/if}
-	{/each}
+			{/if}
+		{/each}
 
-	{@const to_pay = totalPrice - paid_amount}
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">{$_("orders_history.name")}</th>
-				<th scope="col">{$_("orders_history.quantity")}</th>
-				<th scope="col">{$_("orders_history.price")}</th>
-				<th scope="col">{$_("orders_history.item_total")}</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each items as { amount, item }}
-				{#if amount != 0}
+		{@const to_pay = totalPrice - paid_amount}
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">{$_("orders_history.name")}</th>
+					<th scope="col">{$_("orders_history.quantity")}</th>
+					<th scope="col">{$_("orders_history.price")}</th>
+					<th scope="col">{$_("orders_history.item_total")}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each items as { amount, item }}
+					{#if amount != 0}
+						<tr>
+							<th scope="row">{item.name}</th>
+							<td>{amount}</td>
+							<td>{item.price}</td>
+							<td>{item.price * amount}</td>
+						</tr>
+					{/if}
+				{/each}
+				<tr>
+					<th scope="row">{$_("orders_history.total")}</th>
+					<td />
+					<td />
+					<td>{totalPrice} {$_("currency.pln")}</td>
+				</tr>
+				<tr>
+					<th scope="row">{$_("orders_history.paid_confirmed")}</th>
+					<td />
+					<td />
+					<td>{paid_amount}</td>
+				</tr>
+				{#if to_pay > 0}
 					<tr>
-						<th scope="row">{item.name}</th>
-						<td>{amount}</td>
-						<td>{item.price}</td>
-						<td>{item.price * amount}</td>
+						<th scope="row">{$_("orders_history.left")}</th>
+						<td />
+						<td />
+						<td class:text-danger={to_pay > 0}>
+							{to_pay}
+							{$_("currency.pln")}
+						</td>
 					</tr>
 				{/if}
-			{/each}
-			<tr>
-				<th scope="row">{$_("orders_history.total")}</th>
-				<td />
-				<td />
-				<td>{totalPrice} {$_("currency.pln")}</td>
-			</tr>
-			<tr>
-				<th scope="row">{$_("orders_history.paid_confirmed")}</th>
-				<td />
-				<td />
-				<td>{paid_amount}</td>
-			</tr>
-			{#if to_pay > 0}
-				<tr>
-					<th scope="row">{$_("orders_history.left")}</th>
-					<td />
-					<td />
-					<td class:text-danger={to_pay > 0}>
-						{to_pay}
-						{$_("currency.pln")}
-					</td>
-				</tr>
-			{/if}
-		</tbody>
-	</table>
+			</tbody>
+		</table>
+	{/if}
 {/if}
 
 <SimpleToast {toast_id}>

@@ -10,7 +10,9 @@
 	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
-	import CampaignsCandidates from "../listing/CampaignsCandidates.svelte";
+	import { Toast } from "bootstrap";
+
+	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	let save_in_progress = false;
 
@@ -24,6 +26,9 @@
 		description: "",
 		status: CampaignStatus.DRAFT,
 		purchased: false,
+		demotion: false,
+		liked: false,
+		added_date: new Date(),
 	});
 	let ks_name: string;
 	let selected_item = false;
@@ -38,7 +43,7 @@
 		let draft_response: CampaignCandidate | ErrorResponse;
 		draft_response = await api.addCandidate(draft);
 		console.log(`resp: ${draft_response}`);
-		if (draft_response.status_code == 409) {
+		if ((draft_response as ErrorResponse).status_code == 409) {
 			warning = "Kampania już istnieje";
 		} else {
 			warning = null;
@@ -75,6 +80,15 @@
 			});
 		}
 	}
+
+	let toast_id = "ks_toast";
+	let toast_body = "";
+	function showToast(message: string) {
+		toast_body = message;
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		toast.show();
+	}
 </script>
 
 {#if warning != null}
@@ -88,7 +102,7 @@
 </h1>
 <div class="mb-2">
 	<div>
-		<label for="title" class="form-label">Podaj nazwę gry z Kickstarter </label>
+		<label for="title" class="form-label">Podaj nazwę gry z Gamefound </label>
 		<input
 			class="form-control"
 			type="text"
@@ -98,9 +112,19 @@
 		/>
 		<InProgressButton
 			on_click_function={search_campaign_in_ks}
-			label="szukaj na KS"
+			label="szukaj na Gamefound"
 			bind:in_progress={save_in_progress}
 		/>
+
+		<button
+			type="button"
+			class="btn btn-primary"
+			on:click={() => {
+				showToast(
+					"Kickstarter skutecznie zablokował dostęp 'robotom', ale pracuję nad tym... na ten moment łatwo wyszukasz grę na Gamefound."
+				);
+			}}>?</button
+		>
 	</div>
 	<div>
 		<img alt={draft.description} src={draft.img_url} />
@@ -169,3 +193,7 @@
 	closeTitle={"Odrzuć"}
 	list={campaign_list_modal}
 />
+
+<SimpleToast {toast_id}>
+	<div slot="toast-body">{toast_body}</div></SimpleToast
+>

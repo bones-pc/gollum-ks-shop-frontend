@@ -110,10 +110,13 @@ export interface CampaignCandidate {
 	title: string;
 	url: string;
 	img_url: string;
+	added_date: Date;
 	liking_users: string[];
 	description: string;
 	status: CampaignStatus;
 	purchased: boolean;
+	liked: boolean;
+	demotion: boolean;
 }
 
 export interface CampaignsSearchParams {

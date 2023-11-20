@@ -33,18 +33,35 @@
 		}
 		return 0;
 	};
+	let campaign_count = 0;
 
 	async function fetch(
 		search: string
 	): Promise<(CampaignCandidate & AccordionItem)[]> {
 		const fetched_candidates: CampaignCandidate[] =
 			await api.fetchCampaignCandidates(search);
+		campaign_count = fetched_candidates.length;
+		console.log(fetched_candidates);
 		fetched_candidates.forEach((c) => {
 			if (c.liking_users.includes($user_uuid)) c.liked = true;
 			else c.liked = false;
 		});
 		let confirmed_drafts = fetched_candidates
 			.filter((c) => c.status === CampaignStatus.DRAFT_CONFIRMED)
+			.sort(sort_by_likes)
+			.map((c) => ({
+				...c,
+				demotion: false,
+				id: c.uuid,
+			}));
+		let demotion_zone = fetched_candidates
+			.filter(
+				(c) =>
+					c.demotion == true &&
+					c.status !== CampaignStatus.DRAFT_CONFIRMED &&
+					c.status !== CampaignStatus.DRAFT_NEGOTIATED &&
+					c.status !== CampaignStatus.DRAFT_DENIED
+			)
 			.sort(sort_by_likes)
 			.map((c) => ({
 				...c,
@@ -56,17 +73,20 @@
 			.sort(sort_by_likes)
 			.map((c) => ({
 				...c,
+				demotion: false,
 				id: c.uuid,
 			}));
 		let regular_drafts = fetched_candidates
-			.filter((c) => c.status === CampaignStatus.DRAFT)
+			.filter((c) => c.status === CampaignStatus.DRAFT && c.demotion == false)
 			.sort(sort_by_likes)
 			.map((c) => ({
 				...c,
 				id: c.uuid,
 			}));
 		let denied_drafts = fetched_candidates
-			.filter((c) => c.status === CampaignStatus.DRAFT_DENIED)
+			.filter(
+				(c) => c.status === CampaignStatus.DRAFT_DENIED && c.demotion == false
+			)
 			.sort(sort_by_likes)
 			.map((c) => ({
 				...c,
@@ -76,6 +96,7 @@
 			...confirmed_drafts,
 			...negotiated_drafts,
 			...regular_drafts,
+			...demotion_zone,
 			...denied_drafts,
 		];
 	}
@@ -127,7 +148,7 @@
 	}
 </script>
 
-<h1>{$_("proposed_campaigns.title")}</h1>
+<h3>{$_("proposed_campaigns.title")}:{campaign_count}</h3>
 
 <AccordionList items_provider={fetch} items={candidates}>
 	<svelte:fragment slot="nav-actions">
@@ -198,6 +219,9 @@
 					<span class="badge bg-warning"
 						>{$_("proposed_campaigns.negotiations")}</span
 					>
+				{/if}
+				{#if item.demotion}
+					<span class="badge bg-info">{$_("proposed_campaigns.demotion")}</span>
 				{/if}
 			</div>
 		</div>
