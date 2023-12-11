@@ -1,5 +1,6 @@
 import { get } from "svelte/store";
 import { access_token, api_url as url, user_uuid } from "../stores";
+import { ErrorResponse } from './Data';
 import {
 	Api,
 	AssignedToUser,
@@ -274,14 +275,39 @@ export class RestApi implements Api {
 		})();
 	}
 
+	updateUserPaidAmount(campaign_uuid, user_paid): Promise<Order|ErrorResponse> {
+		return (async () => {
+			const payload = {
+				[],
+				user_paid			
+				};
+			let error_response: ErrorResponse = {
+				status_code: 409,
+				message: "Brak zamówienia lub kampania zamknięta.",
+			};
+			const response = await fetch(
+						api_url + "campaigns/" + campaign_uuid + "/order",
+						options("PATCH", payload)
+				  );
+			if (response.ok) {
+				const response_json = await response.json();
+				console.log(response_json);
+				if (response_json.status === 400) {
+					return error_response;
+				}
+				return backend_order_to_frontend_order(response_json.result[0]);
+			}
+		})();
+	}
 	orderCampaign(
 		campaign_uuid: string,
 		update: OrderUpdate,
 		user_paid?: number
 	): Promise<Order | ErrorResponse> {
+		console.log(campaign_uuid, update, user_paid)
 		return (async () => {
 			const payload = {
-				items: update.items.map((it) => ({
+				items: update?.items?.map((it) => ({
 					pledge_id: it.item_uuid,
 					amount: it.amount,
 				})),

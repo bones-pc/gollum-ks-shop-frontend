@@ -61,6 +61,7 @@ export interface Campaign {
 	purchased: boolean;
 	liking_users?: string[];
 	likes?: number;
+	liked?: boolean;
 }
 
 export interface OrderedItem {
@@ -174,6 +175,10 @@ export interface Api {
 	fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
 	fetchCampaign(uuid: string): Promise<Campaign>;
 	fetchCampaignBuyer(uuid: string): Promise<string[]>;
+	updateUserPaidAmount(
+		uuid: strig,
+		amount: number
+	): Promise<Order | ErrorMessage>;
 	orderCampaign(
 		uuid: string,
 		items: OrderUpdate,

@@ -210,22 +210,22 @@
 		</div>
 	</div>
 
-	{#if campaignStatus != CampaignStatus.CLOSED}
-		<div class="mb-2">
-			Moje wpłaty:
-			<input
-				name="user_paid"
-				type="number"
-				placeholder="wpisz informacyjnie dla siebie"
-				bind:value={user_paid}
-			/>
-			<InProgressButton
-				on_click_function={async () => order()}
-				label={$_("order.confirm")}
-				disabled_predicate={() => totalPrice <= 0 && new_order}
-			/>
-		</div>
+	<div class="mb-2">
+		Moje wpłaty:
+		<input
+			name="user_paid"
+			type="number"
+			placeholder="wpisz informacyjnie dla siebie"
+			bind:value={user_paid}
+		/>
+		<InProgressButton
+			on_click_function={async () => order()}
+			label={$_("order.confirm")}
+			disabled_predicate={() => totalPrice <= 0 && new_order}
+		/>
+	</div>
 
+	{#if campaignStatus != CampaignStatus.CLOSED}
 		{#if items.length === 0}
 			<div>
 				<span>{$_("order.no_items")}</span>
