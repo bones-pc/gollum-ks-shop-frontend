@@ -65,7 +65,10 @@ export interface Campaign {
   description: string;
   added_date: Date;
   due_date: Date;
+  end_date: Date;
   purchased: boolean;
+  liking_users: string[];
+  likes: number;
 }
 
 export interface OrderedItem {
@@ -118,6 +121,8 @@ export interface CampaignCandidate {
   description: string;
   status: CampaignStatus;
   purchased: boolean;
+  added_date: Date;
+  demotion: any;
 }
 
 export interface CampaignsSearchParams {
@@ -164,6 +169,10 @@ export interface Api {
   fetchUserOrdersAdmin(ouuid: string): Promise<Order[]>;
   fetchOrder(order_uuid: string): Promise<Order>;
   updatePaidAmount(order: Order & AssignedToUser): Promise<Order>;
+  updateUserPaidAmount(
+    campaign_uuid: string,
+    amount: number
+  ): Promise<Order | ErrorResponse>;
   updateOrderTracking(order: Order): Promise<Order>;
   changeUserOrderStatus(
     user_uuid: string,
