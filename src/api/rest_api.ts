@@ -278,8 +278,8 @@ export class RestApi implements Api {
 	updateUserPaidAmount(campaign_uuid, user_paid): Promise<Order|ErrorResponse> {
 		return (async () => {
 			const payload = {
-				[],
-				user_paid			
+				items:[],
+				user_paid,			
 				};
 			let error_response: ErrorResponse = {
 				status_code: 409,
