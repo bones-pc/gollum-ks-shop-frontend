@@ -98,6 +98,7 @@ export interface Order {
   status: OrderStatus;
   ouuid: string;
   items: OrderedItem[];
+  user_paid: number;
   paid_amount: number;
 }
 
@@ -122,7 +123,7 @@ export interface CampaignCandidate {
   status: CampaignStatus;
   purchased: boolean;
   added_date: Date;
-  demotion: any;
+  demotion: boolean;
 }
 
 export interface CampaignsSearchParams {
@@ -182,7 +183,7 @@ export interface Api {
   );
   fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
   fetchCampaign(uuid: string): Promise<Campaign>;
-
+  fetchCampaignBuyer(campaign_uuid: string): any;
   orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
   patchOrder(
     uuid: string,

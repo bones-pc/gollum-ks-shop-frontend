@@ -297,8 +297,8 @@ export class RestApi {
   }
 
   updateUserPaidAmount(
-    campaign_uuid,
-    user_paid
+    campaign_uuid: string,
+    user_paid: number
   ): Promise<Order | ErrorResponse> {
     return (async () => {
       const payload = {
@@ -306,7 +306,7 @@ export class RestApi {
         user_paid,
       };
       let error_response: ErrorResponse = {
-        status_code: 409,
+        status_code: ResponseStatusCode.NOT_ALLOWED,
         message: "Brak zamówienia lub kampania zamknięta.",
       };
       const response = await fetch(
@@ -338,7 +338,7 @@ export class RestApi {
         user_paid,
       };
       let error_response: ErrorResponse = {
-        status_code: 409,
+        status_code: ResponseStatusCode.NOT_FOUND,
         message: "Brak zamówienia lub kampania zamknięta.",
       };
       const response = update.is_new
