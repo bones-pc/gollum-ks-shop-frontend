@@ -16,6 +16,7 @@ import {
 	UserProfile,
 	ErrorResponse,
 	OrderedItemAdmin,
+	ResponseStatusCode,
 } from "./Data";
 
 const api_url = get(url);
@@ -58,7 +59,7 @@ function backend_draft_to_frontend_draft(
 		liking_users: draft?.liking_users?.filter((it) => it != null),
 		description: draft.description,
 		status: draft.status,
-		status_code: 200,
+		status_code: ResponseStatusCode.OK,
 		message: "ok",
 		purchased: false,
 		demotion: draft.demotion
@@ -97,22 +98,28 @@ function backend_order_to_frontend_order(order: any): Order {
 export class RestApi implements Api {
 	addCandidate(
 		draft: CampaignCandidate
-	): Promise<CampaignCandidate> | Promise<ErrorResponse> {
-		let error_response: ErrorResponse = {
-			status_code: 409,
-			message: "Kampania już istnieje",
-		};
+	): Promise<CampaignCandidate | ErrorResponse> {
 		return (async () => {
+			let error_response: ErrorResponse = {};
 			const payload: CampaignCandidate = { ...draft };
 			payload.status = CampaignStatus.DRAFT; //.toString();
 			const response = await fetch(
 				api_url + "campaigns",
 				options("POST", payload)
 			);
-			// console.log(response);
 			if (response.ok) {
 				const response_json = await response.json();
 				return backend_draft_to_frontend_draft(response_json);
+			} else if (response.status == 403) {
+				error_response = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "Brak uprawnień",
+				};
+			} else {
+				error_response = {
+					status_code: ResponseStatusCode.ALREADY_EXISTS,
+					message: "Kampania już istnieje",
+				};
 			}
 			return error_response;
 		})();
@@ -120,15 +127,15 @@ export class RestApi implements Api {
 
 	async patchCandidate(
 		draft: CampaignCandidate
-	): Promise<CampaignCandidate & ErrorResponse> {
+	): Promise<CampaignCandidate | ErrorResponse> {
 		let error_response: ErrorResponse = {
-			status_code: 409,
-			message: "Kampania już istnieje",
+			status_code: ResponseStatusCode.OK,
+			message: "ok",
 		};
 		let candidate: CampaignCandidate;
-		let candidate_response: CampaignCandidate & ErrorResponse;
+		let candidate_response: CampaignCandidate | ErrorResponse;
 
-		let payload = { ...draft };
+		let payload = draft;
 		// payload.status = CampaignStatus.DRAFT;
 		const response = await fetch(
 			api_url + "campaigns",
@@ -136,9 +143,11 @@ export class RestApi implements Api {
 		);
 		if (response.ok) {
 			const response_json = await response.json();
-			candidate = backend_draft_to_frontend_draft(response_json);
-			error_response.status_code = 200;
-			candidate_response = { ...candidate, ...error_response };
+			candidate_response = backend_draft_to_frontend_draft(response_json);
+		} else {
+			error_response.status_code = ResponseStatusCode.NOT_ALLOWED;
+			error_response.message = "brak uprawnień";
+			candidate_response = error_response;
 		}
 		return candidate_response;
 	}
@@ -198,12 +207,20 @@ export class RestApi implements Api {
 		})();
 	}
 
-	fetchUserOrders(): Promise<Order[]> {
+	fetchUserOrders(): Promise<Order[] | ErrorResponse> {
 		return (async () => {
 			const response = await fetch(api_url + "orders", options("GET"));
+			// console.log(response);
 			if (response.ok) {
+				console.log(response);
 				const response_json = await response.json();
 				return response_json.map(backend_order_to_frontend_order);
+			} else {
+				let error_reposne: ErrorResponse = {};
+				error_reposne.status_code = ResponseStatusCode.NOT_ALLOWED;
+				error_reposne.message = "Brak uprawnień";
+				console.log(error_reposne);
+				return error_reposne;
 			}
 		})();
 	}
@@ -260,7 +277,7 @@ export class RestApi implements Api {
 		})();
 	}
 
-	fetchCampaign(uuid: string): Promise<Campaign> {
+	fetchCampaign(uuid: string): Promise<Campaign | ErrorResponse> {
 		return (async () => {
 			const response = await fetch(
 				api_url + "campaigns/" + uuid,
@@ -271,6 +288,11 @@ export class RestApi implements Api {
 				if (response_json.length > 0) {
 					return backend_campaign_to_frontend_campaign(response_json[0]);
 				}
+			} else {
+				let error_response: ErrorResponse;
+				error_response.status_code = ResponseStatusCode.NOT_ALLOWED;
+				error_response.message = "brak uprawnień";
+				return error_response;
 			}
 		})();
 	}
@@ -358,7 +380,7 @@ export class RestApi implements Api {
 		})();
 	}
 
-	updateCampaign(update: CampaignUpdate): Promise<Campaign> {
+	updateCampaign(update: CampaignUpdate): Promise<Campaign | ErrorResponse> {
 		return (async () => {
 			const payload = { ...update.campaign };
 			if (update.is_new) {
@@ -371,6 +393,12 @@ export class RestApi implements Api {
 			if (response.ok) {
 				const response_json = await response.json();
 				return backend_campaign_to_frontend_campaign(response_json.result[0]);
+			} else if (response.status === 403) {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "Brak uprawnień",
+				};
+				return error_response;
 			}
 		})();
 	}
@@ -397,6 +425,12 @@ export class RestApi implements Api {
 			if (response.ok) {
 				const response_json = await response.json();
 				return response_json.map(backend_campaign_to_frontend_campaign);
+			} else {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "brak uprawnień",
+				};
+				return error_response;
 			}
 		})();
 	}
@@ -414,7 +448,10 @@ export class RestApi implements Api {
 		})();
 	}
 
-	changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign> {
+	changeStatus(
+		uuid: string,
+		newStatus: CampaignStatus
+	): Promise<Campaign | ErrorResponse> {
 		return (async () => {
 			const response = await fetch(
 				api_url + "campaigns",
@@ -425,6 +462,12 @@ export class RestApi implements Api {
 				if (response_json.result.length > 0) {
 					return backend_campaign_to_frontend_campaign(response_json.result[0]);
 				}
+			} else if (response.status === 403) {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "brak uprawnień",
+				};
+				return error_response;
 			}
 		})();
 	}
@@ -479,7 +522,6 @@ export class RestApi implements Api {
 			);
 			if (response.ok) {
 				const response_json = await response.json();
-				console.log(response_json)
 				return response_json.map(backend_draft_to_frontend_draft);
 			}
 		})();

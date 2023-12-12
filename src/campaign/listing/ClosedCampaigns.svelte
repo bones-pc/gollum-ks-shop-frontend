@@ -7,7 +7,9 @@
 	import { _ } from "svelte-i18n";
 	import SortPicker from "../../utils/SortPicker.svelte";
 	import Modal from "../../utils/Modal.svelte";
-	import InProgressButton from "../../utils/InProgressButton.svelte";
+	import InProgressButton from "../../utils/InProgressButton.svelte";	
+	import { permissions } from "../../authentication/roles";
+
 	const navigate = useNavigate();
 	const fetch_filter = { status: CampaignStatus.CLOSED };
 
@@ -33,12 +35,11 @@
 	}
 
 	async function fetch(search: string): Promise<AccordionItem[]> {
-		const campaigns: Campaign[] = await api.fetchCampaigns({
+		const campaigns = await api.fetchCampaigns({
 			titleLike: search,
 			...fetch_filter,
 		});
-		console.log(campaigns);
-		return campaigns.map(
+		return (campaigns as Campaign[]).map(
 			({
 				uuid,
 				title,
@@ -120,6 +121,7 @@
 		}
 		closed_campaigns.sort(sort_by_name);
 	}
+	let menu_count = 0;
 </script>
 
 <h1>{$_("closed_campaigns.title")}</h1>
@@ -135,23 +137,29 @@
 	</svelte:fragment>
 	<svelte:fragment slot="item-actions" let:item>
 		<ul>
-			{#if $role.is_admin()}
-				<ul>
+			<ul>
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<Link to="/campaigns/edit/{item.id}">
 							{$_("closed_campaigns.edit_campaign")}
 						</Link>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.orders.UPDATE)}
 					<li>
 						<Link to="/orders/{item.id}">
 							{$_("closed_campaigns.manage_orders")}
 						</Link>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<span class="fake-link" on:click={() => unlock(item.id)}>
 							{$_("closed_campaigns.convert_to_active")}
 						</span>
 					</li>
+				{/if}
+				{#if $role.check_role(permissions.campaign.UPDATE)}
 					<li>
 						<span class="fake-link" on:click={() => lock(item.id)}>
 							{$_("closed_campaigns.convert_to_archived")}

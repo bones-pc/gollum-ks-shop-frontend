@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
-	import { v4 } from "uuid";
 	import type { Campaign, CampaignItem, OrderedItem } from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import Modal from "../../utils/Modal.svelte";
 	import { api, CampaignStatus, OrderedItemType } from "../../api/Api";
-	import { onMount } from "svelte";
 	import { Toast } from "bootstrap";
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 
@@ -19,8 +17,11 @@
 	export let items: CampaignItem[];
 	export let campaign: Campaign;
 
+	console.log(campaign);
+	console.log(items);
+
 	function validate_fields() {
-		if (campaign.due_date == "") {
+		if (campaign.due_date === "") {
 			warning_message = "Brak daty końca";
 			return 1;
 		}

@@ -1,5 +1,5 @@
 import { readable, Readable, writable, Writable } from "svelte/store";
-import { Admin, LoggedUser, Role } from "./authentication/roles";
+import { Admin, LoggedUser, Moderator, Role } from "./authentication/roles";
 
 export const role: Writable<Role> = writable(null);
 export const user_uuid: Writable<string> = writable(null);
@@ -16,4 +16,8 @@ export function switchToLoggedUser() {
 
 export function switchToAdmin() {
   role.set(new Admin());
+}
+
+export function switchToModerator() {
+  role.set(new Moderator());
 }

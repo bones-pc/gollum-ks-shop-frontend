@@ -3,7 +3,13 @@
 	import { _ } from "svelte-i18n";
 	import { useNavigate } from "svelte-navigator";
 	import { v4 } from "uuid";
-	import { api, Campaign, CampaignItem } from "../../api/Api";
+	import {
+		api,
+		Campaign,
+		CampaignItem,
+		ErrorResponse,
+		ResponseStatusCode,
+	} from "../../api/Api";
 	import EditCampaign from "./EditCampaign.svelte";
 	import { OrderedItemType } from "../../api/Api";
 
@@ -15,7 +21,7 @@
 		navigate("/");
 	}
 
-	let campaign: Campaign;
+	let campaign: Campaign & ErrorResponse;
 	let removable_items: CampaignItem[] = [];
 	let shipping: CampaignItem = {
 		// ordinal: 0,
@@ -30,6 +36,8 @@
 
 	onMount(async () => {
 		campaign = await api.fetchCampaign(uuid);
+		if (campaign.status_code === ResponseStatusCode.NOT_ALLOWED) {
+		}
 		shipping = campaign.items.find((it) => {
 			return it.type == 1;
 		});

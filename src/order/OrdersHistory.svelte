@@ -1,10 +1,18 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
 
-	import { api, Campaign, CampaignItem, CampaignStatus } from "../api/Api";
+	import {
+		api,
+		Campaign,
+		CampaignItem,
+		ErrorResponse,
+		ResponseStatusCode,
+	} from "../api/Api";
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
 	import { useNavigate } from "svelte-navigator";
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../utils/SimpleToast.svelte";
 
 	const navigate = useNavigate();
 
@@ -22,17 +30,40 @@
 		campaign_uuid: string;
 	}
 
-	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
+	type OrderPosition = PastOrder & AccordionItem;
+
+	let toast_message = "";
+	let toast_id = "orders_toast";
+	function showToast() {
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		toast.show();
+	}
+
+	async function fetch(
+		search: string
+	): Promise<OrderPosition[] | ErrorResponse> {
 		const fetched_orders = await api.fetchUserOrders();
+		toast_message = "Zaktualizowane!";
+		if (
+			(fetched_orders as ErrorResponse)?.status_code ===
+			ResponseStatusCode.NOT_ALLOWED
+		) {
+			toast_message = "Brak uprawnień";
+			showToast();
+			setTimeout(() => {
+				navigate("/");
+			}, 2000);
+			return [];
+		}
 		const fetched_campaigns = await api.fetchCampaigns({
-			uuids: fetched_orders.map((it) => it.campaign_uuid),
+			uuids: (fetched_orders as PastOrder[]).map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
-
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
 		);
-		const new_orders: (PastOrder & AccordionItem)[] = [];
+		const new_orders: OrderPosition[] | ErrorResponse = [];
 		for (const o of fetched_orders) {
 			const c = uuid_to_campaign.get(o.campaign_uuid);
 			if (c == null) {
@@ -59,7 +90,6 @@
 				status: c.status,
 			});
 		}
-		console.log(new_orders);
 		return new_orders;
 	}
 </script>
@@ -137,6 +167,9 @@
 		</table>
 	</div>
 </AccordionList>
+<SimpleToast {toast_id}
+	><div slot="toast-body">{toast_message}</div></SimpleToast
+>
 
 <style>
 	.badge {

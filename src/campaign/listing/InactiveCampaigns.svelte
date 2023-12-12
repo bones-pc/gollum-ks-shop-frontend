@@ -1,16 +1,36 @@
 <script lang="ts">
-	import { Link } from "svelte-navigator";
-	import { api, Campaign, CampaignStatus } from "../../api/Api";
+	import { Link, navigate } from "svelte-navigator";
+	import {
+		api,
+		Campaign,
+		CampaignStatus,
+		ErrorResponse,
+		ResponseStatusCode,
+	} from "../../api/Api";
 	import { role } from "../../stores";
 	import AccordionList from "../../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
-	import SortPicker from "../../utils/SortPicker.svelte";
+	import { permissions } from "../../authentication/roles";
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../../utils/SimpleToast.svelte";
+	import CampaignsCandidates from "./CampaignsCandidates.svelte";
+
+	let toast_message = "";
+	let toast_id = Math.floor(Math.random() * 1000) + "active_draft_toast";
+	function showToast(text: string, path: string) {
+		toast_message = text;
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		setTimeout(() => {
+			navigate(path);
+			toast.hide();
+		}, 2000);
+	}
 
 	const fetch_filter = { status: CampaignStatus.ARCHIVED };
 
-	let inactive_campaigns = [];
-
+	let inactive_campaigns: Campaign[] | ErrorResponse = [];
 	async function unlock(uuid: string) {
 		await api.changeStatus(uuid, CampaignStatus.ACTIVE);
 		inactive_campaigns = await fetch(null);
@@ -91,7 +111,7 @@
 <h1>{$_("archived_campaigns.title")}</h1>
 
 <AccordionList items_provider={fetch} items={inactive_campaigns}>
-	<svelte:fragment slot="nav-actions">
+  <svelte:fragment slot="nav-actions">
 		<SortPicker
 			headline={sort_headline}
 			onChangeHandler={sort}
@@ -100,26 +120,33 @@
 		/>
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
-		{#if $role.is_admin()}
-			<ul>
+		<ul>
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link to="/campaigns/edit/{item.id}">
 						{$_("archived_campaigns.edit_campaign")}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link to="/orders/{item.id}">
 						{$_("archived_campaigns.manage_orders")}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<span class="fake-link" on:click={() => unlock(item.id)}>
 						{$_("archived_campaigns.convert_to_active")}
 					</span>
 				</li>
-			</ul>
-		{:else}
-			{$_("archived_campaigns.no_actions")}
-		{/if}
+			{/if}
+		</ul>
 	</div>
+	<!-- {$_("archived_campaigns.no_actions")} -->
 </AccordionList>
+
+<SimpleToast {toast_id}
+	><div slot="toast-body">{toast_message}</div></SimpleToast
+>

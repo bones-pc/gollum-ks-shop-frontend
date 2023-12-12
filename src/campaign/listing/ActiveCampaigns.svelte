@@ -1,29 +1,48 @@
 <script lang="ts">
 	import { Link, useNavigate } from "svelte-navigator";
-	import { api, Campaign, CampaignStatus } from "../../api/Api";
+	import {
+		api,
+		Campaign,
+		CampaignStatus,
+		ErrorResponse,
+		ResponseStatusCode,
+	} from "../../api/Api";
 	import { role } from "../../stores";
+	import { permissions } from "../../authentication/roles";
 	import AccordionList from "../../utils/AccordionList.svelte";
 	import SortPicker from "../../utils/SortPicker.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
-	import { marked } from "marked";
-	import Modal from "../../utils/Modal.svelte";
+	import { Toast } from "bootstrap";
+	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	const navigate = useNavigate();
 	const fetch_filter = { status: CampaignStatus.ACTIVE };
 
-	let active_campaigns = [];
-	let showPopup = false;
-	const onPopupClose = () => {
-		showPopup = false;
-	};
+  let active_campaigns = [];
 
+	let toast_message = "";
+	let toast_id = Math.floor(Math.random() * 1000) + "active_draft_toast";
+	function showToast(text: string, path: string) {
+		toast_message = text;
+		let my_toast_el = document.getElementById(toast_id);
+		let toast = new Toast(my_toast_el);
+		setTimeout(() => {
+			navigate(path);
+			toast.hide();
+		}, 2000);
+	}
 	function add_new_campaign() {
 		navigate(`/campaigns/add`);
 	}
 
 	async function lock(uuid: string) {
-		await api.changeStatus(uuid, CampaignStatus.CLOSED);
+		const response: Campaign | ErrorResponse = await api.changeStatus(
+			uuid,
+			CampaignStatus.CLOSED
+		);
+		if (response.status_code === ResponseStatusCode.NOT_ALLOWED)
+			showToast("Brak uprawnień", "/");
 		active_campaigns = await fetch(null);
 	}
 
@@ -48,11 +67,18 @@
 	}
 
 	async function fetch(search: string): Promise<AccordionItem[]> {
-		const campaigns: Campaign[] = await api.fetchCampaigns({
+		const campaigns = await api.fetchCampaigns({
 			titleLike: search,
 			...fetch_filter,
 		});
-		return campaigns.map(
+		if (
+			(campaigns as ErrorResponse).status_code ===
+			ResponseStatusCode.NOT_ALLOWED
+		) {
+			showToast("Brak uprawnień", "/");
+			return [];
+		}
+		return (campaigns as Campaign[]).map(
 			({
 				uuid,
 				title,
@@ -126,7 +152,7 @@
 
 <AccordionList items_provider={fetch} items={active_campaigns}>
 	<svelte:fragment slot="nav-actions">
-		{#if $role.is_admin()}
+		{#if $role.is_admin() || $role.is_moderator()}
 			<button type="button" class="btn btn-primary" on:click={add_new_campaign}>
 				+ {$_("active_campaigns.add_campaign")}
 			</button>
@@ -151,17 +177,21 @@
 					}}>Kto bierze?</a
 				>
 			</li>
-			{#if $role.is_admin()}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link to="/campaigns/edit/{item.id}">
 						{$_("active_campaigns.edit")}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.orders.READ)}
 				<li>
 					<Link to="/orders/{item.id}">
 						{$_("active_campaigns.manage_orders")}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<span class="fake-link" on:click={() => lock(item.id)}>
 						{$_("active_campaigns.lock")}
@@ -182,3 +212,7 @@
 >
 	Rozumiem...{@html marked(modal_text)}
 </Modal>
+
+<SimpleToast {toast_id}
+	><div slot="toast-body">{toast_message}</div></SimpleToast
+>

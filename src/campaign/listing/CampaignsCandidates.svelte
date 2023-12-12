@@ -15,6 +15,7 @@
 	import Legend from "../../utils/Legend.svelte";
 	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
+	import { permissions } from "../../authentication/roles";
 
 	let candidates: (CampaignCandidate & AccordionItem)[] = [];
 	const navigate = useNavigate();
@@ -228,18 +229,21 @@
 	</svelte:fragment>
 	<div slot="item-actions" let:item>
 		<ul>
-			{#if $role.is_admin()}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link to="/campaigns/add/{item.id}">
 						{$_("proposed_campaigns.convert_to_active")}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link to="/campaigns/candidate/edit/{item.id}">
 						{$_("active_campaigns.edit")}
 					</Link>
 				</li>
-
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link
 						to="/drafts"
@@ -259,6 +263,8 @@
 						{/if}
 					</Link>
 				</li>
+			{/if}
+			{#if $role.check_role(permissions.campaign.UPDATE)}
 				<li>
 					<Link
 						to="/drafts"
@@ -271,7 +277,8 @@
 						{/if}
 					</Link>
 				</li>
-
+			{/if}
+			{#if $role.check_role(permissions.campaign.DELETE)}
 				<li>
 					<Link
 						to="/drafts"
@@ -280,8 +287,6 @@
 						}}>{$_("proposed_campaigns.delete")}</Link
 					>
 				</li>
-			{:else}
-				<!-- {$_("proposed_campaigns.no_actions")} -->
 			{/if}
 		</ul>
 	</div>
