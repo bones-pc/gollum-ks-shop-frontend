@@ -14,6 +14,7 @@
   import type { AccordionItem } from "../../utils/accordion_item";
   import { _ } from "svelte-i18n";
   import { Toast } from "bootstrap";
+  import { marked } from "marked";
   import SimpleToast from "../../utils/SimpleToast.svelte";
   import Modal from "../../utils/Modal.svelte";
 
