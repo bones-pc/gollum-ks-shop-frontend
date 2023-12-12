@@ -41,26 +41,31 @@
 			titleLike: search,
 			...fetch_filter,
 		});
-		return campaigns.map(
-			({
-				uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-			}) => ({
-				id: uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-			})
+		if (
+			(campaigns as ErrorResponse).status_code ===
+			ResponseStatusCode.NOT_ALLOWED
+		) {
+			const response: ErrorResponse = {
+				status_code: ResponseStatusCode.NOT_ALLOWED,
+				message: "Brak uprawnień",
+			};
+			showToast("Brak uprawnień", "/");
+			return;
+		}
+		return (campaigns as AccordionItem[]).map(
+			(campaign: Campaign): AccordionItem => {
+				const acc: AccordionItem = {
+					id: campaign.uuid,
+					title: campaign.title,
+					url: campaign.url,
+					img_url: campaign.img_url,
+					purchased: campaign.purchased,
+					due_date: campaign.due_date,
+					added_date: campaign.added_date,
+					description: campaign.description,
+				};
+				return acc;
+			}
 		);
 	}
 

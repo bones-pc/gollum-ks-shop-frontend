@@ -165,7 +165,7 @@
 							{$_("closed_campaigns.convert_to_archived")}
 						</span>
 					</li>
-				</ul>
+			</ul>
 			{:else}
 				{#if item.purchased}
 					<div class="mb-2">

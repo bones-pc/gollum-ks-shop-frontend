@@ -17,7 +17,7 @@
 
 	onMount(async () => {
 		items = await items_provider(null);
-		items.unshift({
+		(items as any[]).unshift({
 			title: "Nazwa",
 			url: null,
 			img_url: "",
