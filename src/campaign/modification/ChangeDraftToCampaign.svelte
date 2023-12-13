@@ -29,10 +29,13 @@
 		img_url: "",
 		url: "",
 		status: CampaignStatus.ACTIVE,
-		payment_details:'',
+		payment_details: "",
 		added_date: new Date(),
 		due_date: new Date(),
 		purchased: false,
+		end_date: new Date(),
+		likes: 0,
+		liking_users: [],
 	});
 
 	let campaign: Campaign;

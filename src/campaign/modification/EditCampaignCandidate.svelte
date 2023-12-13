@@ -29,6 +29,8 @@
 		description: "",
 		status: CampaignStatus.DRAFT,
 		purchased: false,
+		added_date: new Date(),
+		demotion: false,
 	});
 
 	let ks_name: string;

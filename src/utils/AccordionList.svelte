@@ -33,14 +33,14 @@
 	<slot slot="actions" name="nav-actions" />
 </AccordionListNav>
 
-<AccordeonHeader>
+<!-- <AccordeonHeader>
 	<div class="row mt-3 small" slot="title">
 		<div class="img" />
 		<div class="col-md-5">Nazwa</div>
 		<div class=" col-md-3">Data końca</div>
 		<div class=" col-md-2">Data dodania</div>
 	</div>
-</AccordeonHeader>
+</AccordeonHeader> -->
 <div class="row campaigns-row">
 	<div class="mb-2 mt-2">
 		<div class="accordion" id="accordionExample">

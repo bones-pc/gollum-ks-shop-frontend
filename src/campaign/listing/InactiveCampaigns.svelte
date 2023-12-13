@@ -15,6 +15,7 @@
 	import { Toast } from "bootstrap";
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 	import CampaignsCandidates from "./CampaignsCandidates.svelte";
+	import SortPicker from "../../utils/SortPicker.svelte";
 
 	let toast_message = "";
 	let toast_id = Math.floor(Math.random() * 1000) + "active_draft_toast";
@@ -30,7 +31,7 @@
 
 	const fetch_filter = { status: CampaignStatus.ARCHIVED };
 
-	let inactive_campaigns: Campaign[] | ErrorResponse = [];
+	let inactive_campaigns = [];
 	async function unlock(uuid: string) {
 		await api.changeStatus(uuid, CampaignStatus.ACTIVE);
 		inactive_campaigns = await fetch(null);
@@ -52,7 +53,7 @@
 			showToast("Brak uprawnień", "/");
 			return;
 		}
-		return (campaigns as AccordionItem[]).map(
+		return (campaigns as Campaign[]).map(
 			(campaign: Campaign): AccordionItem => {
 				const acc: AccordionItem = {
 					id: campaign.uuid,
@@ -63,6 +64,7 @@
 					due_date: campaign.due_date,
 					added_date: campaign.added_date,
 					description: campaign.description,
+					status: campaign.status,
 				};
 				return acc;
 			}
@@ -116,7 +118,7 @@
 <h1>{$_("archived_campaigns.title")}</h1>
 
 <AccordionList items_provider={fetch} items={inactive_campaigns}>
-  <svelte:fragment slot="nav-actions">
+	<svelte:fragment slot="nav-actions">
 		<SortPicker
 			headline={sort_headline}
 			onChangeHandler={sort}

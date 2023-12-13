@@ -26,16 +26,18 @@
 		due_date: new Date(),
 		end_date: null,
 		purchased: false,
+		likes: 0,
+		liking_users: [],
 	});
 
 	let campaign: Campaign;
 	let items: CampaignItem[] = [];
 	let shipping: CampaignItem = {
-		// ordinal: 0,
-		// name: "",
-		// price: 0,
-		// uuid: v4(),
-		// type: OrderedItemType.PLEDGE,
+		ordinal: 0,
+		name: "",
+		price: 0,
+		uuid: "",
+		type: OrderedItemType.PLEDGE,
 	};
 
 	onMount(async () => {

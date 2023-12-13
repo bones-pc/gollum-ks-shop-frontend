@@ -7,6 +7,7 @@
 		CampaignCandidate,
 		CampaignStatus,
 		ErrorResponse,
+		KSCampaignListItem,
 		ResponseStatusCode,
 	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
@@ -52,7 +53,10 @@
 		let draft_response: CampaignCandidate | ErrorResponse;
 		draft_response = await api.addCandidate(draft);
 		console.log(`resp: ${draft_response}`);
-		if ((draft_response as ErrorResponse).status_code === ResponseStatusCode.ALREADY_EXISTS) {
+		if (
+			(draft_response as ErrorResponse).status_code ===
+			ResponseStatusCode.ALREADY_EXISTS
+		) {
 			warning = "Kampania już istnieje";
 		} else if (
 			(draft_response as ErrorResponse).status_code ===
@@ -92,9 +96,10 @@
 		if (campaign_list.length > 0) {
 			campaign_list_modal_visible = true;
 			campaign_list_modal = campaign_list.map((e, idx) => {
-				let return_item = {};
-				return_item.title = e.title;
-				return_item.idx = idx;
+				const return_item: KSCampaignListItem = {
+					title: e.title,
+					idx: idx,
+				};
 				return return_item;
 			});
 		}

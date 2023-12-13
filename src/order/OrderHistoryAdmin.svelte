@@ -11,7 +11,6 @@
 	import AccordionList from "../utils/AccordionList.svelte";
 	import type { AccordionItem } from "../utils/accordion_item";
 	import InProgressButton from "../utils/InProgressButton.svelte";
-	import { text } from "svelte/internal";
 
 	export let uuid: string;
 	interface PastItem {
@@ -197,7 +196,6 @@
 						{$_("currency.pln")}<InProgressButton
 							on_click_function={async () => {
 								paid_value = document.getElementById("paid" + item.id).value;
-								console.log(paid_value);
 								const paid_item = {
 									paid_amount: paid_value,
 									campaign_uuid: item.id,

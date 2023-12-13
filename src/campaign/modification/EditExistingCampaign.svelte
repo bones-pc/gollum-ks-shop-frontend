@@ -137,7 +137,7 @@
 			...campaign,
 			items: [...campaign.items, ...removable_items],
 		};
-		console.log(campaign_with_extra_items);
+
 		campaign = await api.updateCampaign({
 			campaign: campaign_with_extra_items,
 			is_new: false,
