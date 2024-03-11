@@ -145,7 +145,7 @@
 			<span class="badge bg-success">{$_("orders_history.paid")}</span>
 		{/if}
 		<div class="ms-3">
-			{#if item.status === CampaignStatus.CLOSED}
+			{#if item.status === CampaignStatus.CLOSED || item.status === CampaignStatus.ARCHIVED}
 				{item.title}
 			{:else}
 				<a href={"#"} on:click={() => navigate(`/order/${item.campaign_uuid}`)}>
