@@ -40,6 +40,16 @@
 		if (order != null) {
 			order.items.forEach((i) => orderItems.set(i.item_uuid, i));
 		}
+		campaign.items.forEach((i) => {
+			if (i.type === OrderedItemType.ADMIN_ADDON)
+				orderItems.set(i.uuid, {
+					item_type: OrderedItemType.ADMIN_ADDON,
+					item_uuid: i.uuid,
+					amount: 1,
+					ordinal: 0,
+					ouuid: "",
+				});
+		});
 		items = campaign.items.map((i) => ({
 			amount: orderItems.get(i.uuid)?.amount ?? 0,
 			old_amount: orderItems.get(i.uuid)?.amount ?? 0,
@@ -232,66 +242,67 @@
 			</div>
 		{/if}
 		{#each items as { amount, old_amount, item }}
-			{#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0}
-				<div
-					class="card mb-2"
-					style="width: 100%;"
-					class:selected_item={amount > 0}
-				>
-					<div class="card-body row">
-						<div class="col-12 col-lg">
-							<h5 class:fade-text={amount == null || amount === 0}>
-								{#if item.ordinal > 0}
-									{item.ordinal}. {item.name}
-									<span class="ms-2 badge bg-secondary">
-										{item.price}
-										{$_("currency.pln")}
-									</span>
-								{:else}
-									{item.name}
-									<span class="ms-2 badge bg-secondary">
-										{item.price}
-										{$_("currency.pln")}
-									</span>
-								{/if}
-							</h5>
-						</div>
-						<div class="col-12 col-lg-4">
-							<div class="input-group justify-content-lg-end">
-								{#if item.type !== OrderedItemType.ADMIN_ADDON}
-									<span class="input-group-text">{$_("order.quantity")}</span>
-									<button
-										type="button"
-										class="btn btn-outline-secondary change-amount"
-										on:click={() => {
-											if (!item.ordinal) {
-												amount == 0 ? amount++ : amount;
-											} else amount++;
-										}}
-									>
-										+
-									</button>
-									<span class="input-group-text amount">{amount}</span>
-									<button
-										type="button"
-										class="btn btn-outline-secondary change-amount"
-										on:click={() => {
-											amount = Math.max(old_amount, amount - 1);
-											if (amount == old_amount) {
-												showToast(
-													"Dlaczego nie mogę zmniejszać? Na podstawie Twojej wcześnijeszej deklaracji negocjuję ceny... skontaktuj się z bezpośrednio, coś się wymyśli..."
-												);
-											}
-										}}
-									>
-										-
-									</button>
-								{/if}
-							</div>
+			<!-- {#if amount > 0} -->
+			<!-- {#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0} -->
+			<div
+				class="card mb-2"
+				style="width: 100%;"
+				class:selected_item={amount > 0}
+			>
+				<div class="card-body row">
+					<div class="col-12 col-lg">
+						<h5 class:fade-text={amount == null || amount === 0}>
+							{#if item.ordinal > 0}
+								{item.ordinal}. {item.name}
+								<span class="ms-2 badge bg-secondary">
+									{item.price}
+									{$_("currency.pln")}
+								</span>
+							{:else}
+								{item.name}
+								<span class="ms-2 badge bg-secondary">
+									{item.price}
+									{$_("currency.pln")}
+								</span>
+							{/if}
+						</h5>
+					</div>
+					<div class="col-12 col-lg-4">
+						<div class="input-group justify-content-lg-end">
+							{#if item.type !== OrderedItemType.ADMIN_ADDON}
+								<span class="input-group-text">{$_("order.quantity")}</span>
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={() => {
+										if (!item.ordinal) {
+											amount == 0 ? amount++ : amount;
+										} else amount++;
+									}}
+								>
+									+
+								</button>
+								<span class="input-group-text amount">{amount}</span>
+								<button
+									type="button"
+									class="btn btn-outline-secondary change-amount"
+									on:click={() => {
+										amount = Math.max(old_amount, amount - 1);
+										if (amount == old_amount) {
+											showToast(
+												"Dlaczego nie mogę zmniejszać? Na podstawie Twojej wcześnijeszej deklaracji negocjuję ceny... skontaktuj się z bezpośrednio, coś się wymyśli..."
+											);
+										}
+									}}
+								>
+									-
+								</button>
+							{/if}
 						</div>
 					</div>
 				</div>
-			{/if}
+			</div>
+			<!-- {/if} -->
 		{/each}
 
 		{@const to_pay = totalPrice - paid_amount}
