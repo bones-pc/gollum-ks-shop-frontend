@@ -60,9 +60,22 @@
 		const new_user = await api.deactivateUser(uuid);
 		users[users.findIndex((it) => it.uuid === new_user.uuid)] = new_user;
 	}
+
+	async function downloadCSV() {
+		let download = document.getElementById("users-download");
+		const csv = await api.fetchUsersInCSV();
+		download.setAttribute(
+			"href",
+			"data:text/csv;charset=utf-8," + encodeURIComponent(csv)
+		);
+		download.setAttribute("download", "users.csv");
+		download.click();
+	}
 </script>
 
-<h1>{$_("nav.manage_users")}</h1>
+<h2>{$_("nav.manage_users")}</h2>
+<div on:click={downloadCSV}>Pobierz dane użytkowników</div>
+<a id="users-download">&nbsp;</a>
 
 <table class="table">
 	<thead>

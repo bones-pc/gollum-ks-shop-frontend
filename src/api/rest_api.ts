@@ -572,6 +572,16 @@ export class RestApi {
 		})();
 	}
 
+	fetchUsersInCSV(): Promise<any> {
+		return (async () => {
+			const response = await fetch(api_url + "users/csv", options("GET"));
+			if (response.ok) {
+				const { csv, status } = await response.json();
+				return csv;
+			}
+		})();
+	}
+
 	fetchUserProfile(): Promise<UserProfile> {
 		return (async () => {
 			const response = await fetch(api_url + "users/profile", options("GET"));

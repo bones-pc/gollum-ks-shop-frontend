@@ -215,6 +215,7 @@ export interface Api {
 	likeCandidate(uuid: string): Promise<CampaignCandidate>;
 	unlikeCandidate(uuid: string): Promise<CampaignCandidate>;
 	fetchUsers(): Promise<User[]>;
+	fetchUsersInCSV(): Promise<any>;
 	fetchUserProfile(): Promise<UserProfile>;
 	fetchUserProfileAdmin(uuid: string): Promise<UserProfile>;
 	activateUser(user_uuid: string): Promise<User>;
