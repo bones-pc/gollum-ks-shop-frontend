@@ -59,7 +59,7 @@
   "edit_campaign.paste_items": "Wklej dane z Excela",
   "edit_campaign.paste_items_skip": "Pomiń.",
   "edit_campaign.paste_items_ok": "OK!",
-  "edit_campaign.paste_items_text": "Wklej dane z excella... uwaga obecne pledge zostaną zastąpione. Format tabelki, bez nagłówków: nazwa_pledge | cena ",
+  "edit_campaign.paste_items_text": "Skopiuj i wklej dane o użykownikach z excela... uwaga - dane użytkownika zostaną zastąpione. Format tabelki, bez nagłówków (!): uuid | subscription_due ",
   "archived_campaigns.title": "Archiwum kampanii",
   "archived_campaigns.edit_campaign": "Edytuj kampanię",
   "archived_campaigns.manage_orders": "Zarządzaj zamówieniami",

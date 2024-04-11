@@ -221,6 +221,8 @@ export interface Api {
 	activateUser(user_uuid: string): Promise<User>;
 	deactivateUser(user_uuid: string): Promise<User>;
 	updateUserProfile(user: UserProfile): Promise<UserProfile>;
+	updateSubscription(user_uuid: string, date: Date): Promise<any>;
+
 	resetPassword(password: string, token: string): Promise<Boolean>;
 	initPasswordReset(email: string): Promise<Boolean>;
 }
