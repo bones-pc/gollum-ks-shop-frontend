@@ -49,7 +49,19 @@
 		{#if !hide_actions}
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
-					{#if !logout_only}
+					{#if $role.is_expired()}
+						<li class="nav-item">
+							<span class="nav-link">
+								<Link to="/orders-history">{$_("nav.orders_history")}</Link>
+							</span>
+						</li>
+
+						<li class="nav-item">
+							<span class="nav-link">
+								<Link to="/users/profile">{$_("nav.userprofile")}</Link>
+							</span>
+						</li>
+					{:else if !logout_only}
 						<li class="nav-item">
 							<span class="nav-link">
 								<Link to="/">{$_("nav.active_campaigns")}</Link>
@@ -81,7 +93,6 @@
 								<Link to="/orders-history">{$_("nav.orders_history")}</Link>
 							</span>
 						</li>
-
 						<li class="nav-item">
 							<span class="nav-link">
 								<Link to="/users/profile">{$_("nav.userprofile")}</Link>

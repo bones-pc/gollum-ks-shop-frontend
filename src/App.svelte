@@ -57,6 +57,14 @@
 		{:else if $role.is_anonymous()}
 			<Navigation logout_only={true} />
 			<Anonymous />
+		{:else if $role.is_expired()}
+			<Navigation hide_actions={false} />
+			<Route path="/orders-history">
+				<OrdersHistory />
+			</Route>
+			<Route path="/users/profile">
+				<UserProfile />
+			</Route>
 		{:else}
 			<Navigation />
 			<Route path="/">
@@ -83,7 +91,6 @@
 			<Route path="/users/profile">
 				<UserProfile />
 			</Route>
-
 			<Route path="/campaigns/add">
 				<AddNewCampaign />
 			</Route>

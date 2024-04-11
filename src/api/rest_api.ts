@@ -312,11 +312,17 @@ export class RestApi {
 			);
 			if (response.ok) {
 				const response_json = await response.json();
-				console.log(response_json);
 				if (response_json.status === 400) {
 					return error_response;
 				}
 				return backend_order_to_frontend_order(response_json.result[0]);
+			} else if (response.status === 403) {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "Brak uprawnień",
+				};
+				console.log(error_response);
+				return error_response;
 			}
 		})();
 	}

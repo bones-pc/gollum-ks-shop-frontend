@@ -2,6 +2,7 @@ export interface Role {
 	is_admin(): boolean;
 	is_anonymous(): boolean;
 	is_moderator(): boolean;
+	is_expired(): boolean;
 
 	check_role(role: string): boolean;
 }
@@ -52,6 +53,7 @@ const roles = {
 	MODERATOR: "moderator",
 	CAMPAIGN: "campaign",
 	ORDER: "order",
+	EXPIRED: "expired",
 };
 
 const role_permissions = {
@@ -87,6 +89,7 @@ const role_permissions = {
 	],
 
 	ANONYMOUS: [],
+	EXPIRED: [permissions.own_orders.READ],
 };
 
 export class Anonymous implements Role {
@@ -97,6 +100,9 @@ export class Anonymous implements Role {
 		return false;
 	}
 	is_anonymous(): boolean {
+		return true;
+	}
+	is_expired(): boolean {
 		return true;
 	}
 	check_role(role: string): boolean {
@@ -116,6 +122,9 @@ export class LoggedUser implements Role {
 		return false;
 	}
 
+	is_expired(): boolean {
+		return false;
+	}
 	check_role(role: string): boolean {
 		if (role_permissions.USER.includes(role)) return true;
 		return false;
@@ -132,7 +141,9 @@ export class Admin implements Role {
 	is_anonymous(): boolean {
 		return false;
 	}
-
+	is_expired(): boolean {
+		return false;
+	}
 	check_role(role: string): boolean {
 		// if (role_permissions.ADMIN.includes(role)) return true;
 		return true;
@@ -149,8 +160,32 @@ export class Moderator implements Role {
 	is_anonymous(): boolean {
 		return false;
 	}
+	is_expired(): boolean {
+		return false;
+	}
 	check_role(role: string): boolean {
 		if (role_permissions.MODERATOR.includes(role)) return true;
+		return false;
+	}
+}
+
+export class ExpiredUser implements Role {
+	is_admin(): boolean {
+		return false;
+	}
+	is_anonymous(): boolean {
+		return false;
+	}
+	is_moderator(): boolean {
+		return false;
+	}
+	is_expired(): boolean {
+		console.log("EXPIRED");
+		return true;
+	}
+	check_role(role: string): boolean {
+		console.log("check, expired", role);
+		if (role_permissions.EXPIRED.includes(role)) return true;
 		return false;
 	}
 }

@@ -109,11 +109,13 @@
 		showPopup = true;
 		title = campaign_title;
 		const savedOrder = await api.updateUserPaidAmount(uuid, amount);
+		console.log(savedOrder);
 		if (
 			(savedOrder as ErrorResponse).status_code ===
 			ResponseStatusCode.NOT_ALLOWED
 		) {
-			// showToast(savedOrder.message);
+			toast_message = (savedOrder as ErrorResponse).message;
+			showToast();
 			return;
 		} else {
 			new_order = false;

@@ -22,7 +22,11 @@
 
 	function validate_fields() {
 		if (campaign.due_date === "") {
-			warning_message = "Brak daty końca";
+			warning_message = "Brak daty końca wpłat";
+			return 1;
+		}
+		if (campaign.end_date === "") {
+			warning_message = "Brak daty końca Kickstartera";
 			return 1;
 		}
 		if (campaign.title == "") {
