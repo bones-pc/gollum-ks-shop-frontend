@@ -16,6 +16,8 @@
 	import EditCampaignCandidate from "./campaign/modification/EditCampaignCandidate.svelte";
 	import InactiveCampaigns from "./campaign/listing/InactiveCampaigns.svelte";
 	import ActiveCampaigns from "./campaign/listing/ActiveCampaigns.svelte";
+	import InprogressCampaigns from "./campaign/listing/Inprogress.svelte";
+
 	import AddDraft from "./campaign/modification/AddDraft.svelte";
 	import Navigation from "./Navigation.svelte";
 	import ManageOrders from "./order/ManageOrders.svelte";
@@ -72,6 +74,9 @@
 			</Route>
 			<Route path="/campaigns/closed">
 				<ClosedCampaigns />
+			</Route>
+			<Route path="/campaigns/inprogress">
+				<InprogressCampaigns />
 			</Route>
 			<Route path="/campaigns/archive">
 				<InactiveCampaigns />

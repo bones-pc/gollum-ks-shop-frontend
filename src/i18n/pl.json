@@ -1,12 +1,14 @@
 {
   "subscription.due_date":"Subskrypcja do:",
   "nav.title": "Grupa Gollum",
-  "nav.userprofile": "Profil użytkownika",
+  "nav.userprofile": "Twój profil",
   "nav.active_campaigns": "Aktywne",
   "nav.archived_campaigns": "Archiwum",
   "nav.closed_campaigns": "Zamknięte",
   "nav.proposed_campaigns": "Propozycje",
-  "nav.orders_history": "Historia zamówień",
+  "nav.in_progress": "W toku",
+  
+  "nav.orders_history": "Historia",
   "nav.switch_to_admin": "Admin",
   "nav.switch_to_user": "User",
   "nav.manage_users": "Zarządzaj użytkownikami",

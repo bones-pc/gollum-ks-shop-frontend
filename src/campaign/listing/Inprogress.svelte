@@ -13,12 +13,14 @@
 	import { _ } from "svelte-i18n";
 	import SortPicker from "../../utils/SortPicker.svelte";
 	import Modal from "../../utils/Modal.svelte";
+	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import { permissions } from "../../authentication/roles";
 
 	const navigate = useNavigate();
-	const fetch_filter = { status: CampaignStatus.CLOSED };
+	const fetch_filter = { status: CampaignStatus.DRAFT_NEGOTIATED };
 
 	let closed_campaigns = [];
+
 	let campaign: Campaign = null;
 
 	let items = [];
@@ -43,6 +45,7 @@
 			titleLike: search,
 			...fetch_filter,
 		});
+
 		return (campaigns as Campaign[]).map(
 			({
 				uuid,
@@ -55,6 +58,7 @@
 				purchased,
 				items,
 				status,
+				user_paid,
 			}) => ({
 				id: uuid,
 				title,
@@ -66,6 +70,7 @@
 				purchased,
 				items,
 				status,
+				user_paid,
 			})
 		);
 	}

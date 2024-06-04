@@ -81,6 +81,15 @@
 								</Link>
 							</span>
 						</li>
+
+						<li class="nav-item">
+							<span class="nav-link">
+								<Link to="/campaigns/inprogress">
+									{$_("nav.in_progress")}
+								</Link>
+							</span>
+						</li>
+
 						<li class="nav-item">
 							<span class="nav-link">
 								<Link to="/drafts">
@@ -88,6 +97,7 @@
 								</Link>
 							</span>
 						</li>
+
 						<li class="nav-item">
 							<span class="nav-link">
 								<Link to="/orders-history">{$_("nav.orders_history")}</Link>

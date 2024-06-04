@@ -14,7 +14,6 @@
 	import { permissions } from "../../authentication/roles";
 	import { Toast } from "bootstrap";
 	import SimpleToast from "../../utils/SimpleToast.svelte";
-	import CampaignsCandidates from "./CampaignsCandidates.svelte";
 	import SortPicker from "../../utils/SortPicker.svelte";
 
 	let toast_message = "";
@@ -29,9 +28,9 @@
 		}, 2000);
 	}
 
+	let inactive_campaigns = [];
 	const fetch_filter = { status: CampaignStatus.ARCHIVED };
 
-	let inactive_campaigns = [];
 	async function unlock(uuid: string) {
 		await api.changeStatus(uuid, CampaignStatus.ACTIVE);
 		inactive_campaigns = await fetch(null);
@@ -53,7 +52,7 @@
 			showToast("Brak uprawnień", "/");
 			return;
 		}
-		return (campaigns as Campaign[]).map(
+		const mappedCampaigns = (campaigns as Campaign[]).map(
 			(campaign: Campaign): AccordionItem => {
 				const acc: AccordionItem = {
 					id: campaign.uuid,
@@ -64,11 +63,14 @@
 					due_date: campaign.due_date,
 					added_date: campaign.added_date,
 					description: campaign.description,
+					items: campaign.items,
 					status: campaign.status,
 				};
 				return acc;
 			}
 		);
+		console.log(mappedCampaigns);
+		return mappedCampaigns;
 	}
 
 	let sort_by_list = ["nazwie", "dacie zakończenia", "dacie dodania"];
@@ -149,6 +151,15 @@
 					</span>
 				</li>
 			{/if}
+			<ul>
+				{#each item.items as pledge (pledge.uuid)}
+					{#if pledge.type == 0}
+						<li>
+							{pledge.name}: {pledge.price}
+						</li>
+					{/if}
+				{/each}
+			</ul>
 		</ul>
 	</div>
 	<!-- {$_("archived_campaigns.no_actions")} -->
