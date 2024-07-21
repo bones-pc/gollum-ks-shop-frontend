@@ -180,11 +180,9 @@ export class ExpiredUser implements Role {
 		return false;
 	}
 	is_expired(): boolean {
-		console.log("EXPIRED");
 		return true;
 	}
 	check_role(role: string): boolean {
-		console.log("check, expired", role);
 		if (role_permissions.EXPIRED.includes(role)) return true;
 		return false;
 	}

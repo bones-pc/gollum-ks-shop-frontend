@@ -31,6 +31,7 @@
 		locked: false,
 		title: "",
 		img_url: "",
+		img_file: "",
 		url: "",
 		liking_users: [],
 		description: "",
@@ -52,7 +53,7 @@
 	async function save() {
 		let draft_response: CampaignCandidate | ErrorResponse;
 		draft_response = await api.addCandidate(draft);
-		console.log(`resp: ${draft_response}`);
+
 		if (
 			(draft_response as ErrorResponse).status_code ===
 			ResponseStatusCode.ALREADY_EXISTS

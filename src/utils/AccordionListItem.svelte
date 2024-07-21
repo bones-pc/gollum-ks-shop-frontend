@@ -18,7 +18,6 @@
 						alt="item miniature"
 					/>
 				{:else if $role.is_admin()}
-					{console.log(item.title + item.img_file)}
 					<Link to="/orders/{item.id}">
 						<img
 							class="accordion-list-item"

@@ -104,8 +104,6 @@
 	}
 
 	function add_shipping() {
-		console.log(`add shipping`);
-
 		if (Object.keys(shipping).length === 0) {
 			shipping.name = "InPost";
 			shipping.price = 0;

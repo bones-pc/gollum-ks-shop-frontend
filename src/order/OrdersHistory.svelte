@@ -95,7 +95,7 @@
 				user_paid: o.user_paid,
 			});
 		}
-		console.log(new_orders);
+
 		return new_orders;
 	}
 
@@ -109,7 +109,6 @@
 		showPopup = true;
 		title = campaign_title;
 		const savedOrder = await api.updateUserPaidAmount(uuid, amount);
-		console.log(savedOrder);
 		if (
 			(savedOrder as ErrorResponse).status_code ===
 			ResponseStatusCode.NOT_ALLOWED

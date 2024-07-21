@@ -72,7 +72,6 @@
 				return acc;
 			}
 		);
-		console.log(mappedCampaigns);
 		return mappedCampaigns;
 	}
 

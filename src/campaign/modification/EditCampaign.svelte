@@ -33,8 +33,6 @@
 		if (!campaign.img_file)
 			pasteArea.style.backgroundImage = `url(${campaign.img_url})`;
 		else pasteArea.style.backgroundImage = `url(${imageUrl})`;
-
-		console.log(campaign);
 	});
 
 	const preventTextInput = (e) => {
@@ -89,11 +87,12 @@
 		warning_message = "";
 	}
 	let save_in_progress: boolean = false;
+
 	async function save_with_progress() {
-		if (validate_fields()) {
-			showToast();
-			return;
-		}
+		// if (validate_fields()) {
+		// 	showToast();
+		// 	return;
+		// }
 		save_in_progress = true;
 		// campaign.status = CampaignStatus.ACTIVE;
 		await save();

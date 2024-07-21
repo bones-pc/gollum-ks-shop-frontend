@@ -323,7 +323,7 @@ export class RestApi {
 					status_code: ResponseStatusCode.NOT_ALLOWED,
 					message: "Brak uprawnień",
 				};
-				console.log(error_response);
+
 				return error_response;
 			}
 		})();
@@ -333,7 +333,6 @@ export class RestApi {
 		update: OrderUpdate,
 		user_paid?: number
 	): Promise<Order | ErrorResponse> {
-		console.log(campaign_uuid, update, user_paid);
 		return (async () => {
 			const payload = {
 				items: update?.items?.map((it) => ({
@@ -357,7 +356,7 @@ export class RestApi {
 				  );
 			if (response.ok) {
 				const response_json = await response.json();
-				console.log(response_json);
+
 				if (response_json.status === 400) {
 					return error_response;
 				}
@@ -393,14 +392,14 @@ export class RestApi {
 			if (update.is_new) {
 				payload["uuid"] = update.candidate_uuid ?? null;
 			}
-			// console.log(`${JSON.stringify(payload)}`);
+
 			const response =
 				update.is_new && update.candidate_uuid == null
 					? await fetch(api_url + "campaigns", options("POST", payload))
 					: await fetch(api_url + "campaigns", options("PATCH", payload));
 			if (response.ok) {
 				const response_json = await response.json();
-				console.log(response_json);
+
 				return backend_campaign_to_frontend_campaign(response_json.result[0]);
 			} else if (response.status === 403) {
 				const error_response: ErrorResponse = {
@@ -450,10 +449,10 @@ export class RestApi {
 				api_url + "campaigns/" + uuid + "/purchased",
 				options("GET")
 			);
-			console.log(response);
+
 			if (response.ok) {
 				const response_json = await response.json();
-				console.log(response_json);
+
 				return response_json;
 			}
 		})();
@@ -510,7 +509,7 @@ export class RestApi {
 				api_url + "campaigns/" + uuid,
 				options("GET")
 			);
-			// console.log(response);
+
 			if (response.ok) {
 				const response_json = await response.json();
 				if (response_json.length > 0) {
@@ -700,7 +699,7 @@ export class RestApi {
 				body: formData,
 			});
 			const json_response = await response.json();
-			console.log(json_response);
+
 			return json_response;
 		})();
 	}

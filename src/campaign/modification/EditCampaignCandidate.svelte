@@ -46,7 +46,6 @@
 	onMount(async () => {
 		draft = await api.fetchCampaignCandidate(candidate_uuid);
 		ks_name = draft.title;
-		console.log(`mount - ${JSON.stringify(draft)}`);
 	});
 
 	let toast_message = "";

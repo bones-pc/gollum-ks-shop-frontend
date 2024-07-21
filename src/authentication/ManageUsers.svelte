@@ -94,7 +94,6 @@
 				user?.uuid,
 				user?.subscription_due
 			);
-			console.log(cells);
 		}
 	};
 

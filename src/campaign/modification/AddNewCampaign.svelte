@@ -18,6 +18,7 @@
 		locked: false,
 		title: "",
 		img_url: "",
+		img_file: "",
 		url: "",
 		status: CampaignStatus.ACTIVE,
 		description: "",
@@ -84,7 +85,6 @@
 			type: OrderedItemType.PLEDGE,
 		});
 		items = items;
-		console.log(items);
 	}
 
 	const add_excel = (excel_helper: string) => {
@@ -112,16 +112,19 @@
 	};
 
 	function validate_form() {
+		if (
+			whitespaces.test(campaign.img_url) &&
+			whitespaces.test(campaign.img_file)
+		) {
+			warning = "plik " + get(_)("edit_campaign.image_must_not_be_empty");
+			return false;
+		}
 		if (whitespaces.test(campaign.title)) {
 			warning = get(_)("edit_campaign.title_must_not_be_empty");
 			return false;
 		}
 		if (whitespaces.test(campaign.url)) {
 			warning = get(_)("edit_campaign.url_must_not_be_empty");
-			return false;
-		}
-		if (whitespaces.test(campaign.img_url)) {
-			warning = get(_)("edit_campaign.image_must_not_be_empty");
 			return false;
 		}
 
@@ -138,6 +141,7 @@
 
 	async function save() {
 		warning = null;
+
 		if (!validate_form()) {
 			return;
 		}

@@ -34,7 +34,6 @@
 	}
 	let paid_value;
 	async function confirm(paid: PaidAmount) {
-		console.log(paid);
 		const order: Order & AssignedToUser = {
 			...paid,
 			items: [],
@@ -51,7 +50,7 @@
 
 	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
 		const fetched_orders = await api.fetchUserOrdersAdmin(uuid);
-		console.log(fetched_orders);
+
 		const fetched_campaigns = await api.fetchCampaigns({
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,

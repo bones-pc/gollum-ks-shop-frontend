@@ -23,7 +23,6 @@
 			onClick();
 		}
 	};
-	console.log(modal_class);
 </script>
 
 {#if open}

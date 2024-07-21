@@ -57,9 +57,7 @@
 	}
 
 	function add_shipping() {
-		console.log("shipping");
 		if (Object.keys(shipping).length === 0) {
-			console.log("missing");
 			shipping.name = "InPost";
 			shipping.price = 0;
 			shipping.uuid = "";
@@ -72,12 +70,9 @@
 	}
 
 	function delete_item(item_uuid: string) {
-		console.log(`delete ${item_uuid}`);
 		let shipping_item = removable_items.find((it) => {
 			it.type === OrderedItemType.SHIPPING;
 		});
-		console.log(`shipping item ${shipping_item}`);
-
 		if (shipping_item) {
 			if (Object.keys(shipping_item).length) {
 				shipping = {};
