@@ -43,31 +43,22 @@
 			titleLike: search,
 			...fetch_filter,
 		});
-		return (campaigns as Campaign[]).map(
-			({
-				uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-				items,
-				status,
-			}) => ({
-				id: uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-				items,
-				status,
-			})
-		);
+		return (campaigns as Campaign[]).map((c) => {
+			if (c.img_file) c.img_file = `../../images/${c.img_file}`;
+			return {
+				id: c.uuid,
+				title: c.title,
+				url: c.url,
+				img_url: c.img_url,
+				img_file: c.img_file,
+				due_date: c.due_date,
+				added_date: c.added_date,
+				description: c.description,
+				purchased: c.purchased,
+				items: c.items,
+				status: c.status,
+			};
+		});
 	}
 
 	async function update_amount(uuid, amount, campaign_title) {

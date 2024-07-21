@@ -4,6 +4,7 @@ export interface AccordionItem {
 	title: string;
 	url?: string;
 	img_url: string;
+	img_file: string;
 	id: string;
 	status: CampaignStatus;
 	items?: CampaignItem[];

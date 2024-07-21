@@ -54,11 +54,14 @@
 		}
 		const mappedCampaigns = (campaigns as Campaign[]).map(
 			(campaign: Campaign): AccordionItem => {
+				if (campaign.img_file)
+					campaign.img_file = `../../images/${campaign.img_file}`;
 				const acc: AccordionItem = {
 					id: campaign.uuid,
 					title: campaign.title,
 					url: campaign.url,
 					img_url: campaign.img_url,
+					img_file: campaign.img_file,
 					purchased: campaign.purchased,
 					due_date: campaign.due_date,
 					added_date: campaign.added_date,

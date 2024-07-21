@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { access_token, api_url as url, user_uuid } from "../stores";
+import { access_token, api_url as url, user_uuid, api_url } from "../stores";
 import {
 	Api,
 	AssignedToUser,
@@ -25,6 +25,7 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
 		uuid: campaign.uuid,
 		title: campaign.name,
 		img_url: campaign.img_url,
+		img_file: campaign.img_file,
 		payment_details: campaign.payment_details,
 		items: campaign.items?.map((i, index) => ({
 			uuid: i.uuid,
@@ -52,6 +53,7 @@ function backend_draft_to_frontend_draft(
 		uuid: draft.uuid,
 		title: draft.name || draft.campaign_name,
 		img_url: draft.img_url,
+		img_file: draft.img_file,
 		added_date: draft.added_date,
 		url: draft.url,
 		// todo - Piotr should fix it soon
@@ -391,7 +393,7 @@ export class RestApi {
 			if (update.is_new) {
 				payload["uuid"] = update.candidate_uuid ?? null;
 			}
-			console.log(payload);
+			// console.log(`${JSON.stringify(payload)}`);
 			const response =
 				update.is_new && update.candidate_uuid == null
 					? await fetch(api_url + "campaigns", options("POST", payload))
@@ -673,11 +675,8 @@ export class RestApi {
 	resetPassword(password: string, token: string): Promise<Boolean> {
 		return (async () => {
 			let payload = { password, token };
-
 			let url = api_url + "auth/password-reset/";
-
 			const response = await fetch(url, options("PATCH", payload));
-
 			return true;
 		})();
 	}
@@ -688,6 +687,21 @@ export class RestApi {
 			let url = api_url + "auth/password-reset/";
 			const response = await fetch(url, options("POST", payload));
 			return true;
+		})();
+	}
+
+	uploadImage(formData: any): Promise<any> {
+		return (async () => {
+			const response = await fetch(api_url + "upload", {
+				headers: {
+					Authorization: "Bearer " + get(access_token),
+				},
+				method: "POST",
+				body: formData,
+			});
+			const json_response = await response.json();
+			console.log(json_response);
+			return json_response;
 		})();
 	}
 }

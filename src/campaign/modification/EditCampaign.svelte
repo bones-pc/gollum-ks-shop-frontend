@@ -7,6 +7,8 @@
 	import { Toast } from "bootstrap";
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 
+	import { onMount } from "svelte";
+
 	export let title: string;
 	export let add_item: () => void;
 	export let add_shipping: () => void;
@@ -17,8 +19,56 @@
 	export let items: CampaignItem[];
 	export let campaign: Campaign;
 
-	console.log(campaign);
-	console.log(items);
+	let pasteArea;
+	let pastedImageSrc = "";
+	const MAX_WIDTH = 500;
+	const MAX_HEIGHT = 500;
+
+	onMount(() => {
+		pasteArea.addEventListener("paste", handlePaste);
+		pasteArea.addEventListener("keydown", preventTextInput);
+		pasteArea.addEventListener("input", preventTextInput);
+		const imageUrl = `../../images/${campaign.img_file}`;
+
+		if (!campaign.img_file)
+			pasteArea.style.backgroundImage = `url(${campaign.img_url})`;
+		else pasteArea.style.backgroundImage = `url(${imageUrl})`;
+
+		console.log(campaign);
+	});
+
+	const preventTextInput = (e) => {
+		e.preventDefault();
+	};
+
+	const handlePaste = async (event) => {
+		const items = event.clipboardData.items;
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			if (item.kind === "file" && item.type.startsWith("image/")) {
+				const file = item.getAsFile();
+				const formData = new FormData();
+				formData.append("image", file);
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					pastedImageSrc = e.target.result;
+					pasteArea.style.backgroundImage = `url(${e.target.result})`;
+				};
+				reader.readAsDataURL(file);
+				try {
+					const response = await api.uploadImage(formData);
+					if (response.ok) {
+						campaign.img_file = response.file.filename;
+					} else {
+						// console.log(response);
+						console.error("Upload failed:", response.message);
+					}
+				} catch (error) {
+					console.error("Error:", error);
+				}
+			}
+		}
+	};
 
 	function validate_fields() {
 		if (campaign.due_date === "") {
@@ -45,7 +95,7 @@
 			return;
 		}
 		save_in_progress = true;
-		campaign.status = CampaignStatus.ACTIVE;
+		// campaign.status = CampaignStatus.ACTIVE;
 		await save();
 		save_in_progress = false;
 	}
@@ -224,6 +274,7 @@
 		bind:value={campaign.img_url}
 		disabled={save_in_progress}
 	/>
+	<textarea id="paste-area" bind:this={pasteArea} placeholder="Wklej obrazek" />
 </div>
 <div class="mb-3">
 	<label class="form-label" for="campaign_desc">
@@ -351,6 +402,25 @@
 >
 
 <style>
+	#paste-area {
+		width: 100%;
+		height: 150px;
+		border: 2px dashed #ccc;
+		padding: 20px;
+		font-size: 16px;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-color: #f9f9f9;
+	}
+
+	.image-preview {
+		margin-top: 20px;
+		max-width: 100%;
+		border: 1px solid #ccc;
+		padding: 10px;
+	}
+
 	.card-body {
 		align-items: flex-start;
 		flex-direction: row;
@@ -358,7 +428,12 @@
 		display: flex;
 		gap: 1rem;
 	}
-
+	.image-preview {
+		margin-top: 20px;
+		max-width: 100%;
+		border: 1px solid #ccc;
+		padding: 10px;
+	}
 	.input-group {
 		width: 100%;
 	}

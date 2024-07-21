@@ -63,6 +63,7 @@ export interface Campaign {
 	uuid: string;
 	title: string;
 	img_url: string;
+	img_file: string;
 	url: string;
 	payment_details: string;
 	items: CampaignItem[];
@@ -124,6 +125,7 @@ export interface CampaignCandidate {
 	title: string;
 	url: string;
 	img_url: string;
+	img_file: string;
 	liking_users: string[];
 	description: string;
 	status: CampaignStatus;
@@ -225,4 +227,6 @@ export interface Api {
 
 	resetPassword(password: string, token: string): Promise<Boolean>;
 	initPasswordReset(email: string): Promise<Boolean>;
+
+	uploadImage(formData: any): Promise<any>;
 }

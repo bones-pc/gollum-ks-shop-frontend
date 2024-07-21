@@ -42,8 +42,9 @@
 		const fetched_candidates: CampaignCandidate[] =
 			await api.fetchCampaignCandidates(search);
 		campaign_count = fetched_candidates.length;
-		console.log(fetched_candidates);
+
 		fetched_candidates.forEach((c) => {
+			c.img_file = `../../images/${c.img_file}`;
 			if (c.liking_users.includes($user_uuid)) c.liked = true;
 			else c.liked = false;
 		});

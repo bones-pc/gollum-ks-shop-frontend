@@ -7,13 +7,12 @@
 		ErrorResponse,
 		ResponseStatusCode,
 	} from "../../api/Api";
-	import { role } from "../../stores";
-	import AccordionList from "../../utils/AccordionList.svelte";
-	import type { AccordionItem } from "../../utils/accordion_item";
 	import { _ } from "svelte-i18n";
+	import { role } from "../../stores";
 	import SortPicker from "../../utils/SortPicker.svelte";
+	import type { AccordionItem } from "../../utils/accordion_item";
+	import AccordionList from "../../utils/AccordionList.svelte";
 	import Modal from "../../utils/Modal.svelte";
-	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import { permissions } from "../../authentication/roles";
 
 	const navigate = useNavigate();
@@ -45,34 +44,23 @@
 			titleLike: search,
 			...fetch_filter,
 		});
-
-		return (campaigns as Campaign[]).map(
-			({
-				uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-				items,
-				status,
-				user_paid,
-			}) => ({
-				id: uuid,
-				title,
-				url,
-				img_url,
-				due_date,
-				added_date,
-				description,
-				purchased,
-				items,
-				status,
-				user_paid,
-			})
-		);
+		return (campaigns as Campaign[]).map((c) => {
+			if (c.img_file) c.img_file = `../../images/${c.img_file}`;
+			return {
+				id: c.uuid,
+				title: c.title,
+				url: c.url,
+				img_url: c.img_url,
+				img_file: c.img_file,
+				due_date: c.due_date,
+				added_date: c.added_date,
+				description: c.description,
+				purchased: c.purchased,
+				items: c.items,
+				status: c.status,
+				user_paid: c.user_paid,
+			};
+		});
 	}
 
 	async function update_amount(uuid, amount, campaign_title) {

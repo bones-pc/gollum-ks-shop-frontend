@@ -21,6 +21,7 @@
 			title: "Nazwa",
 			url: null,
 			img_url: "",
+			img_file: "",
 			id: "header",
 			purchased: false,
 			due_date: "Data Zakończenia",
