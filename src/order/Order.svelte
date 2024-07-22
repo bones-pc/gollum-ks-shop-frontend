@@ -19,6 +19,7 @@
 	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Modal from "../utils/Modal.svelte";
 	import { role, user_uuid } from "../stores";
+	import CampaignsCandidates from "../campaign/listing/CampaignsCandidates.svelte";
 
 	export let uuid: string;
 
@@ -36,6 +37,7 @@
 	let toast_body = "Zamówienie złożone.";
 
 	function fill_form(campaign: Campaign, order: Order) {
+		console.log(order);
 		const orderItems = new Map<string, OrderedItem>();
 		if (order != null) {
 			order.items.forEach((i) => orderItems.set(i.item_uuid, i));
@@ -244,12 +246,18 @@
 		{#each items as { amount, old_amount, item }}
 			<!-- {#if amount > 0} -->
 			<!-- {#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0} -->
+
 			<div
 				class="card mb-2"
 				style="width: 100%;"
 				class:selected_item={amount > 0}
 			>
 				<div class="card-body row">
+					{#if item.image && campaign.status === CampaignStatus.WAREHOUSE}
+						<div class="col-12 col-lg-4">
+							<img class="small_img" src={item.image} alt=" " />
+						</div>
+					{/if}
 					<div class="col-12 col-lg">
 						<h5 class:fade-text={amount == null || amount === 0}>
 							{#if item.ordinal > 0}
@@ -259,7 +267,12 @@
 									{$_("currency.pln")}
 								</span>
 							{:else}
-								{item.name}
+								{#if item.url && campaign.status === CampaignStatus.WAREHOUSE}
+									<a href={item.url}>
+										{item.name}
+									</a>
+								{:else}{item.name}
+								{/if}
 								<span class="ms-2 badge bg-secondary">
 									{item.price}
 									{$_("currency.pln")}
@@ -267,6 +280,7 @@
 							{/if}
 						</h5>
 					</div>
+
 					<div class="col-12 col-lg-4">
 						<div class="input-group justify-content-lg-end">
 							{#if item.type !== OrderedItemType.ADMIN_ADDON}
@@ -398,6 +412,16 @@
 		width: 100%;
 	}
 
+	.small_img {
+		width: 90px;
+		height: 59px;
+		object-fit: cover;
+		overflow: hidden;
+		float: left;
+		font-size: 1rem;
+		line-height: 26px;
+		text-align: center;
+	}
 	.selected_item {
 		background-color: rgba(25, 135, 84, 0.1) !important;
 	}

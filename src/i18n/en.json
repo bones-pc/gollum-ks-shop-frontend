@@ -126,6 +126,8 @@
   "manage_users.deactivate": "Block",
   "manage_users.verified": "Verified",
   "manage_users.name": "Name",
+  "manage_users.paste_data":"Copy / Paste user data in csv format, beware osriginal userdate will be replaced. Dat a formatr, no header(!): uuid | subscription_due ",
+
   "currency.pln": "PLN",
   "anonymous.info": "You dont have any role assigned yet",
   "add_draft.title_add": "Add campaign candidate",

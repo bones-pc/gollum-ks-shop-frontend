@@ -77,14 +77,14 @@
 		uuid: string;
 		subscription_due: Date;
 	}
-	let excelHelper = false;
-	let excel_helper = "";
-	const add_excel = async (excel_helper: string) => {
+	let excelUserHelper = false;
+	let excel_user_helper = "";
+	const add_excel = async (excel_user_helper: string) => {
 		let user: ExcelUser = {
 			uuid: "",
 			subscription_due: new Date("1900-10-10"),
 		};
-		let data = excel_helper;
+		let data = excel_user_helper;
 		let rows = data.split("\n");
 		for (const row of rows) {
 			const cells = row.split("\t");
@@ -97,13 +97,13 @@
 		}
 	};
 
-	const onExitExcelHelper = () => {
-		add_excel(excel_helper);
-		excelHelper = false;
+	const onExitExcelUserHelper = () => {
+		add_excel(excel_user_helper);
+		excelUserHelper = false;
 	};
 
-	const onToggleExcelHelper = () => {
-		excelHelper = !excelHelper;
+	const onToggleExcelUserHelper = () => {
+		excelUserHelper = !excelUserHelper;
 	};
 </script>
 
@@ -111,21 +111,25 @@
 	title={$_("edit_campaign.paste_items")}
 	close={$_("edit_campaign.paste_items_skip")}
 	action={$_("edit_campaign.paste_items_ok")}
-	open={excelHelper}
-	onClick={onExitExcelHelper}
-	onClosed={onToggleExcelHelper}
+	open={excelUserHelper}
+	onClick={onExitExcelUserHelper}
+	onClosed={onToggleExcelUserHelper}
 >
 	<div class="mb-3">
 		<label class="form-label" for="campaign_desc">
-			{$_("edit_campaign.paste_items_text")}
+			{$_("manage_users.paste_data")}
 		</label>
-		<textarea id="user_data" class="form-control" bind:value={excel_helper} />
+		<textarea
+			id="user_data"
+			class="form-control"
+			bind:value={excel_user_helper}
+		/>
 	</div>
 </Modal>
 
 <h2>{$_("nav.manage_users")}</h2>
 <div on:click={downloadCSV}>Pobierz dane użytkowników</div>
-<div on:click={onToggleExcelHelper}>Wklej dane użytkowników</div>
+<div on:click={onToggleExcelUserHelper}>Wklej dane użytkowników</div>
 <a id="users-download">&nbsp;</a>
 
 <table class="table">

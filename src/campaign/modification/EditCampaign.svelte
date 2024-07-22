@@ -23,6 +23,7 @@
 	let pastedImageSrc = "";
 	const MAX_WIDTH = 500;
 	const MAX_HEIGHT = 500;
+	let campaign_status = campaign.status;
 
 	onMount(() => {
 		pasteArea.addEventListener("paste", handlePaste);
@@ -39,6 +40,13 @@
 		e.preventDefault();
 	};
 
+	const toggleWarehouse = () => {
+		if (campaign.status === CampaignStatus.WAREHOUSE) {
+			campaign.status = campaign_status;
+		} else {
+			campaign.status = CampaignStatus.WAREHOUSE;
+		}
+	};
 	const handlePaste = async (event) => {
 		const items = event.clipboardData.items;
 		for (let i = 0; i < items.length; i++) {
@@ -98,8 +106,6 @@
 		await save();
 		save_in_progress = false;
 	}
-
-	let campaign_status = campaign.status;
 
 	let showPopup = false;
 	let excelHelper = false;
@@ -216,7 +222,6 @@
 		disabled={save_in_progress}
 		>+ {$_("edit_campaign.add_admin_pledge")}
 	</button>
-
 	<InProgressButton
 		on_click_function={save_with_progress}
 		label={$_("edit_campaign.save")}
@@ -237,6 +242,17 @@
 			label={$_("edit_campaign.save")}>Kasuj</button
 		>
 	{/if}
+
+	<input
+		type="checkbox"
+		class="btn-check"
+		id="btn-check-outlined"
+		autocomplete="off"
+		on:click={toggleWarehouse}
+	/>
+	<label class="btn btn-outline-primary" for="btn-check-outlined"
+		>Hurtownia</label
+	><br />
 </div>
 <div class="mb-3">
 	<label for="title" class="form-label">
@@ -348,6 +364,7 @@
 					disabled={save_in_progress}
 				/>
 			</div>
+
 			<div class="input-group">
 				<span class="input-group-text" for="item_price_{item.uuid}">
 					{$_("edit_campaign.item_price")}
@@ -373,6 +390,30 @@
 					disabled={save_in_progress}
 				/>
 			</div>
+			{#if campaign.status === CampaignStatus.WAREHOUSE}
+				<div class="input-group">
+					<span class="input-group-text" for="item_url_{item.uuid}"
+						>Link do BGG:</span
+					>
+					<input
+						class="form-control"
+						id="item-url-{item.uuid}"
+						bind:value={item.url}
+						disabled={save_in_progress}
+					/>
+				</div>
+				<div class="input-group">
+					<span class="input-group-text" for="item_image_{item.uuid}">
+						Obrazek
+					</span>
+					<input
+						class="form-control"
+						id="item-url-{item.uuid}"
+						bind:value={item.image}
+						disabled={save_in_progress}
+					/>
+				</div>
+			{/if}
 			{#if index < campaign.items.length}
 				<button
 					type="button"

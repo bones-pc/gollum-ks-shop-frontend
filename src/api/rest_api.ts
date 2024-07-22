@@ -33,6 +33,8 @@ function backend_campaign_to_frontend_campaign(campaign: any): Campaign {
 			name: i.name,
 			price: i.price,
 			type: i.type,
+			url: i.url,
+			image: i.image,
 		})),
 		url: campaign.url,
 		status: campaign.status as CampaignStatus,

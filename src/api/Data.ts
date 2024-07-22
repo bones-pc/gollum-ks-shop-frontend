@@ -20,6 +20,8 @@ export interface CampaignItem {
 	// null for new items. Server should always send not null value.
 	uuid?: string;
 	type: OrderedItemType;
+	url?: string;
+	image?: string;
 }
 
 export interface KSCampaignListItem {
@@ -46,6 +48,8 @@ export enum CampaignStatus {
 	DRAFT_NEGOTIATED,
 	//placeholder for UI
 	PLACEHOLDER,
+	// order from warehouse
+	WAREHOUSE,
 }
 
 export enum OrderStatus {
@@ -57,6 +61,9 @@ export enum OrderStatus {
 	SENT,
 	// order deleted
 	DELETED,
+
+	//
+	WAREHOUSE,
 }
 
 export interface Campaign {
