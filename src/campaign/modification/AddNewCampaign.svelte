@@ -14,6 +14,7 @@
 	import { get } from "svelte/store";
 	import { OrderedItemType } from "../../api/Api";
 	import SimplePickList from "../../utils/SimplePickList.svelte";
+	import Order from "../../order/Order.svelte";
 
 	const whitespaces = /^\s*$/;
 	let warning = null;
@@ -45,7 +46,7 @@
 		name: "",
 		price: 0,
 		uuid: "",
-		type: OrderedItemType.PLEDGE,
+		type: OrderedItemType.SHIPPING,
 		url: "",
 		image: "",
 	};
@@ -72,7 +73,8 @@
 	const add_admin_pledge = () => {};
 
 	function add_shipping() {
-		if (Object.keys(shipping).length === 0) {
+		console.log(items);
+		if (items.filter((i) => i.type === OrderedItemType.SHIPPING).length === 0) {
 			shipping.name = "InPost";
 			shipping.price = 0;
 			shipping.uuid = v4();
@@ -85,7 +87,15 @@
 
 	function add_item() {
 		let ordinal = campaign.items.length + items.length + 1;
-		if (Object.keys(shipping).length !== 0) ordinal--;
+
+		console.log(ordinal);
+		if (items.filter((i) => i.type === OrderedItemType.SHIPPING).length > 0)
+			ordinal--;
+		console.log(
+			items.filter((i) => i.type === OrderedItemType.SHIPPING).length
+		);
+		// if (Object.keys(shipping).length !== 0) ordinal--;
+
 		items.push({
 			name: "",
 			price: 0,
@@ -93,6 +103,8 @@
 			ordinal: ordinal,
 			type: OrderedItemType.PLEDGE,
 		});
+		console.log(ordinal);
+
 		items = items;
 	}
 

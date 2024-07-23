@@ -158,14 +158,18 @@
 			{#if campaign.url == null}
 				<img
 					class="accordion-list-item img-fluid"
-					src={campaign.img_url}
+					src={campaign.img_file
+						? `../../images/${campaign.img_file}`
+						: campaign.img_url}
 					alt="item miniature"
 				/>
 			{:else}
 				<a href={campaign.url} target="_blank">
 					<img
 						class="accordion-list-item img-fluid"
-						src={campaign.img_url}
+						src={campaign.img_file
+							? `../../images/${campaign.img_file}`
+							: campaign.img_url}
 						alt="item miniature"
 					/>
 				</a>

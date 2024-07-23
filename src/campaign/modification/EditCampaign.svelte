@@ -206,37 +206,6 @@
 	}
 </script>
 
-<Modal
-	title={$_("edit_campaign.paste_items")}
-	close={$_("edit_campaign.paste_items_skip")}
-	action={$_("edit_campaign.paste_items_ok")}
-	open={excelHelper}
-	onClick={onExitExcelHelper}
-	onClosed={onToggleExcelHelper}
->
-	<div class="mb-3">
-		<label class="form-label" for="campaign_desc">
-			{$_("edit_campaign.paste_items_text")}
-		</label>
-		<textarea
-			id="campaign_desc"
-			class="form-control"
-			bind:value={excel_helper}
-		/>
-	</div>
-</Modal>
-
-<Modal
-	title={"Skasować?"}
-	close={"Nie, no..."}
-	action={"Serio!"}
-	open={showPopup}
-	onClick={() => onClickOK()}
-	onClosed={() => onPopupClose()}
->
-	Serio? Skasować <b>CAŁĄ</b>
-	kampanię {campaign.title}?
-</Modal>
 
 <h1>
 	{title}
@@ -516,6 +485,39 @@
 	closeTitle={"Odrzuć"}
 	list={game_list_modal}
 />
+
+<Modal
+	title={$_("edit_campaign.paste_items")}
+	close={$_("edit_campaign.paste_items_skip")}
+	action={$_("edit_campaign.paste_items_ok")}
+	open={excelHelper}
+	onClick={onExitExcelHelper}
+	onClosed={onToggleExcelHelper}
+>
+	<div class="mb-3">
+		<label class="form-label" for="campaign_desc">
+			{$_("edit_campaign.paste_items_text")}
+		</label>
+		<textarea
+			id="campaign_desc"
+			class="form-control"
+			bind:value={excel_helper}
+		/>
+	</div>
+</Modal>
+
+<Modal
+	title={"Skasować?"}
+	close={"Nie, no..."}
+	action={"Serio!"}
+	open={showPopup}
+	onClick={() => onClickOK()}
+	onClosed={() => onPopupClose()}
+>
+	Serio? Skasować <b>CAŁĄ</b>
+	kampanię {campaign.title}?
+</Modal>
+
 
 <style>
 	#paste-area {
