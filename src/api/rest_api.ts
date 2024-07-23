@@ -16,6 +16,7 @@ import {
 	ErrorResponse,
 	OrderedItemAdmin,
 	ResponseStatusCode,
+	KSCampaignListItem,
 } from "./Data";
 
 const api_url = get(url);
@@ -163,6 +164,35 @@ export class RestApi {
 			const response = await fetch(
 				api_url + "kickstarter",
 				options("POST", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
+		})();
+	}
+
+	fetchBGGCampaigns(name: string): Promise<KSCampaignListItem[]> {
+		return (async () => {
+			const payload = {
+				ks_search: name,
+			};
+			const response = await fetch(
+				api_url + "kickstarter/bgg",
+				options("POST", payload)
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
+		})();
+	}
+
+	fetchBGGCampaign(id: number): Promise<CampaignCandidate> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "kickstarter/bgg/" + id,
+				options("GET")
 			);
 			if (response.ok) {
 				const response_json = await response.json();

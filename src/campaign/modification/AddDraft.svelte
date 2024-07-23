@@ -81,10 +81,10 @@
 
 	function selectedItem(item_idx) {
 		selected_item = true;
-		if (item_idx == 0) {
-			return;
-		}
-		item_idx--;
+		// if (item_idx == 0) {
+		// 	return;
+		// }
+		// item_idx--;
 		campaign_list_modal_visible = false;
 		draft.title = campaign_list[item_idx].title;
 		draft.url = campaign_list[item_idx].url;

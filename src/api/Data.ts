@@ -197,6 +197,9 @@ export interface Api {
 		status: OrderStatus
 	);
 	fetchKSCampaigns(name: string): Promise<CampaignCandidate[]>;
+	fetchBGGCampaigns(name: string): Promise<KSCampaignListItem[]>;
+	fetchBGGCampaign(id: number): Promise<CampaignCandidate>;
+
 	fetchCampaign(uuid: string): Promise<Campaign>;
 	fetchCampaignBuyer(campaign_uuid: string): any;
 	orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;

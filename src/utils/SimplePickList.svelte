@@ -16,7 +16,7 @@
 	const onSelect = (item_idx) => {
 		open = false;
 		if (onSelected) {
-			onSelected(item_idx + 1);
+			onSelected(item_idx);
 		}
 	};
 </script>
@@ -38,6 +38,7 @@
 				<div class="modal-body">
 					<ul>
 						{#each list as item}
+							{console.log(list)}
 							<li
 								id={item.idx}
 								on:click={() => {

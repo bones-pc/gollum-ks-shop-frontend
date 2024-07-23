@@ -3,10 +3,17 @@
 	import { _ } from "svelte-i18n";
 	import { useNavigate } from "svelte-navigator";
 	import { v4 } from "uuid";
-	import { api, Campaign, CampaignItem, CampaignStatus } from "../../api/Api";
+	import {
+		api,
+		Campaign,
+		CampaignItem,
+		CampaignStatus,
+		KSCampaignListItem,
+	} from "../../api/Api";
 	import EditCampaign from "./EditCampaign.svelte";
 	import { get } from "svelte/store";
 	import { OrderedItemType } from "../../api/Api";
+	import SimplePickList from "../../utils/SimplePickList.svelte";
 
 	const whitespaces = /^\s*$/;
 	let warning = null;

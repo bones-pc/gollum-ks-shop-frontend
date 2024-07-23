@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { _ } from "svelte-i18n";
-	import type { Campaign, CampaignItem, OrderedItem } from "../../api/Api";
+	import type {
+		Campaign,
+		CampaignItem,
+		KSCampaignListItem,
+		OrderedItem,
+	} from "../../api/Api";
 	import InProgressButton from "../../utils/InProgressButton.svelte";
 	import Modal from "../../utils/Modal.svelte";
 	import { api, CampaignStatus, OrderedItemType } from "../../api/Api";
@@ -8,6 +13,8 @@
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	import { onMount } from "svelte";
+	import OrdersHistory from "../../order/OrdersHistory.svelte";
+	import SimplePickList from "../../utils/SimplePickList.svelte";
 
 	export let title: string;
 	export let add_item: () => void;
@@ -24,6 +31,7 @@
 	const MAX_WIDTH = 500;
 	const MAX_HEIGHT = 500;
 	let campaign_status = campaign.status;
+	let warehouseOn = false;
 
 	onMount(() => {
 		pasteArea.addEventListener("paste", handlePaste);
@@ -34,6 +42,8 @@
 		if (!campaign.img_file)
 			pasteArea.style.backgroundImage = `url(${campaign.img_url})`;
 		else pasteArea.style.backgroundImage = `url(${imageUrl})`;
+
+		if (campaign_status === CampaignStatus.WAREHOUSE) warehouseOn = true;
 	});
 
 	const preventTextInput = (e) => {
@@ -43,8 +53,10 @@
 	const toggleWarehouse = () => {
 		if (campaign.status === CampaignStatus.WAREHOUSE) {
 			campaign.status = campaign_status;
+			warehouseOn = false;
 		} else {
 			campaign.status = CampaignStatus.WAREHOUSE;
+			warehouseOn = true;
 		}
 	};
 	const handlePaste = async (event) => {
@@ -150,6 +162,48 @@
 		let campaign_result = await api.changeStatus(uuid, CampaignStatus.ACTIVE);
 		campaign_status = campaign_result.status;
 	}
+
+	let game_search_name = "";
+	let game_list_modal_visible = false;
+	let game_list_modal = [];
+	let selected_bgg_item = false;
+
+	function closeBGGList() {
+		game_list_modal_visible = false;
+	}
+
+	let search_index = null;
+
+	async function selectedBGGItem(item_idx) {
+		// console.log(item_idx);
+		selected_bgg_item = true;
+		// if (item_idx == 0) {
+		// 	return;
+		// }
+		game_list_modal_visible = false;
+		const game = await api.fetchBGGCampaign(item_idx);
+		console.log(game);
+		items[search_index].name = game.name;
+		items[search_index].url = game.url;
+		items[search_index].image = game.image;
+	}
+
+	let game_list = [];
+	let search_game = "";
+	async function search_campaign_in_bgg() {
+		game_list = await api.fetchBGGCampaigns(search_game);
+		// console.log(game_list);
+		if (game_list.length > 0) {
+			game_list_modal_visible = true;
+			game_list_modal = game_list.map((e, idx) => {
+				const return_item: KSCampaignListItem = {
+					title: e.title,
+					idx: e.id,
+				};
+				return return_item;
+			});
+		}
+	}
 </script>
 
 <Modal
@@ -248,6 +302,7 @@
 		class="btn-check"
 		id="btn-check-outlined"
 		autocomplete="off"
+		bind:checked={warehouseOn}
 		on:click={toggleWarehouse}
 	/>
 	<label class="btn btn-outline-primary" for="btn-check-outlined"
@@ -270,13 +325,15 @@
 	<label class="form-label" for="campaign_url">
 		{$_("edit_campaign.campaign_url")}
 	</label>
-	<input
-		class="form-control"
-		type="text"
-		id="campaign_url"
-		bind:value={campaign.url}
-		disabled={save_in_progress}
-	/>
+	<div class="input-container">
+		<input
+			class="form-control"
+			type="text"
+			id="campaign_url"
+			bind:value={campaign.url}
+			disabled={save_in_progress}
+		/><a target="_blank" href={campaign.url}>Go</a>
+	</div>
 </div>
 <div class="mb-3">
 	<label class="form-label" for="campaign_url">
@@ -363,6 +420,18 @@
 					bind:value={item.name}
 					disabled={save_in_progress}
 				/>
+				{#if campaign.status === CampaignStatus.WAREHOUSE}
+					<button
+						type="button"
+						class="btn btn-danger"
+						on:click={() => {
+							search_game = item.name;
+							search_index = index;
+							search_campaign_in_bgg();
+						}}
+						>Szukaj na BGG
+					</button>
+				{/if}
 			</div>
 
 			<div class="input-group">
@@ -390,7 +459,7 @@
 					disabled={save_in_progress}
 				/>
 			</div>
-			{#if campaign.status === CampaignStatus.WAREHOUSE}
+			{#if campaign.status === CampaignStatus.WAREHOUSE && item.type !== OrderedItemType.SHIPPING && item.type !== OrderedItemType.ADMIN_ADDON}
 				<div class="input-group">
 					<span class="input-group-text" for="item_url_{item.uuid}"
 						>Link do BGG:</span
@@ -440,6 +509,13 @@
 <SimpleToast {toast_id}>
 	<div slot="toast-body">{warning_message}</div></SimpleToast
 >
+<SimplePickList
+	open={game_list_modal_visible}
+	onClose={closeBGGList}
+	onSelected={selectedBGGItem}
+	closeTitle={"Odrzuć"}
+	list={game_list_modal}
+/>
 
 <style>
 	#paste-area {
@@ -476,6 +552,20 @@
 	}
 	.input-group {
 		width: 100%;
+	}
+
+	.input-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.input-container input {
+		margin-right: 10px;
+		flex: 1;
+	}
+
+	.input-container a {
+		text-decoration: none;
 	}
 
 	@media (min-width: 992px) {
