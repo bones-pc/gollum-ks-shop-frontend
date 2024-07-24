@@ -73,7 +73,7 @@
 	const add_admin_pledge = () => {};
 
 	function add_shipping() {
-		console.log(items);
+		// console.log(items);
 		if (items.filter((i) => i.type === OrderedItemType.SHIPPING).length === 0) {
 			shipping.name = "InPost";
 			shipping.price = 0;
@@ -88,12 +88,12 @@
 	function add_item() {
 		let ordinal = campaign.items.length + items.length + 1;
 
-		console.log(ordinal);
+		// console.log(ordinal);
 		if (items.filter((i) => i.type === OrderedItemType.SHIPPING).length > 0)
 			ordinal--;
-		console.log(
-			items.filter((i) => i.type === OrderedItemType.SHIPPING).length
-		);
+		// console.log(
+		// 	items.filter((i) => i.type === OrderedItemType.SHIPPING).length
+		// );
 		// if (Object.keys(shipping).length !== 0) ordinal--;
 
 		items.push({
@@ -103,7 +103,7 @@
 			ordinal: ordinal,
 			type: OrderedItemType.PLEDGE,
 		});
-		console.log(ordinal);
+		// console.log(ordinal);
 
 		items = items;
 	}

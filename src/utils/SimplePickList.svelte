@@ -38,7 +38,6 @@
 				<div class="modal-body">
 					<ul>
 						{#each list as item}
-							{console.log(list)}
 							<li
 								id={item.idx}
 								on:click={() => {

@@ -182,7 +182,7 @@
 		// }
 		game_list_modal_visible = false;
 		const game = await api.fetchBGGCampaign(item_idx);
-		console.log(game);
+		// console.log(game);
 		items[search_index].name = game.name;
 		items[search_index].url = game.url;
 		items[search_index].image = game.image;
@@ -205,7 +205,6 @@
 		}
 	}
 </script>
-
 
 <h1>
 	{title}
@@ -517,7 +516,6 @@
 	Serio? Skasować <b>CAŁĄ</b>
 	kampanię {campaign.title}?
 </Modal>
-
 
 <style>
 	#paste-area {

@@ -37,7 +37,7 @@
 	let toast_body = "Zamówienie złożone.";
 
 	function fill_form(campaign: Campaign, order: Order) {
-		console.log(order);
+		// console.log(order);
 		const orderItems = new Map<string, OrderedItem>();
 		if (order != null) {
 			order.items.forEach((i) => orderItems.set(i.item_uuid, i));
