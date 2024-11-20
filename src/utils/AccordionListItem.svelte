@@ -29,7 +29,7 @@
 					<a href={item.url}>
 						<img
 							class="accordion-list-item"
-							src={item.img_url}
+							src={item.img_file || item.img_url}
 							alt="item miniature"
 						/>
 					</a>

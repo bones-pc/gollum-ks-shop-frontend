@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { access_token, api_url as url, user_uuid, api_url } from "../stores";
+import { access_token, api_url as url } from "../stores";
 import {
 	Api,
 	AssignedToUser,
@@ -462,6 +462,28 @@ export class RestApi {
 				api_url + "campaigns?" + fetch_params.toString(),
 				options("GET")
 			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_campaign_to_frontend_campaign);
+			} else {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "brak uprawnień",
+				};
+				return error_response;
+			}
+		})();
+	}
+
+	fetchUserCampaigns(params: CampaignsSearchParams): Promise<Campaign[]> {
+		const fetch_params = new URLSearchParams();
+		if (params.uuids) {
+			for (let uuid of params.uuids) {
+				fetch_params.append("id", uuid);
+			}
+		}
+		return (async () => {
+			const response = await fetch(api_url + "campaigns/user", options("GET"));
 			if (response.ok) {
 				const response_json = await response.json();
 				return response_json.map(backend_campaign_to_frontend_campaign);

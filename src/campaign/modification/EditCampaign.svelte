@@ -13,7 +13,7 @@
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 
 	import { onMount } from "svelte";
-	import OrdersHistory from "../../order/OrdersHistory.svelte";
+
 	import SimplePickList from "../../utils/SimplePickList.svelte";
 
 	export let title: string;
@@ -28,8 +28,7 @@
 
 	let pasteArea;
 	let pastedImageSrc = "";
-	const MAX_WIDTH = 500;
-	const MAX_HEIGHT = 500;
+
 	let campaign_status = campaign.status;
 	let warehouseOn = false;
 
@@ -109,10 +108,10 @@
 	let save_in_progress: boolean = false;
 
 	async function save_with_progress() {
-		// if (validate_fields()) {
-		// 	showToast();
-		// 	return;
-		// }
+		if (validate_fields()) {
+			showToast();
+			return;
+		}
 		save_in_progress = true;
 		// campaign.status = CampaignStatus.ACTIVE;
 		await save();

@@ -5,6 +5,7 @@
 		Campaign,
 		CampaignStatus,
 		ErrorResponse,
+		OrderedItemType,
 		ResponseStatusCode,
 	} from "../../api/Api";
 	import { role } from "../../stores";
@@ -62,6 +63,7 @@
 					url: campaign.url,
 					img_url: campaign.img_url,
 					img_file: campaign.img_file,
+					payment_details: campaign.payment_details,
 					purchased: campaign.purchased,
 					due_date: campaign.due_date,
 					added_date: campaign.added_date,
@@ -153,15 +155,18 @@
 					</span>
 				</li>
 			{/if}
-			<ul>
-				{#each item.items as pledge (pledge.uuid)}
-					{#if pledge.type == 0}
-						<li>
-							{pledge.name}: {pledge.price}
-						</li>
-					{/if}
-				{/each}
-			</ul>
+			<div class="small_text">
+				Przelew: {item.payment_details}
+				<ul>
+					{#each item.items as pledge (pledge.uuid)}
+						{#if pledge.type == 0}
+							<li>
+								{pledge.name}: {pledge.price}
+							</li>
+						{/if}
+					{/each}
+				</ul>
+			</div>
 		</ul>
 	</div>
 	<!-- {$_("archived_campaigns.no_actions")} -->
@@ -170,3 +175,9 @@
 <SimpleToast {toast_id}
 	><div slot="toast-body">{toast_message}</div></SimpleToast
 >
+
+<style>
+	.small_text {
+		font-size: x-small;
+	}
+</style>

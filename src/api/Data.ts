@@ -142,8 +142,6 @@ export interface CampaignCandidate {
 }
 
 export interface CampaignsSearchParams {
-	status?: CampaignStatus;
-	titleLike?: string;
 	uuids?: string[];
 }
 
@@ -202,7 +200,11 @@ export interface Api {
 
 	fetchCampaign(uuid: string): Promise<Campaign>;
 	fetchCampaignBuyer(campaign_uuid: string): any;
-	orderCampaign(uuid: string, items: OrderUpdate): Promise<Order>;
+	orderCampaign(
+		uuid: string,
+		items: OrderUpdate,
+		user_paid?: number
+	): Promise<Order>;
 	patchOrder(
 		uuid: string,
 		ouiid: string,
@@ -219,6 +221,7 @@ export interface Api {
 	): Promise<CampaignCandidate & ErrorResponse>;
 
 	fetchCampaigns(params: CampaignsSearchParams): Promise<Campaign[]>;
+	fetchUserCampaigns(params: CampaignsSearchParams): Promise<Campaign[]>;
 	changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign>;
 	fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate>;
 	fetchCampaignCandidates(

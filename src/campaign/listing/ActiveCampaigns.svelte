@@ -17,6 +17,7 @@
 	import { marked } from "marked";
 	import SimpleToast from "../../utils/SimpleToast.svelte";
 	import Modal from "../../utils/Modal.svelte";
+	import { formatZuluToLocalDateTime } from "../../utils/datetime";
 
 	const navigate = useNavigate();
 	const fetch_filter = { status: CampaignStatus.ACTIVE };
@@ -54,16 +55,20 @@
 	async function fetchBuyers(campaign_uuid) {
 		const buyers = await api.fetchCampaignBuyer(campaign_uuid);
 		let count = 0;
+
 		if (buyers) {
 			modal_text = buyers
 				.sort((a, b) => {
-					a < b ? 0 : 1;
+					a.date < b.date ? 0 : 1;
 				})
 				.reduce((a, c) => {
 					if (!c) {
 						c = "";
 					} else count++;
-					return `${a}<br>${c}`;
+
+					return `${a}<br>${
+						c.purchased_by
+					} <i><sub><sup>${formatZuluToLocalDateTime(c.date)}</sup></sub></i>`;
 				}, "");
 		}
 		if (!count) modal_text = "<br>nikt ???";
@@ -214,3 +219,9 @@
 <SimpleToast {toast_id}
 	><div slot="toast-body">{toast_message}</div></SimpleToast
 >
+
+<style>
+	.small_date {
+		font-size: x-small;
+	}
+</style>

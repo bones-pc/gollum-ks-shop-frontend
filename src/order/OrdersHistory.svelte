@@ -15,6 +15,7 @@
 	import { Toast } from "bootstrap";
 	import SimpleToast from "../utils/SimpleToast.svelte";
 	import InProgressButton from "../utils/InProgressButton.svelte";
+	import CampaignsCandidates from "../campaign/listing/CampaignsCandidates.svelte";
 
 	const navigate = useNavigate();
 
@@ -47,7 +48,6 @@
 		search: string
 	): Promise<OrderPosition[] | ErrorResponse> {
 		const fetched_orders = await api.fetchUserOrders();
-
 		toast_message = "Zaktualizowane!";
 		if (
 			(fetched_orders as ErrorResponse)?.status_code ===
@@ -60,10 +60,13 @@
 			}, 2000);
 			return [];
 		}
-		const fetched_campaigns = await api.fetchCampaigns({
+		const fetched_campaigns = await api.fetchUserCampaigns({
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
+		// console.log("orders", fetched_orders);
+		// console.log("camp", fetched_campaigns);
+
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
 		);
@@ -81,6 +84,7 @@
 				return { name, price, amount: it.amount };
 			});
 			const order_value = items.reduce((acc, i) => acc + i.price * i.amount, 0);
+
 			new_orders.push({
 				campaign_title: c.title,
 				paid_value: o.paid_amount,
@@ -88,15 +92,27 @@
 				items,
 				title: c.title,
 				id: c.uuid,
+				img_file: c.img_file ? `images/${c.img_file}` : null,
 				img_url: c.img_url,
+				payment_details: c.payment_details,
 				campaign_uuid: c.uuid,
 				purchased: false,
+
 				status: c.status,
 				user_paid: o.user_paid,
 			});
 		}
 
-		return new_orders;
+		const sent = new_orders.filter((o) => o.status === CampaignStatus.ARCHIVED);
+		const paid = new_orders.filter(
+			(o) =>
+				o.paid_value >= o.order_value && o.status !== CampaignStatus.ARCHIVED
+		);
+		const rest = new_orders.filter(
+			(o) => sent.indexOf(o) == -1 && paid.indexOf(o) == -1
+		);
+		console.log(rest);
+		return [...rest, ...paid, ...sent];
 	}
 
 	let new_order = null;
@@ -109,6 +125,7 @@
 		showPopup = true;
 		title = campaign_title;
 		const savedOrder = await api.updateUserPaidAmount(uuid, amount);
+		// console.log(savedOrder);
 		if (
 			(savedOrder as ErrorResponse).status_code ===
 			ResponseStatusCode.NOT_ALLOWED
@@ -128,9 +145,10 @@
 <AccordionList items_provider={fetch}>
 	<svelte:fragment slot="title" let:item>
 		{#if item.status === CampaignStatus.ARCHIVED}
-			<span class="badge bg-warning">Wysłane</span>
-		{/if}
-		{#if item.paid_value == 0}
+			<span class="badge bg-success">Wysłane</span>
+			<!-- {/if}
+		{#if item.paid_value == 0} -->
+		{:else if item.paid_value == 0}
 			<span class="badge bg-danger">{$_("orders_history.unpaid")}</span>
 		{:else if item.paid_value < item.order_value}
 			<span class="badge bg-warning">
@@ -178,6 +196,8 @@
 				label={"Dodaj wpłatę."}
 				disabled_predicate={() => totalPrice <= 0 && new_order}
 			/>
+			<br />
+			<div class="small_text">Przelew: {item.payment_details}</div>
 		</div>
 		<table class="table">
 			<thead>
@@ -235,5 +255,8 @@
 	th {
 		text-decoration: none !important;
 		font-weight: normal !important;
+	}
+	.small_text {
+		font-size: x-small;
 	}
 </style>

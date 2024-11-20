@@ -49,6 +49,7 @@
 				id: c.uuid,
 				title: c.title,
 				url: c.url,
+				payment_details: c.payment_details,
 				img_url: c.img_url,
 				img_file: c.img_file,
 				due_date: c.due_date,
@@ -185,15 +186,18 @@
 							/>
 						</div> -->
 					{/if}
-					<ul>
-						{#each item.items as pledge (pledge.uuid)}
-							{#if pledge.type == 0}
-								<li>
-									{pledge.name}: {pledge.price}
-								</li>
-							{/if}
-						{/each}
-					</ul>
+					<div class="small_text">
+						Przelew: {item.payment_details}<br />
+						<ul>
+							{#each item.items as pledge (pledge.uuid)}
+								{#if pledge.type == 0}
+									<li>
+										{pledge.name}: {pledge.price}
+									</li>
+								{/if}
+							{/each}
+						</ul>
+					</div>
 				{/if}
 			</ul>
 		</ul></svelte:fragment
@@ -210,3 +214,9 @@
 >
 	Wpłata zaktualizowana: {title}.
 </Modal>
+
+<style>
+	.small_text {
+		font-size: x-small;
+	}
+</style>
