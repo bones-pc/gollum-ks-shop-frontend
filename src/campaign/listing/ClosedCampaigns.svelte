@@ -80,7 +80,7 @@
 
 	let sort_by_list = ["nazwie", "dacie zakończenia", "dacie dodania"];
 	let sort_headline = "Sortuj po ";
-	let sort_option = 0;
+	let sort_option = 1;
 
 	function sort_by_name(a: AccordionItem, b: AccordionItem) {
 		if (a.title > b.title) {

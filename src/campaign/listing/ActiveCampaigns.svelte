@@ -51,6 +51,34 @@
 		active_campaigns = await fetch(null);
 	}
 
+	function sort_by_name(a: AccordionItem, b: AccordionItem) {
+		if (a.title > b.title) {
+			return 1;
+		}
+		if (a.title < b.title) {
+			return -1;
+		}
+		return 0;
+	}
+	function sort_by_date(a: AccordionItem, b: AccordionItem) {
+		if (a.due_date > b.due_date) {
+			return 1;
+		}
+		if (a.due_date < b.due_date) {
+			return -1;
+		}
+		return 0;
+	}
+	function sort_by_added_date(a: AccordionItem, b: AccordionItem) {
+		if (a.added_date > b.added_date) {
+			return 1;
+		}
+		if (a.added_date < b.added_date) {
+			return -1;
+		}
+		return 0;
+	}
+
 	let modal_text = "";
 	async function fetchBuyers(campaign_uuid) {
 		const buyers = await api.fetchCampaignBuyer(campaign_uuid);
@@ -88,6 +116,15 @@
 			return [];
 		}
 
+		campaigns.sort((a, b) => {
+			if (a.due_date > b.due_date) {
+				return 1;
+			}
+			if (a.due_date < b.due_date) {
+				return -1;
+			}
+			return 0;
+		});
 		return (campaigns as Campaign[]).map((c) => {
 			if (c.img_file) c.img_file = `images/${c.img_file}`;
 			return {
@@ -107,34 +144,8 @@
 	}
 	let sort_by_list = ["nazwie", "dacie zakończenia", "dacie dodania"];
 	let sort_headline = "Sortuj po ";
-	let sort_option = 0;
-	function sort_by_name(a: AccordionItem, b: AccordionItem) {
-		if (a.title > b.title) {
-			return 1;
-		}
-		if (a.title < b.title) {
-			return -1;
-		}
-		return 0;
-	}
-	function sort_by_date(a, b) {
-		if (a.due_date > b.due_date) {
-			return 1;
-		}
-		if (a.due_date < b.due_date) {
-			return -1;
-		}
-		return 0;
-	}
-	function sort_by_added_date(a, b) {
-		if (a.added_date > b.added_date) {
-			return 1;
-		}
-		if (a.added_date < b.added_date) {
-			return -1;
-		}
-		return 0;
-	}
+	let sort_option = 1;
+
 	async function sort() {
 		active_campaigns = await fetch(null);
 		if (sort_option == 1) {

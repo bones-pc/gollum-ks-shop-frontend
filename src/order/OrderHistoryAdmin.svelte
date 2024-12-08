@@ -50,12 +50,7 @@
 
 	async function fetch(search: string): Promise<(PastOrder & AccordionItem)[]> {
 		const fetched_orders = await api.fetchUserOrdersAdmin(uuid);
-
-		const fetched_campaigns = await api.fetchCampaigns({
-			uuids: fetched_orders.map((it) => it.campaign_uuid),
-			titleLike: search,
-		});
-
+		const fetched_campaigns = await api.fetchUserCampaignsAdmin(uuid);
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
 		);

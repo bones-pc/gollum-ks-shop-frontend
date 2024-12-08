@@ -17,6 +17,7 @@ import {
 	OrderedItemAdmin,
 	ResponseStatusCode,
 	KSCampaignListItem,
+	CampaignUserID,
 } from "./Data";
 
 const api_url = get(url);
@@ -484,6 +485,26 @@ export class RestApi {
 		}
 		return (async () => {
 			const response = await fetch(api_url + "campaigns/user", options("GET"));
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json.map(backend_campaign_to_frontend_campaign);
+			} else {
+				const error_response: ErrorResponse = {
+					status_code: ResponseStatusCode.NOT_ALLOWED,
+					message: "brak uprawnień",
+				};
+				return error_response;
+			}
+		})();
+	}
+
+	fetchUserCampaignsAdmin(user_id: CampaignUserID): Promise<Campaign[]> {
+		console.log(user_id);
+		return (async () => {
+			const response = await fetch(
+				api_url + "campaigns/user/" + user_id,
+				options("GET")
+			);
 			if (response.ok) {
 				const response_json = await response.json();
 				return response_json.map(backend_campaign_to_frontend_campaign);

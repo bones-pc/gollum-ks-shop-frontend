@@ -1,4 +1,3 @@
-import { user_uuid, subscription_due_date } from "../stores";
 export enum ResponseStatusCode {
 	OK,
 	NOT_ALLOWED,
@@ -145,6 +144,10 @@ export interface CampaignsSearchParams {
 	uuids?: string[];
 }
 
+export interface CampaignUserID {
+	uuid: string;
+}
+
 export interface CampaignUpdate {
 	campaign: Campaign;
 	candidate_uuid?: string;
@@ -221,6 +224,7 @@ export interface Api {
 	): Promise<CampaignCandidate & ErrorResponse>;
 
 	fetchCampaigns(params: CampaignsSearchParams): Promise<Campaign[]>;
+	fetchUserCampaignsAdmin(uuid: string): Promise<Campaign[]>;
 	fetchUserCampaigns(params: CampaignsSearchParams): Promise<Campaign[]>;
 	changeStatus(uuid: string, newStatus: CampaignStatus): Promise<Campaign>;
 	fetchCampaignCandidate(uuid: string): Promise<CampaignCandidate>;

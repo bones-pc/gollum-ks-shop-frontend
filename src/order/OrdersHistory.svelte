@@ -60,12 +60,11 @@
 			}, 2000);
 			return [];
 		}
+
 		const fetched_campaigns = await api.fetchUserCampaigns({
 			uuids: fetched_orders.map((it) => it.campaign_uuid),
 			titleLike: search,
 		});
-		// console.log("orders", fetched_orders);
-		// console.log("camp", fetched_campaigns);
 
 		const uuid_to_campaign = new Map<string, Campaign>(
 			fetched_campaigns.map((it) => [it.uuid, it])
