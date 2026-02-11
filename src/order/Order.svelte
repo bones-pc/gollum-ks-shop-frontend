@@ -19,7 +19,6 @@
 	import { faHeart as faHeartOpen } from "@fortawesome/free-regular-svg-icons";
 	import Modal from "../utils/Modal.svelte";
 	import { role, user_uuid } from "../stores";
-	import CampaignsCandidates from "../campaign/listing/CampaignsCandidates.svelte";
 
 	export let uuid: string;
 
@@ -250,7 +249,6 @@
 		{#each items as { amount, old_amount, item }}
 			<!-- {#if amount > 0} -->
 			<!-- {#if item.type !== OrderedItemType.ADMIN_ADDON || amount > 0} -->
-
 			<div
 				class="card mb-2"
 				style="width: 100%;"
@@ -264,24 +262,29 @@
 					{/if}
 					<div class="col-12 col-lg">
 						<h5 class:fade-text={amount == null || amount === 0}>
-							{#if item.ordinal > 0}
+							<!-- {#if item.ordinal > 0}
 								{item.ordinal}. {item.name}
 								<span class="ms-2 badge bg-secondary">
 									{item.price}
 									{$_("currency.pln")}
 								</span>
+							
+							
+							{:else} -->
+							{#if item.url && campaign.status === CampaignStatus.WAREHOUSE}
+								<a href={item.url}>
+									{#if item.ordinal > 0}{item.ordinal}. {/if}
+									{item.name}
+								</a>
 							{:else}
-								{#if item.url && campaign.status === CampaignStatus.WAREHOUSE}
-									<a href={item.url}>
-										{item.name}
-									</a>
-								{:else}{item.name}
-								{/if}
-								<span class="ms-2 badge bg-secondary">
-									{item.price}
-									{$_("currency.pln")}
-								</span>
+								{#if item.ordinal > 0}{item.ordinal}. {/if}{item.name}
 							{/if}
+
+							<span class="ms-2 badge bg-secondary">
+								{item.price}
+								{$_("currency.pln")}
+							</span>
+							<!-- {/if} -->
 						</h5>
 					</div>
 

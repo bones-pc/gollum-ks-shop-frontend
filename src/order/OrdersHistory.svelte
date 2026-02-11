@@ -110,7 +110,7 @@
 		const rest = new_orders.filter(
 			(o) => sent.indexOf(o) == -1 && paid.indexOf(o) == -1
 		);
-		console.log(rest);
+		// console.log(rest);
 		return [...rest, ...paid, ...sent];
 	}
 
