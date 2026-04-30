@@ -499,7 +499,6 @@ export class RestApi {
 	}
 
 	fetchUserCampaignsAdmin(user_id: CampaignUserID): Promise<Campaign[]> {
-		console.log(user_id);
 		return (async () => {
 			const response = await fetch(
 				api_url + "campaigns/user/" + user_id,
@@ -695,6 +694,19 @@ export class RestApi {
 				})
 			);
 			return response.json();
+		})();
+	}
+
+	updateUserNotes(user_uuid: string, notes: string): Promise<UserProfile> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "users/" + user_uuid,
+				options("PATCH", { notes })
+			);
+			if (response.ok) {
+				const response_json = await response.json();
+				return response_json;
+			}
 		})();
 	}
 

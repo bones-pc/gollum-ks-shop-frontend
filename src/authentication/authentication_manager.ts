@@ -32,7 +32,7 @@ class LocalDevManager implements AuthenticationManager {
 		_password: string,
 		_email: string
 	): Promise<boolean> {
-		console.log("singnup unavailable for a LocalDevManager");
+		// console.log("singnup unavailable for a LocalDevManager");
 		return Promise.resolve(true);
 	}
 
@@ -153,11 +153,10 @@ class CustomEndpointManager implements AuthenticationManager {
 					await this.login(email, password);
 					return true;
 				} else {
-					console.log(message);
+					// console.log(message);
 				}
 			} else {
 				const { message } = await response.json();
-				console.log(message);
 			}
 			return false;
 		})();
@@ -182,12 +181,12 @@ class CustomEndpointManager implements AuthenticationManager {
 					document.cookie = `gollum_token=${access_token};secure;SameSite=Strict;path=/`;
 					return true;
 				} else {
-					console.log("No access token:", message);
+					// console.log("No access token:", message);
 					return false;
 				}
 			} else {
 				const { message } = await response.json();
-				console.log("Login unsuccessfull:", message);
+				// console.log("Login unsuccessfull:", message);
 				return false;
 			}
 		})();

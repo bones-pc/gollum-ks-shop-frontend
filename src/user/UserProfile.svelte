@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { authentication_manager } from "../authentication/authentication_manager";
-	import { onMount } from "svelte";
 	import { _ } from "svelte-i18n";
 	import { get } from "svelte/store";
 	import { api } from "../api/Api";
 	import type { UserProfile } from "../api/Api";
-	import type { User } from "../api/Api";
+
 	export let user: UserProfile;
 
 	let warning = null;

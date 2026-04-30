@@ -6,7 +6,6 @@
 	import type { UserProfile } from "../api/Api";
 	import UserDataComponent from "./UserData.svelte";
 	import OrderHistoryAdmin from "../order/OrderHistoryAdmin.svelte";
-	import { subscription_due_date } from "../stores";
 
 	let user: UserProfile = {
 		firstname: "",
@@ -21,6 +20,7 @@
 		street: "",
 		city: "",
 		subscription_due: null,
+		notes: "",
 	};
 	let orders: Order[] = [];
 	let sub_due_date: Date;
@@ -105,7 +105,7 @@
 		<tr>
 			<td colspan="4">
 				<button
-					class=" collapsed"
+					class="btn btn-success collapsed"
 					type="button"
 					data-bs-toggle="collapse"
 					data-bs-target={"#collapse" + index + "a"}

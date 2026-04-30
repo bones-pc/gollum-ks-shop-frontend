@@ -1,3 +1,4 @@
+import { subscription_due_date } from "../stores";
 export enum ResponseStatusCode {
 	OK,
 	NOT_ALLOWED,
@@ -176,6 +177,8 @@ export interface UserProfile {
 	city: string;
 	zip: string;
 	inpost: string;
+	subscription_due: string;
+	notes: string;
 }
 
 export interface Api {
