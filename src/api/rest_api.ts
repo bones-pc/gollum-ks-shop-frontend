@@ -18,6 +18,7 @@ import {
 	ResponseStatusCode,
 	KSCampaignListItem,
 	CampaignUserID,
+	UserMessage,
 } from "./Data";
 
 const api_url = get(url);
@@ -788,6 +789,39 @@ export class RestApi {
 			const json_response = await response.json();
 
 			return json_response;
+		})();
+	}
+
+	fetchUserMessages(
+		user_uuid: string,
+		order_uuid?: string
+	): Promise<UserMessage[]> {
+		return (async () => {
+			let url = api_url + "messages/user/" + user_uuid;
+			if (order_uuid) {
+				url += "?order_uuid=" + encodeURIComponent(order_uuid);
+			}
+			const response = await fetch(url, options("GET"));
+			if (response.ok) {
+				return await response.json();
+			}
+			return [];
+		})();
+	}
+
+	sendUserMessage(
+		user_uuid: string,
+		message?: string,
+		order_uuid?: string
+	): Promise<UserMessage> {
+		return (async () => {
+			const response = await fetch(
+				api_url + "messages",
+				options("POST", { user_id: user_uuid, order_uuid, message })
+			);
+			if (response.ok) {
+				return await response.json();
+			}
 		})();
 	}
 }

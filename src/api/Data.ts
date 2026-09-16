@@ -165,6 +165,16 @@ export interface User {
 	zip: string;
 }
 
+export interface UserMessage {
+	uuid: string;
+	user_id: string;
+	order_uuid?: string;
+	sender_id: string;
+	message: string;
+	is_default: boolean;
+	sent_date: string;
+}
+
 export interface UserProfile {
 	uuid: string;
 	username: string;
@@ -249,4 +259,14 @@ export interface Api {
 	initPasswordReset(email: string): Promise<Boolean>;
 
 	uploadImage(formData: any): Promise<any>;
+
+	fetchUserMessages(
+		user_uuid: string,
+		order_uuid?: string
+	): Promise<UserMessage[]>;
+	sendUserMessage(
+		user_uuid: string,
+		message?: string,
+		order_uuid?: string
+	): Promise<UserMessage>;
 }

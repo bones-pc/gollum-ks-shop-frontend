@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { get } from "svelte/store";
 	import { Link } from "svelte-navigator";
 	import { _ } from "svelte-i18n";
 	import CopyToClipboardField from "../utils/CopyToClipboardField.svelte";
@@ -13,6 +14,7 @@
 		OrderedItemType,
 		OrderedItem,
 		OrderedItemAdmin,
+		UserMessage,
 	} from "../api/Api";
 	import InProgressButton from "../utils/InProgressButton.svelte";
 
@@ -27,6 +29,11 @@
 	let tracking_no = "";
 
 	let admin_addons = [];
+
+	let messagesByUser: Record<string, UserMessage[]> = {};
+	let messagesBoxOpen: Record<string, boolean> = {};
+	let expandedUsers: Record<string, boolean> = {};
+	let draftMessages: Record<string, string> = {};
 
 	$: itemByUuid = new Map<string, CampaignItem>(
 		campaign?.items?.map((item) => [item.uuid, item]) ?? []
@@ -163,7 +170,44 @@
 		orders = o.sort(sort_by_order_date);
 		admin_addons = c.items.filter((v) => v.type == OrderedItemType.ADMIN_ADDON);
 		campaign = c;
+
+		await Promise.all(orders.map((order) => loadMessages(order)));
 	});
+
+	async function loadMessages(order: Order & AssignedToUser) {
+		const messages = await api.fetchUserMessages(order.ouuid);
+		messagesByUser[order.ouuid] = messages ?? [];
+		if (draftMessages[order.ouuid] === undefined) {
+			draftMessages[order.ouuid] = get(_)(
+				"manage_orders.messages.default_reminder"
+			);
+		}
+		messagesByUser = messagesByUser;
+	}
+
+	function toggleMessagesBox(order: Order & AssignedToUser) {
+		messagesBoxOpen[order.ouuid] = !messagesBoxOpen[order.ouuid];
+		messagesBoxOpen = messagesBoxOpen;
+	}
+
+	function toggleMessages(order: Order & AssignedToUser) {
+		expandedUsers[order.ouuid] = !expandedUsers[order.ouuid];
+		expandedUsers = expandedUsers;
+	}
+
+	function selectMessage(order: Order & AssignedToUser, msg: UserMessage) {
+		draftMessages[order.ouuid] = msg.message;
+		draftMessages = draftMessages;
+	}
+
+	async function sendReminder(order: Order & AssignedToUser) {
+		await api.sendUserMessage(
+			order.ouuid,
+			draftMessages[order.ouuid],
+			order.order_uuid
+		);
+		await loadMessages(order);
+	}
 
 	async function confirm(order: Order & AssignedToUser) {
 		await api.updatePaidAmount(order);
@@ -295,6 +339,91 @@
 				{/if}
 			{/each}
 		</ul>
+
+		<div class="messages-box">
+			<button
+				type="button"
+				class="btn btn-outline-secondary btn-sm messages-toggle"
+				on:click={() => toggleMessagesBox(order)}
+			>
+				{$_("manage_orders.messages")}
+				{#if messagesByUser[order.ouuid]?.length}
+					({messagesByUser[order.ouuid].length})
+				{/if}
+				{messagesBoxOpen[order.ouuid]
+					? $_("manage_orders.messages.hide")
+					: $_("manage_orders.messages.show")}
+			</button>
+
+			{#if messagesBoxOpen[order.ouuid]}
+				<div class="messages-content">
+					{#if !messagesByUser[order.ouuid] || messagesByUser[order.ouuid].length === 0}
+						<div class="text-muted">{$_("manage_orders.messages.none")}</div>
+					{:else}
+						<div
+							class="message-entry selectable"
+							class:selected={draftMessages[order.ouuid] ===
+								messagesByUser[order.ouuid][0].message}
+							title={$_("manage_orders.messages.select_hint")}
+							on:click={() =>
+								selectMessage(order, messagesByUser[order.ouuid][0])}
+						>
+							<span class="message-date"
+								>{new Date(
+									messagesByUser[order.ouuid][0].sent_date
+								).toLocaleString()}</span
+							>
+							<span>{messagesByUser[order.ouuid][0].message}</span>
+						</div>
+						{#if messagesByUser[order.ouuid].length > 1}
+							<button
+								type="button"
+								class="btn btn-link btn-sm p-0"
+								on:click={() => toggleMessages(order)}
+							>
+								{expandedUsers[order.ouuid]
+									? $_("manage_orders.messages.show_less")
+									: $_("manage_orders.messages.show_all", {
+											values: { count: messagesByUser[order.ouuid].length },
+									  })}
+							</button>
+							{#if expandedUsers[order.ouuid]}
+								<ul class="message-history">
+									{#each messagesByUser[order.ouuid].slice(1) as msg}
+										<li
+											class="selectable"
+											class:selected={draftMessages[order.ouuid] ===
+												msg.message}
+											title={$_("manage_orders.messages.select_hint")}
+											on:click={() => selectMessage(order, msg)}
+										>
+											<span class="message-date"
+												>{new Date(msg.sent_date).toLocaleString()}</span
+											>
+											<span>{msg.message}</span>
+										</li>
+									{/each}
+								</ul>
+							{/if}
+						{/if}
+					{/if}
+					<div class="row">
+						<div class="col-md-8 mid">
+							<input
+								class="form-control"
+								bind:value={draftMessages[order.ouuid]}
+							/>
+						</div>
+						<div class="col-md-4 mid">
+							<InProgressButton
+								on_click_function={async () => sendReminder(order)}
+								label={$_("manage_orders.messages.send")}
+							/>
+						</div>
+					</div>
+				</div>
+			{/if}
+		</div>
 	{/each}
 {/if}
 
@@ -307,5 +436,38 @@
 	}
 	ul {
 		list-style-type: none;
+	}
+	.messages-box {
+		margin: 8px 0 16px 0;
+	}
+	.messages-content {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 8px 12px;
+		margin-top: 6px;
+	}
+	.message-entry {
+		margin: 4px 0;
+	}
+	.selectable {
+		cursor: pointer;
+		border-radius: 3px;
+		padding: 2px 4px;
+	}
+	.selectable:hover {
+		background-color: #f0f0f0;
+	}
+	.selectable.selected {
+		background-color: #e0edff;
+	}
+	.message-date {
+		color: #888;
+		margin-right: 8px;
+		font-size: 0.85em;
+	}
+	.message-history {
+		list-style-type: none;
+		padding-left: 0;
+		margin-top: 4px;
 	}
 </style>
