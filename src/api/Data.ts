@@ -262,11 +262,11 @@ export interface Api {
 
 	fetchUserMessages(
 		user_uuid: string,
-		order_uuid?: string
+		order_uuid: string
 	): Promise<UserMessage[]>;
 	sendUserMessage(
 		user_uuid: string,
-		message?: string,
-		order_uuid?: string
+		order_uuid: string,
+		message?: string
 	): Promise<UserMessage>;
 }
